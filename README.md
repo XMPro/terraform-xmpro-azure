@@ -76,11 +76,39 @@ graph TB
 - Azure subscription with appropriate permissions
 - Docker registry access (Azure Container Registry recommended)
 
+### Module Source Options
+
+This module is available directly from GitHub and can be referenced in your Terraform configuration:
+
+**Recommended: Use a specific version for production**
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  # ... configuration
+}
+```
+
+**Use the latest version (main branch)**
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure"
+  # ... configuration
+}
+```
+
+**Use SSH for private repositories or when you have SSH keys configured**
+```hcl
+module "xmpro_platform" {
+  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v5.0.0-alpha"
+  # ... configuration
+}
+```
+
 ### Basic Usage
 
 ```hcl
 module "xmpro_platform" {
-  source = "path/to/terraform-xmpro-azure"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
 
   # Basic Configuration
   company_name = "mycompany"
@@ -112,7 +140,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "path/to/terraform-xmpro-azure"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
 
   # Basic Configuration
   company_name = "enterprise"

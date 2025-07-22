@@ -2,8 +2,11 @@
 # This example demonstrates deploying XMPro platform using existing SQL Server and databases
 
 module "xmpro_platform" {
-  source = "XMPro/terraform-xmpro-azure"
-  # For local development, use: source = "../../"
+  # For production, use the GitHub source with a specific version:
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  
+  # For local development:
+  source = "../../"
 
   # Core settings - customize these for your local testing
   environment = var.environment
@@ -23,6 +26,8 @@ module "xmpro_platform" {
 
   # Docker registry
   acr_url_product = var.acr_url_product
+  acr_username    = var.acr_username
+  acr_password    = var.acr_password
 
   # Local-specific settings
   imageversion = var.imageversion
@@ -31,10 +36,8 @@ module "xmpro_platform" {
   enable_custom_domain = var.enable_custom_domain
 
   # Existing database configuration
-  use_existing_database              = var.use_existing_database
-  existing_sql_server_name           = var.existing_sql_server_name
-  existing_sql_server_resource_group = var.existing_sql_server_resource_group
-  existing_database_names            = var.existing_database_names
+  use_existing_database    = var.use_existing_database
+  existing_sql_server_fqdn = var.existing_sql_server_fqdn
 
   # SMTP settings
   smtp_password = "stored_in_keeper"

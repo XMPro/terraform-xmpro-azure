@@ -2,8 +2,11 @@
 # This example demonstrates a complete XMPro platform deployment on Azure
 
 module "xmpro_platform" {
-  source = "XMPro/terraform-xmpro-azure/azurerm"
-  # For local development, use: source = "../../"
+  # For production, use the GitHub source with a specific version:
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  
+  # For local development:
+  source = "../../"
 
   # Core settings - customize these for your local testing
   environment = var.environment
@@ -23,6 +26,8 @@ module "xmpro_platform" {
 
   # Docker registry
   acr_url_product = var.acr_url_product
+  acr_username    = var.acr_username
+  acr_password    = var.acr_password
 
   # Local-specific settings
   imageversion = var.imageversion
