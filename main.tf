@@ -355,11 +355,8 @@ module "sm_dbmigrate" {
   product_ids  = local.evaluation_product_ids
   product_keys = local.evaluation_product_keys
 
-<<<<<<< HEAD
   is_evaluation_mode = var.is_evaluation_mode
 
-=======
->>>>>>> 1b4411eb8 (20726 Implement Azure Terraform module publishing to registry)
   # Tags
   tags = var.tags
 }
