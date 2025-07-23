@@ -74,6 +74,20 @@ variable "acr_url_product" {
   default     = "xmprononprod.azurecr.io"
 }
 
+variable "acr_username" {
+  description = "Azure Container Registry username (only required for private images)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "acr_password" {
+  description = "Azure Container Registry password (only required for private images)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "imageversion" {
   description = "The Docker image version to deploy"
   type        = string
@@ -93,28 +107,8 @@ variable "use_existing_database" {
   default     = true
 }
 
-variable "existing_sql_server_name" {
-  description = "Name of the existing SQL Server to use"
+variable "existing_sql_server_fqdn" {
+  description = "Fully qualified domain name of the existing SQL Server"
   type        = string
-  default     = "existing-sql-server"
-}
-
-variable "existing_sql_server_resource_group" {
-  description = "Resource group containing the existing SQL Server"
-  type        = string
-  default     = "existing-rg"
-}
-
-variable "existing_database_names" {
-  description = "Map of existing database names for AD, DS, and SM services"
-  type = object({
-    AD = string
-    DS = string
-    SM = string
-  })
-  default = {
-    AD = "ExistingADDatabase"
-    DS = "ExistingDSDatabase"
-    SM = "ExistingSMDatabase"
-  }
+  default     = "existing-sql-server.database.windows.net"
 }

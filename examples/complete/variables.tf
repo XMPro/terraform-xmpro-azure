@@ -74,6 +74,20 @@ variable "acr_url_product" {
   default     = "xmprononprod.azurecr.io"
 }
 
+variable "acr_username" {
+  description = "Azure Container Registry username (only required for private images)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "acr_password" {
+  description = "Azure Container Registry password (only required for private images)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "imageversion" {
   description = "The Docker image version to deploy"
   type        = string
