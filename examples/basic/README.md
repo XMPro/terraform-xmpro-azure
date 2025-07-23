@@ -35,9 +35,9 @@ terraform apply
 
 After deployment:
 ```bash
-terraform output ad_url    # App Designer
-terraform output ds_url    # Data Stream Designer
-terraform output sm_url    # Subscription Manager
+terraform output ad_app_url    # App Designer
+terraform output ds_app_url    # Data Stream Designer
+terraform output sm_app_url    # Subscription Manager
 ```
 
 For complete documentation, see the [main module README](../../README.md).

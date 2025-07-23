@@ -43,5 +43,5 @@ module "xmpro_platform" {
   existing_sql_server_fqdn = var.existing_sql_server_fqdn
 
   # SMTP settings
-  smtp_password = "stored_in_keeper"
+  smtp_password = var.smtp_password
 } 

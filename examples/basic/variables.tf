@@ -101,21 +101,9 @@ variable "enable_custom_domain" {
 }
 
 variable "smtp_password" {
-  description = "SMTP password for email notifications, stored in keeper"
+  description = "SMTP password for email notifications"
   type        = string
   sensitive   = true
-  default     = "stored_in_keeper"
+  default     = "ExampleSmtpP@ssw0rd123!"
 }
 
-# Tags for resource management
-variable "keep_or_delete_tag" {
-  description = "Tag to indicate whether resources should be kept or deleted"
-  type        = string
-  default     = "Keep"
-}
-
-variable "billing_tag" {
-  description = "Billing tag for resource management"
-  type        = string
-  default     = "Sandbox"
-}

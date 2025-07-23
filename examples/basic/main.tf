@@ -40,8 +40,4 @@ module "xmpro_platform" {
 
   # SMTP settings
   smtp_password = var.smtp_password
-
-  # Tags for resource management
-  keep_or_delete_tag = var.keep_or_delete_tag
-  billing_tag        = var.billing_tag
 } 

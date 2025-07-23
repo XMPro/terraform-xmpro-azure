@@ -67,6 +67,10 @@ graph TB
     LIC --> DB_SM
 ```
 
+> ⚠️ **Security Notice**  
+> Use Azure Key Vault, environment variables, or your CI pipeline's secret store for all passwords, access tokens, and connection strings.  
+> The credentials shown below are sample values only – never commit real secrets to version control.
+
 ## 🚀 Quick Start
 
 ### Prerequisites

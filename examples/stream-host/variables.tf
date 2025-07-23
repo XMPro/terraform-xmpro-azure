@@ -30,7 +30,7 @@ variable "is_private_registry" {
 variable "acr_url_product" {
   description = "The URL of the Azure Container Registry for product images"
   type        = string
-  default     = "xmproacr.azurecr.io"
+  default     = "xmpro.azurecr.io"
 }
 
 variable "acr_username" {
@@ -140,15 +140,3 @@ variable "volumes" {
   default = []
 }
 
-# Resource tagging
-variable "billing_tag" {
-  description = "Tag for billing purposes"
-  type        = string
-  default     = "engineering"
-}
-
-variable "keep_or_delete_tag" {
-  description = "Tag to indicate if resources should be kept or deleted"
-  type        = string
-  default     = "delete"
-}

@@ -154,7 +154,7 @@ module "sm_prep_container" {
   release_version = var.github_release_version
 
   # Key Vault configuration (calculated name - no dependency needed)
-  keyvault_name = "kv-sm-${substr("${var.companyname}-${random_id.suffix.hex}", 0, 16)}"
+  keyvault_name = "kvsm${substr("${var.companyname}${random_id.suffix.hex}", 0, 19)}"
 
   # Implicit dependencies through variable references handle storage account dependency
 }

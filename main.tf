@@ -22,7 +22,7 @@ resource "random_uuid" "ad_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
 }
 resource "random_uuid" "ai_product_key" {
-  count = var.is_evaluation_mode ? 0 : 1
+  count = (var.enable_ai_service && var.is_evaluation_mode) ? 1 : 0
 }
 resource "random_uuid" "ds_product_key" {
   count = var.is_evaluation_mode ? 0 : 1

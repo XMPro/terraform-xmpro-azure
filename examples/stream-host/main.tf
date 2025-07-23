@@ -15,8 +15,6 @@ module "resource_group" {
   environment    = var.environment
   location       = var.location
   company_name   = var.company_name
-  billing_tag    = var.billing_tag
-  keep_or_delete_tag = var.keep_or_delete_tag
 }
 
 # Deploy the Stream Host container

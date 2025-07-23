@@ -112,3 +112,10 @@ variable "existing_sql_server_fqdn" {
   type        = string
   default     = "existing-sql-server.database.windows.net"
 }
+
+variable "smtp_password" {
+  description = "SMTP password for email notifications"
+  type        = string
+  sensitive   = true
+  default     = "ExampleSmtpP@ssw0rd123!"
+}

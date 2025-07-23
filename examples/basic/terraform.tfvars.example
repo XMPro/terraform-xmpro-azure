@@ -19,7 +19,7 @@ site_admin_password = "YourStrongSitePassword123!"
 
 # Container registry settings
 # For public images, leave acr_username and acr_password empty
-acr_url_product = "xmproacr.azurecr.io"
+acr_url_product = "xmpro.azurecr.io"
 acr_username = ""
 acr_password = ""
 
@@ -35,9 +35,6 @@ enable_custom_domain = false
 # SMTP configuration for email notifications
 smtp_password = "your-smtp-password-here"
 
-# Resource tagging
-keep_or_delete_tag = "delete"
-billing_tag = "engineering"
 
 # Optional: Enable Azure Application Insights for monitoring
 # enable_monitoring = true
