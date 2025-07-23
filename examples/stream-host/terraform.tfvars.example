@@ -1,0 +1,53 @@
+# Example terraform.tfvars for Stream Host deployment
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# Core settings - customize these for your deployment
+environment = "dev"
+location    = "southeastasia"
+company_name = "mycompany"
+
+# Stream Host configuration - REQUIRED
+# Get these values from your XMPro Data Stream Designer
+ds_server_url = "https://ds.mycompany.com"
+stream_host_collection_id = "your-collection-id-here"
+stream_host_collection_secret = "your-collection-secret-here"
+
+# Container registry settings
+# For public images, leave acr_username and acr_password empty
+is_private_registry = false
+acr_url_product = "xmproacr.azurecr.io"
+acr_username = ""
+acr_password = ""
+
+# Image version
+imageversion = "4.5.0"
+
+# Resource allocation (optional - these are defaults)
+stream_host_cpu = 1
+stream_host_memory = 4
+
+# Monitoring (optional)
+# app_insights_connection_string = "InstrumentationKey=your-key-here"
+# log_analytics_workspace_id = "your-workspace-id"
+# log_analytics_primary_shared_key = "your-workspace-key"
+
+# Resource tagging
+billing_tag = "engineering"
+keep_or_delete_tag = "delete"
+
+# Additional environment variables (optional)
+# environment_variables = {
+#   "CUSTOM_SETTING" = "value"
+# }
+
+# Volume mounts (optional)
+# volumes = [
+#   {
+#     name       = "config-volume"
+#     mount_path = "/app/config"
+#     read_only  = true
+#     secret = {
+#       "config.json" = "your-base64-encoded-config"
+#     }
+#   }
+# ]

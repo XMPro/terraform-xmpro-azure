@@ -1,0 +1,47 @@
+# Example terraform.tfvars for Basic XMPro Platform deployment
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# Core platform settings - customize these for your deployment
+environment = "dev"
+location = "southeastasia"
+company_name = "mycompany"
+
+# Company administrator details
+company_admin_first_name = "John"
+company_admin_last_name = "Doe"
+company_admin_email_address = "admin@mycompany.com"
+
+# Database credentials - IMPORTANT: Use strong passwords in production
+db_admin_username = "xmadmin"
+db_admin_password = "YourStrongPassword123!"
+company_admin_password = "YourStrongAdminPassword123!"
+site_admin_password = "YourStrongSitePassword123!"
+
+# Container registry settings
+# For public images, leave acr_username and acr_password empty
+acr_url_product = "xmproacr.azurecr.io"
+acr_username = ""
+acr_password = ""
+
+# Image version - use 4.5.0 for stable release
+imageversion = "4.5.0"
+
+# DNS configuration (optional)
+enable_custom_domain = false
+# If enable_custom_domain = true, also set:
+# custom_domain_name = "mycompany.com"
+# dns_zone_resource_group = "dns-rg"
+
+# SMTP configuration for email notifications
+smtp_password = "your-smtp-password-here"
+
+# Resource tagging
+keep_or_delete_tag = "delete"
+billing_tag = "engineering"
+
+# Optional: Enable Azure Application Insights for monitoring
+# enable_monitoring = true
+
+# Optional: Custom SSL certificate
+# ssl_certificate_path = "./certificate.pfx"
+# ssl_certificate_password = "certificate-password"

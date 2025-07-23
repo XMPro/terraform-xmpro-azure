@@ -1,0 +1,59 @@
+# Example terraform.tfvars for XMPro Platform deployment with existing database
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# Core platform settings - customize these for your deployment
+environment = "dev"
+location = "southeastasia"
+company_name = "mycompany"
+
+# Company administrator details
+company_admin_first_name = "John"
+company_admin_last_name = "Doe"
+company_admin_email_address = "admin@mycompany.com"
+
+# Database credentials - use credentials for your existing SQL Server
+db_admin_username = "existing-sql-admin"
+db_admin_password = "YourExistingSqlPassword123!"
+company_admin_password = "YourStrongAdminPassword123!"
+site_admin_password = "YourStrongSitePassword123!"
+
+# Container registry settings
+# For public images, leave acr_username and acr_password empty
+acr_url_product = "xmproacr.azurecr.io"
+acr_username = ""
+acr_password = ""
+
+# Image version - use 4.5.0 for stable release
+imageversion = "4.5.0"
+
+# Existing database configuration - REQUIRED for this example
+use_existing_database = true
+existing_sql_server_fqdn = "your-existing-sql-server.database.windows.net"
+
+# Note: When using existing databases, ensure the following databases exist:
+# - [company_name]AD (for App Designer)
+# - [company_name]DS (for Data Stream Designer)  
+# - [company_name]SM (for Subscription Manager)
+#
+# Example: if company_name = "mycompany", databases should be:
+# - mycompanyAD, mycompanyDS, mycompanySM
+
+# DNS configuration (optional)
+enable_custom_domain = false
+# If enable_custom_domain = true, also set:
+# custom_domain_name = "mycompany.com"
+# dns_zone_resource_group = "dns-rg"
+
+# SMTP configuration for email notifications
+smtp_password = "your-smtp-password-here"
+
+# Resource tagging
+keep_or_delete_tag = "delete"
+billing_tag = "engineering"
+
+# Optional: Enable Azure Application Insights for monitoring
+# enable_monitoring = true
+
+# Optional: Custom SSL certificate
+# ssl_certificate_path = "./certificate.pfx"
+# ssl_certificate_password = "certificate-password"
