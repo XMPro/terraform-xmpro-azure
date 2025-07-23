@@ -2,14 +2,14 @@
 # This example demonstrates a complete XMPro platform deployment on Azure
 
 module "xmpro_platform" {
-  # For local development:
-  source = "../../"
-  
   # Use the latest version from GitHub
-  # source = "github.com/XMPro/terraform-xmpro-azure"
+  source = "github.com/XMPro/terraform-xmpro-azure"
+  
+  # For local development:
+  # source = "../../"
   
   # For a specific version:
-  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
   # Core settings - customize these for your local testing
   environment = var.environment
