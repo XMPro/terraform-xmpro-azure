@@ -7,7 +7,7 @@
 # Environment variables
 $SM_ZIP_DOWNLOAD_URL = $env:SM_ZIP_DOWNLOAD_URL
 $RELEASE_VERSION = $env:RELEASE_VERSION
-$KEYVAULT_NAME = $env:KEYVAULT_NAME
+$AZURE_KEY_VAULT_NAME = $env:AZURE_KEY_VAULT_NAME
 $DEPLOYMENT_TRIGGER = $env:DEPLOYMENT_TRIGGER
 $SM_ZIP_DOWNLOAD_URL = $env:SM_ZIP_DOWNLOAD_URL
 
@@ -42,14 +42,14 @@ function Test-EnvironmentVariables {
     if (!$RELEASE_VERSION) {
         Exit-WithError "RELEASE_VERSION environment variable is required"
     }
-    if (!$KEYVAULT_NAME) {
-        Write-Log "KEYVAULT_NAME not provided - Azure Key Vault integration will be disabled" "WARN"
+    if (!$AZURE_KEY_VAULT_NAME) {
+        Write-Log "AZURE_KEY_VAULT_NAME not provided - Azure Key Vault integration will be disabled" "WARN"
     }
     
     Write-Log "Environment variables validated successfully"
     Write-Log "SM.zip Download URL: $SM_ZIP_DOWNLOAD_URL"
     Write-Log "Version: $RELEASE_VERSION"
-    Write-Log "Key Vault: $KEYVAULT_NAME"
+    Write-Log "Key Vault: $AZURE_KEY_VAULT_NAME"
     Write-Log "Deployment Trigger: $DEPLOYMENT_TRIGGER"
 }
 
@@ -155,8 +155,8 @@ function Invoke-ConfigProcessing {
     $env:SITE_PATH = $SITE_DIR
     
     # Log Key Vault if configured
-    if ($KEYVAULT_NAME) {
-        Write-Log "Key Vault: $KEYVAULT_NAME"
+    if ($AZURE_KEY_VAULT_NAME) {
+        Write-Log "Key Vault: $AZURE_KEY_VAULT_NAME"
     }
     
     # Path to bundled Install.ps1 script
@@ -182,7 +182,7 @@ function Invoke-ConfigProcessing {
     
     # Verify Web.config was processed (check for Azure Key Vault configuration)
     $webConfigContent = Get-Content "$SITE_DIR/Web.config" -Raw
-    if ($KEYVAULT_NAME -and $webConfigContent -notmatch "vaultName=`".*`"") {
+    if ($AZURE_KEY_VAULT_NAME -and $webConfigContent -notmatch "vaultName=`".*`"") {
         Write-Log "Warning: Azure Key Vault configuration may not have been applied correctly" "WARN"
     } else {
         Write-Log "Web.config processing verified successfully"
@@ -256,7 +256,7 @@ function New-DeploymentPackage {
         version = $RELEASE_VERSION
         created = (Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ")
         source = $SM_ZIP_DOWNLOAD_URL
-        keyvault = $KEYVAULT_NAME
+        keyvault = $AZURE_KEY_VAULT_NAME
         trigger = $DEPLOYMENT_TRIGGER
         versionedFile = "SM-$RELEASE_VERSION.zip"
         versionedSize = $versionedZipSize
@@ -283,7 +283,7 @@ function Show-Summary {
     Write-Log "=== SM Zip Preparation Summary ==="
     Write-Log "Version: $RELEASE_VERSION"
     Write-Log "Source: $SM_ZIP_DOWNLOAD_URL"
-    Write-Log "Key Vault: $KEYVAULT_NAME"
+    Write-Log "Key Vault: $AZURE_KEY_VAULT_NAME"
     Write-Log "Trigger: $DEPLOYMENT_TRIGGER"
     
     # List output files

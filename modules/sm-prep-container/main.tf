@@ -73,7 +73,7 @@ resource "azurerm_container_group" "sm_zip_prep" {
       ENABLE_SECRETS_NONE            = "false"
 
       # Azure Key Vault integration
-      KEYVAULT_NAME = var.keyvault_name
+      AZURE_KEY_VAULT_NAME = var.azure_key_vault_name
 
       # Required application settings (Key Vault reference format)
       PRODUCT_ID          = "$${ServerUUID}"

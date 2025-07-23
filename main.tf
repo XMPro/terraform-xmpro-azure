@@ -532,7 +532,7 @@ module "sm_prep_container" {
   release_version     = var.imageversion
 
   # Key Vault configuration (calculated name - no dependency needed)
-  keyvault_name = "kv-sm-${substr("${var.company_name}-${random_id.suffix.hex}", 0, 16)}"
+  azure_key_vault_name = "kv-sm-${substr("${var.company_name}-${random_id.suffix.hex}", 0, 16)}"
 
   # Implicit dependencies through variable references handle storage account dependency
 }

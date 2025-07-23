@@ -64,7 +64,7 @@ variable "release_version" {
 }
 
 # Application configuration
-variable "keyvault_name" {
+variable "azure_key_vault_name" {
   description = "Name of the Azure Key Vault for secrets"
   type        = string
 }
