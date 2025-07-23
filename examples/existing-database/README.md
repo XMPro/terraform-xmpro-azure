@@ -24,9 +24,9 @@ This example sets:
 export TF_VAR_existing_sql_server_name="my-existing-server"
 export TF_VAR_existing_sql_server_resource_group="my-rg"
 
-# Set other required variables
-export TF_VAR_acr_username="your-username"
-export TF_VAR_acr_password="your-password"
+# Set other required variables (ACR credentials not needed for public registry)
+# export TF_VAR_acr_username="your-username"  # Only for private registries
+# export TF_VAR_acr_password="your-password"  # Only for private registries
 
 terraform init
 terraform apply

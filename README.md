@@ -83,7 +83,7 @@ This module is available directly from GitHub and can be referenced in your Terr
 **Recommended: Use a specific version for production**
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
   # ... configuration
 }
 ```
@@ -99,7 +99,7 @@ module "xmpro_platform" {
 **Use SSH for private repositories or when you have SSH keys configured**
 ```hcl
 module "xmpro_platform" {
-  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v5.0.0-alpha"
+  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v4.5.0"
   # ... configuration
 }
 ```
@@ -108,7 +108,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
   # Basic Configuration
   company_name = "mycompany"
@@ -123,11 +123,11 @@ module "xmpro_platform" {
   company_admin_password = "AdminPassword123!"
   site_admin_password    = "SitePassword123!"
 
-  # Container Registry
-  acr_url_product     = "myregistry.azurecr.io"
-  acr_username        = "myregistry"
-  acr_password        = "registry-password"
-  is_private_registry = true
+  # Container Registry (defaults to public XMPro registry)
+  acr_url_product     = "xmprononprod.azurecr.io"  # Public registry - no credentials needed
+  # acr_username      = ""  # Not required for public registry
+  # acr_password      = ""  # Not required for public registry
+  is_private_registry = false
   imageversion        = "4.5.0"
 
   # Optional: Custom Domain
@@ -140,7 +140,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
   # Basic Configuration
   company_name = "enterprise"
@@ -233,7 +233,7 @@ module "xmpro_platform" {
 | acr_username | ACR username (for private registries) | `string` | `""` |
 | acr_password | ACR password (for private registries) | `string` | `""` |
 | is_private_registry | Use private registry authentication | `bool` | `false` |
-| imageversion | Docker image version | `string` | `"4.5.0.82-alpha-9db64dab7e"` |
+| imageversion | Docker image version | `string` | `"4.5.0"` |
 
 ### DNS and Domain Configuration
 

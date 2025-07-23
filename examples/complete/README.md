@@ -29,9 +29,9 @@ export ARM_TENANT_ID="your-tenant-id"
 export ARM_CLIENT_ID="your-client-id"
 export ARM_CLIENT_SECRET="your-client-secret"
 
-# Container registry credentials (if using private registry)
-export TF_VAR_acr_username="your-acr-username"
-export TF_VAR_acr_password="your-acr-password"
+# Container registry credentials (not needed for public XMPro registry)
+# export TF_VAR_acr_username="your-acr-username"  # Only for private registries
+# export TF_VAR_acr_password="your-acr-password"  # Only for private registries
 ```
 
 ## Basic Usage
@@ -68,7 +68,7 @@ export TF_VAR_acr_password="your-acr-password"
 | `environment` | Environment name for resource identification | `"sandbox"` |
 | `location` | Azure region for deployment | `"southeastasia"` |
 | `company_name` | Company name used in resource naming | `"xmprosbx"` |
-| `imageversion` | Docker image version to deploy | `"4.5.0.153-alpha-19b99d6711"` |
+| `imageversion` | Docker image version to deploy | `"4.5.0"` |
 | `enable_custom_domain` | Enable custom domain configuration | `false` |
 
 ## Important Notes
