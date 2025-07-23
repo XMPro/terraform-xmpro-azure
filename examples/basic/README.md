@@ -14,9 +14,7 @@ This example demonstrates a complete XMPro platform deployment on Azure with all
 ## Usage
 
 ```bash
-# Set required environment variables
-export TF_VAR_acr_username="your-username"
-export TF_VAR_acr_password="your-password"
+# Set required environment variables (ACR credentials not needed for public registry)
 export TF_VAR_db_admin_password="SecurePassword123!"
 export TF_VAR_company_admin_password="CompanyAdmin123!"
 export TF_VAR_site_admin_password="SiteAdmin123!"
