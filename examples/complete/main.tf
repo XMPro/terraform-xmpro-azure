@@ -9,7 +9,7 @@ module "xmpro_platform" {
   # source = "../../"
   
   # For a specific version:
-  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0-alpha"
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
   # Core settings - customize these for your local testing
   environment = var.environment
