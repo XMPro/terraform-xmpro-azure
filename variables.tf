@@ -84,7 +84,12 @@ variable "dns_zone_name" {
 variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
-  default     = true
+  default     = false
+
+  validation {
+    condition     = var.enable_custom_domain == false || var.dns_zone_name != ""
+    error_message = "When enable_custom_domain is true, dns_zone_name must be provided"
+  }
 }
 
 variable "use_existing_dns_zone" {
@@ -171,7 +176,7 @@ variable "acr_password" {
 variable "acr_url_product" {
   description = "Azure Container Registry URL for product images"
   type        = string
-  default     = "xmprononprod.azurecr.io"
+  default     = "xmpro.azurecr.io"
 }
 
 # Image version
@@ -230,7 +235,7 @@ variable "db_allow_all_ips" {
 variable "enable_email_notification" {
   description = "Whether to enable email notifications"
   type        = bool
-  default     = true
+  default     = false
 }
 variable "smtp_server" {
   description = "SMTP server address"
@@ -309,9 +314,14 @@ variable "stream_host_environment_variables" {
 
 # Evaluation Mode Configuration
 variable "is_evaluation_mode" {
-  description = "Whether to deploy with built-in license provisioning. If true (default), deploys licenses container with evaluation settings. If false, skips licenses container and user provides their own license management."
+  description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
   type        = bool
-  default     = true
+  default     = false
+
+  validation {
+    condition     = var.is_evaluation_mode == false || var.enable_email_notification == true
+    error_message = "When is_evaluation_mode is true, consider enabling enable_email_notification for license request functionality"
+  }
 }
 
 # SM Container Approach Variables
