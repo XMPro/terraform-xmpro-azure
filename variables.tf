@@ -87,8 +87,8 @@ variable "enable_custom_domain" {
   default     = false
 
   validation {
-    condition     = var.enable_custom_domain == false || var.dns_zone_name != ""
-    error_message = "When enable_custom_domain is true, dns_zone_name must be provided"
+    condition     = can(regex("^(true|false)$", tostring(var.enable_custom_domain)))
+    error_message = "enable_custom_domain must be a boolean value"
   }
 }
 
@@ -319,8 +319,8 @@ variable "is_evaluation_mode" {
   default     = false
 
   validation {
-    condition     = var.is_evaluation_mode == false || var.enable_email_notification == true
-    error_message = "When is_evaluation_mode is true, consider enabling enable_email_notification for license request functionality"
+    condition     = can(regex("^(true|false)$", tostring(var.is_evaluation_mode)))
+    error_message = "is_evaluation_mode must be a boolean value"
   }
 }
 
