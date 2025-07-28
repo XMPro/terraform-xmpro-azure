@@ -177,12 +177,12 @@ module "sm_dbmigrate" {
   # Company Admin configuration
   company_admin_email_address = "admin@${var.companyname}.com"
   company_admin_username      = "admin.user@${var.companyname}.onxmpro.com"
-  
+
   # SM Configuration
   sm_product_id = local.sm_product_id
 
   # Container Registry configuration
-  acr_url_product     = "xmprononprod.azurecr.io"
+  acr_url_product     = "xmpro.azurecr.io"
   is_private_registry = false
   imageversion        = "latest"
 
