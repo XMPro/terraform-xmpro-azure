@@ -23,6 +23,7 @@ resource "random_id" "suffix" {
 resource "azurerm_resource_group" "sm" {
   name     = "rg-${var.companyname}-${var.environment}-sm-${random_id.suffix.hex}"
   location = var.location
+  tags     = local.common_tags
 }
 
 # Storage Account Module
@@ -42,10 +43,9 @@ module "storage_account" {
       quota = 5
     }
   }
-  tags = {
-    Environment = var.environment
-    Purpose     = "sm-testing"
-  }
+  tags = merge(local.common_tags, {
+    "Purpose" = "SM storage for zip preparation"
+  })
 }
 
 # Database Module for SM testing
@@ -77,12 +77,9 @@ module "database" {
     }
   }
 
-  tags = {
-    Environment = var.environment
-    Purpose     = "sm-database-testing"
-    CreatedBy   = "terraform"
-    Company     = var.companyname
-  }
+  tags = merge(local.common_tags, {
+    "Purpose" = "SM database for testing"
+  })
 }
 
 # Get current client configuration
@@ -94,6 +91,12 @@ resource "random_uuid" "sm_product_id" {}
 # Local values for reuse
 locals {
   sm_product_id = random_uuid.sm_product_id.result
+  
+  # Centralized common tags
+  common_tags = merge(var.tags, {
+    "Environment" = var.environment
+    "Company"     = var.companyname
+  })
 }
 
 # SM Key Vault Module (moved to top level for proper module composition)
@@ -124,12 +127,9 @@ module "sm_key_vault" {
   sm_base_url = "https://app-sm-${var.environment}-${var.companyname}-${random_id.suffix.hex}.azurewebsites.net"
 
   # Tags
-  tags = {
-    Environment = var.environment
-    Purpose     = "sm-sandbox-deployment"
-    CreatedBy   = "terraform"
-    Company     = var.companyname
-  }
+  tags = merge(local.common_tags, {
+    "Purpose" = "SM Key Vault for sandbox deployment"
+  })
 
   depends_on = [module.database]
 }
@@ -154,7 +154,12 @@ module "sm_prep_container" {
   release_version = var.github_release_version
 
   # Key Vault configuration (calculated name - no dependency needed)
-  keyvault_name = "kvsm${substr("${var.companyname}${random_id.suffix.hex}", 0, 19)}"
+  azure_key_vault_name = "kv-sm-${substr("${var.companyname}-${random_id.suffix.hex}", 0, 16)}"
+
+  # Tags
+  tags = merge(local.common_tags, {
+    "Purpose" = "SM zip preparation container"
+  })
 
   # Implicit dependencies through variable references handle storage account dependency
 }
@@ -196,12 +201,9 @@ module "sm_dbmigrate" {
   ai_url = "https://ai-${var.environment}.azurewebsites.net"
   nb_url = "https://nb-${var.environment}.azurewebsites.net"
 
-  tags = {
-    Environment = var.environment
-    Purpose     = "sm-database-migration"
-    CreatedBy   = "terraform"
-    Company     = var.companyname
-  }
+  tags = merge(local.common_tags, {
+    "Purpose" = "SM database migration container"
+  })
 
 }
 
@@ -230,7 +232,6 @@ module "sm_app_service" {
 
   # SM Configuration
   sm_product_id = local.sm_product_id
-  sm_url        = "https://app-sm-${var.environment}-${var.companyname}-${random_id.suffix.hex}.azurewebsites.net"
 
   # App Service configuration
   service_plan_sku = "B1" # Basic tier for sandbox
@@ -247,16 +248,9 @@ module "sm_app_service" {
   company_admin_password = var.company_admin_password
   site_admin_password    = var.site_admin_password
 
-  # Other application URLs (sandbox placeholders)
-  ad_url = "https://ad-${var.environment}.azurewebsites.net"
-  ds_url = "https://ds-${var.environment}.azurewebsites.net"
-
-  tags = {
-    Environment = var.environment
-    Purpose     = "sm-sandbox-deployment"
-    CreatedBy   = "terraform"
-    Company     = var.companyname
-  }
+  tags = merge(local.common_tags, {
+    "Purpose" = "SM app service for sandbox deployment"
+  })
 
   # Create implicit dependency on sm-prep-container
   sm_prep_container_id = module.sm_prep_container.container_group_id

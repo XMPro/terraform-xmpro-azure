@@ -13,16 +13,13 @@ This example demonstrates deploying XMPro platform using existing SQL Server and
 
 This example sets:
 - `use_existing_database = true`
-- `existing_sql_server_name` - Your existing SQL Server
-- `existing_sql_server_resource_group` - Resource group containing the server
-- `existing_database_names` - Map of existing database names
+- `existing_sql_server_fqdn` - Fully qualified domain name of your existing SQL Server
 
 ## Usage
 
 ```bash
 # Configure existing database details
-export TF_VAR_existing_sql_server_name="my-existing-server"
-export TF_VAR_existing_sql_server_resource_group="my-rg"
+export TF_VAR_existing_sql_server_fqdn="my-existing-server.database.windows.net"
 
 # Set other required variables (ACR credentials not needed for public registry)
 # export TF_VAR_acr_username="your-username"  # Only for private registries

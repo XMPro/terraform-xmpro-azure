@@ -44,4 +44,7 @@ module "xmpro_platform" {
 
   # SMTP settings
   smtp_password = var.smtp_password
+
+  # Resource tagging
+  tags = var.tags
 } 

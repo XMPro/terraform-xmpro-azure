@@ -276,12 +276,14 @@ variable "smtp_enable_ssl" {
 
 # Tagging configuration
 variable "tags" {
-  description = "A map of tags to apply to all resources"
+  description = "A map of tags to apply to all resources. These will be merged with standard tags (Environment, Company, etc.)"
   type        = map(string)
   default = {
-    "Created_By" = "Terraform"
-    "ManagedBy"  = "Platform Engineering"
-    "Project"    = "XMPro Platform"
+    "CreatedBy"      = "Terraform"
+    "ManagedBy"      = "Platform Engineering"
+    "Project"        = "XMPro Platform"
+    "Keep_or_delete" = "Keep"
+    "Billing"        = "Dev"
   }
 }
 
@@ -331,14 +333,3 @@ variable "sm_zip_download_url" {
   default     = "download.nonprod.xmprodev.com"
 }
 
-variable "keep_or_delete_tag" {
-  description = "Flag to determine whether to keep or delete resources"
-  type        = string
-  default     = "Keep"
-}
-
-variable "billing_tag" {
-  description = "Billing information for the resources"
-  type        = string
-  default     = "Dev"
-}

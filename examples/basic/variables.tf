@@ -107,3 +107,17 @@ variable "smtp_password" {
   default     = "ExampleSmtpP@ssw0rd123!"
 }
 
+# Tagging
+variable "tags" {
+  description = "A map of tags to apply to all resources"
+  type        = map(string)
+  default = {
+    "CreatedBy"      = "Terraform"
+    "ManagedBy"      = "Platform Engineering"
+    "Project"        = "XMPro Platform"
+    "Keep_or_delete" = "Keep"
+    "Billing"        = "Sandbox"
+    "Purpose"        = "Basic XMPro deployment example"
+  }
+}
+
