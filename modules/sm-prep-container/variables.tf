@@ -68,3 +68,9 @@ variable "azure_key_vault_name" {
   description = "Name of the Azure Key Vault for secrets"
   type        = string
 }
+
+variable "tags" {
+  description = "A map of tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}

@@ -127,16 +127,13 @@ module "xmpro_platform" {
   company_admin_password = "AdminPassword123!"
   site_admin_password    = "SitePassword123!"
 
-  # Container Registry (defaults to public XMPro registry)
-  acr_url_product     = "xmprononprod.azurecr.io"  # Public registry - no credentials needed
-  # acr_username      = ""  # Not required for public registry
-  # acr_password      = ""  # Not required for public registry
-  is_private_registry = false
-  imageversion        = "4.5.0"
+  # Container Registry (public XMPro registry - no credentials needed)
+  acr_url_product = "xmpro.azurecr.io"
+  imageversion    = "5.0.0"
 
   # Optional: Custom Domain
-  enable_custom_domain = true
-  dns_zone_name       = "mycompany.xmpro.com"
+  enable_custom_domain = false  # Conservative default
+  # dns_zone_name       = "mycompany.xmpro.com"  # Set if enable_custom_domain = true
 }
 ```
 
@@ -199,18 +196,21 @@ module "xmpro_platform" {
 | Name | Version |
 |------|---------|
 | azurerm | ~> 3.0 |
-| random | n/a |
+| random | ~> 3.1 |
+| external | ~> 2.2 |
 
 ## 📥 Inputs
 
 ### Required Variables
 
-| Name | Description | Type |
-|------|-------------|------|
-| company_name | Company name for resource naming (max 18 chars) | `string` |
-| db_admin_password | Database admin password | `string` |
-| company_admin_password | Company admin password | `string` |
-| site_admin_password | Site admin password | `string` |
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| company_name | Company name for resource naming (max 18 chars) | `string` | `"evaluation"` |
+| db_admin_password | Database admin password | `string` | `"P@ssw0rd1234!"` |
+| company_admin_password | Company admin password | `string` | `"P@ssw0rd1234!"` |
+| site_admin_password | Site admin password | `string` | `"P@ssw0rd1234!"` |
+
+> **Note**: While these variables have defaults for development convenience, you should override them with secure passwords for production deployments.
 
 ### Basic Configuration
 
@@ -233,17 +233,17 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| acr_url_product | Azure Container Registry URL | `string` | `"xmprononprod.azurecr.io"` |
+| acr_url_product | Azure Container Registry URL | `string` | `"xmpro.azurecr.io"` |
 | acr_username | ACR username (for private registries) | `string` | `""` |
 | acr_password | ACR password (for private registries) | `string` | `""` |
 | is_private_registry | Use private registry authentication | `bool` | `false` |
-| imageversion | Docker image version | `string` | `"4.5.0"` |
+| imageversion | Docker image version | `string` | `"4.5.0.82-alpha-9db64dab7e"` |
 
 ### DNS and Domain Configuration
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| enable_custom_domain | Enable custom domain for web apps | `bool` | `true` |
+| enable_custom_domain | Enable custom domain for web apps | `bool` | `false` |
 | dns_zone_name | DNS zone name | `string` | `"jfmhnda.nonprod.xmprodev.com"` |
 | use_existing_dns_zone | Use existing DNS zone | `bool` | `false` |
 
@@ -251,7 +251,7 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| enable_ai_service | Enable AI service and database | `bool` | `true` |
+| enable_ai_service | Enable AI service and database | `bool` | `false` |
 | sm_service_plan_sku | SM App Service plan SKU | `string` | `"B1"` |
 | ad_service_plan_sku | AD App Service plan SKU | `string` | `"B1"` |
 | ds_service_plan_sku | DS App Service plan SKU | `string` | `"B1"` |
@@ -261,7 +261,7 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| is_evaluation_mode | Deploy with built-in license provisioning | `bool` | `true` |
+| is_evaluation_mode | Deploy with built-in license provisioning | `bool` | `false` |
 
 ### Company Admin Configuration
 
@@ -276,13 +276,13 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| enable_email_notification | Enable email notifications | `bool` | `true` |
+| enable_email_notification | Enable email notifications | `bool` | `false` |
 | smtp_server | SMTP server address | `string` | `"sinprd0310.outlook.com"` |
 | smtp_from_address | SMTP from address | `string` | `"Qa.Test@xmpro.com"` |
 | smtp_username | SMTP username | `string` | `"Qa.Test@xmpro.com"` |
 | smtp_password | SMTP password | `string` | `"stored-in-keeper"` |
 | smtp_port | SMTP port | `number` | `587` |
-| smtp_enable_ssl | Enable SSL for SMTP | `bool` | `true` |
+| smtp_enable_ssl | Enable SSL for SMTP | `bool` | `false` |
 
 ### Stream Host Configuration
 
@@ -292,22 +292,11 @@ module "xmpro_platform" {
 | stream_host_memory | Memory allocation (GB) for stream host | `number` | `4` |
 | stream_host_environment_variables | Additional environment variables | `map(string)` | `{}` |
 
-### Product IDs (Licensing)
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| ad_product_id | Product ID for App Designer | `string` | `"fe011f90-5bb6-80ad-b0a2-56300bf3b65d"` |
-| ds_product_id | Product ID for Data Stream Designer | `string` | `"71435803-967a-e9ac-574c-face863f7ec0"` |
-| ai_product_id | Product ID for AI Designer | `string` | `"b7be889b-01d3-4bd2-95c6-511017472ec8"` |
-| license_api_url | License API endpoint URL | `string` | `"https://licensesnp.xmpro.com/api/license"` |
-
 ### Deployment Configuration
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | is_azdo_pipeline | Running in Azure DevOps pipeline | `bool` | `false` |
-| github_repo_url | GitHub repository URL for SM zip downloads | `string` | `"https://github.com/xmpro/xmpro-windows-installer"` |
-| github_token | GitHub access token (for private repos) | `string` | `""` |
 
 ### Tagging
 
