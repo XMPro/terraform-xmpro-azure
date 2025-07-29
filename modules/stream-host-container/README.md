@@ -26,7 +26,7 @@ module "stream_host_container" {
   company_name        = "dev"
 
   # Container Registry
-  acr_url_product     = "xmprononprod.azurecr.io"
+  acr_url_product     = "xmpro.azurecr.io"
   acr_username        = var.acr_username
   acr_password        = var.acr_password
   is_private_registry = true
@@ -112,7 +112,7 @@ module "stream_host_container" {
   resource_group_name = "rg-xmpro-dev-australiaeast"
   company_name        = "dev"
 
-  acr_url_product               = "xmprononprod.azurecr.io"
+  acr_url_product               = "xmpro.azurecr.io"
   acr_username                  = var.acr_username
   acr_password                  = var.acr_password
   is_private_registry           = true
@@ -136,7 +136,7 @@ module "stream_host_container" {
   resource_group_name = "rg-xmpro-dev-australiaeast"
   company_name        = "dev"
 
-  acr_url_product               = "xmprononprod.azurecr.io"
+  acr_url_product               = "xmpro.azurecr.io"
   acr_username                  = var.acr_username
   acr_password                  = var.acr_password
   is_private_registry           = true

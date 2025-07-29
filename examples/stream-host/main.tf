@@ -15,6 +15,11 @@ module "resource_group" {
   environment    = var.environment
   location       = var.location
   company_name   = var.company_name
+  
+  tags = merge(var.tags, {
+    "Environment" = var.environment
+    "Company"     = var.company_name
+  })
 }
 
 # Deploy the Stream Host container
@@ -60,4 +65,10 @@ module "stream_host" {
 
   # Volume mounts (if needed)
   volumes = var.volumes
+
+  # Resource tagging
+  tags = merge(var.tags, {
+    "Environment" = var.environment
+    "Company"     = var.company_name
+  })
 }

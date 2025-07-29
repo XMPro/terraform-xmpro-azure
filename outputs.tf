@@ -97,7 +97,7 @@ output "evaluation_mode_status" {
   description = "Status of evaluation mode deployment"
   value = {
     is_evaluation_mode          = var.is_evaluation_mode
-    licenses_container_deployed = var.is_evaluation_mode ? false : true
+    licenses_container_deployed = var.is_evaluation_mode ? true : false
     effective_ad_product_id     = local.effective_ad_product_id
     effective_ds_product_id     = local.effective_ds_product_id
   }

@@ -22,7 +22,7 @@ resource "random_uuid" "ad_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
 }
 resource "random_uuid" "ai_product_key" {
-  count = (var.enable_ai_service && var.is_evaluation_mode) ? 1 : 0
+  count = (var.enable_ai_service && !var.is_evaluation_mode) ? 1 : 0
 }
 resource "random_uuid" "ds_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
@@ -54,14 +54,9 @@ module "resource_group" {
 
   name     = "rg-${var.company_name}-${var.environment}-${random_id.suffix.hex}"
   location = var.location
-  tags = {
-    "Created_By"     = "Terraform"
-    "Created_For"    = "${var.environment} Terraform App Service Containers module"
-    "Keep_or_delete" = var.keep_or_delete_tag
-    "Billing"        = var.billing_tag
-    "Environment"    = var.environment
-    "Company"        = var.company_name
-  }
+  tags = merge(local.common_tags, {
+    "CreatedFor" = "${var.environment} Terraform App Service Containers module"
+  })
 }
 
 # DNS Zone
@@ -71,6 +66,7 @@ module "dns_zone" {
 
   name                = var.dns_zone_name
   resource_group_name = module.resource_group.name
+  tags                = local.common_tags
 
   # DNS records and hostname bindings
   domain_verification_records = merge({
@@ -139,11 +135,9 @@ module "storage_account" {
       quota = 5
     }
   }
-  tags = {
-    Environment = var.environment
-    Purpose     = "sm-deployment"
-    Company     = var.company_name
-  }
+  tags = merge(local.common_tags, {
+    "Purpose" = "sm-deployment"
+  })
 }
 
 # Monitoring
@@ -154,6 +148,7 @@ module "monitoring" {
   environment         = var.environment
   resource_group_name = module.resource_group.name
   location            = module.resource_group.location
+  tags                = local.common_tags
 
   # Optional parameters
   enable_log_analytics = true
@@ -199,7 +194,7 @@ module "database" {
       zone_redundant = false
       create_mode    = "Default"
     }
-  }, var.enable_ai_service ? {
+    }, var.enable_ai_service ? {
     "AI" = {
       collation      = "SQL_Latin1_General_CP1_CI_AS"
       max_size_gb    = 2
@@ -214,10 +209,7 @@ module "database" {
   db_allow_all_ips        = var.db_allow_all_ips
   is_azdo_pipeline        = var.is_azdo_pipeline
 
-  tags = {
-    "Environment" = var.environment
-    "ManagedBy"   = "Terraform"
-  }
+  tags = local.common_tags
 }
 
 # Connection strings and URLs are defined in locals.tf
@@ -269,6 +261,9 @@ module "ad_app_service" {
 
   # Create implicit dependency on ad_dbmigrate container (only when using new databases)
   addbmigrate_container_id = module.ad_dbmigrate.container_group_id
+
+  # Tags
+  tags = local.common_tags
 }
 
 # DS App Service
@@ -309,6 +304,9 @@ module "ds_app_service" {
 
   # Create implicit dependency on ds_dbmigrate container (only when using new databases)
   dsdbmigrate_container_id = module.ds_dbmigrate.container_group_id
+
+  # Tags
+  tags = local.common_tags
 }
 
 # SM Database Migration (only when creating new databases)
@@ -358,7 +356,7 @@ module "sm_dbmigrate" {
   is_evaluation_mode = var.is_evaluation_mode
 
   # Tags
-  tags = var.tags
+  tags = local.common_tags
 }
 
 # SM Key Vault Module (top level for proper module composition)
@@ -389,7 +387,7 @@ module "sm_key_vault" {
   sm_base_url = local.sm_base_url
 
   # Tags
-  tags = var.tags
+  tags = local.common_tags
 
   depends_on = [module.database]
 }
@@ -419,6 +417,9 @@ module "ad_dbmigrate" {
 
   # Image version
   imageversion = var.imageversion
+
+  # Tags
+  tags = local.common_tags
 }
 
 # DS Database Migration (only when creating new databases)
@@ -447,6 +448,9 @@ module "ds_dbmigrate" {
 
   # Image version
   imageversion = var.imageversion
+
+  # Tags
+  tags = local.common_tags
 }
 
 # AI Database Migration (conditional)
@@ -472,6 +476,9 @@ module "ai_dbmigrate" {
 
   # Image version
   imageversion = var.imageversion
+
+  # Tags
+  tags = local.common_tags
 }
 
 # AI App Service (conditional)
@@ -509,6 +516,9 @@ module "ai_app_service" {
 
   # Create implicit dependency on ai_dbmigrate container
   aidbmigrate_container_id = var.enable_ai_service ? module.ai_dbmigrate[0].container_group_id : ""
+
+  # Tags
+  tags = local.common_tags
 }
 
 # SM Preparation Container Module (creates SM.zip first)
@@ -533,6 +543,9 @@ module "sm_prep_container" {
 
   # Key Vault configuration (calculated name - no dependency needed)
   azure_key_vault_name = "kv-sm-${substr("${var.company_name}-${random_id.suffix.hex}", 0, 16)}"
+
+  # Tags
+  tags = local.common_tags
 
   # Implicit dependencies through variable references handle storage account dependency
 }
@@ -576,7 +589,7 @@ module "licenses_container" {
   imageversion = var.imageversion
 
   # Tags
-  tags = var.tags
+  tags = local.common_tags
 }
 
 # SM App Service Module (uses Key Vault from top level)
@@ -624,7 +637,7 @@ module "sm_app_service" {
   imageversion = var.imageversion
 
   # Tags
-  tags = var.tags
+  tags = local.common_tags
 
   # Create implicit dependency on sm-prep-container
   sm_prep_container_id = module.sm_prep_container.container_group_id
@@ -663,4 +676,7 @@ module "stream_host_container" {
   app_insights_connection_string   = module.monitoring.app_insights_connection_string
   log_analytics_workspace_id       = module.monitoring.log_analytics_workspace_id
   log_analytics_primary_shared_key = module.monitoring.log_analytics_primary_shared_key
+
+  # Tags
+  tags = local.common_tags
 }

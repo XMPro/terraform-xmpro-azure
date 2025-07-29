@@ -44,6 +44,7 @@ resource "azurerm_service_plan" "ds_service_plan" {
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
   sku_name            = var.service_plan_sku
+  tags                = var.tags
 }
 
 # Linux Web App for DS
@@ -136,12 +137,7 @@ resource "azurerm_linux_web_app" "ds_app" {
     }
   }
 
-  tags = {
-    product                  = "Data Stream Designer"
-    createdby                = "devops"
-    createdfor               = "Data Stream Designer application"
-    dsdbmigrate_container_id = substr(var.dsdbmigrate_container_id, 0, 8) # Reference the DS DB migration container ID to establish dependency
-  }
+  tags = var.tags
 }
 
 # Add access policy for DS app to access Key Vault

@@ -72,3 +72,9 @@ variable "deployment_suffix" {
   description = "Random suffix for ensuring unique resource names across deployments"
   type        = string
 }
+
+variable "tags" {
+  description = "A map of tags to apply to all resources"
+  type        = map(string)
+  default     = {}
+}
