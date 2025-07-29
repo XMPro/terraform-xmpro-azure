@@ -2,12 +2,6 @@
 locals {
   # Generate consistent name suffix for this deployment (adopting sandbox-sm-only approach)
   name_suffix = random_id.suffix.hex
-
-  # Centralized tag management - merges user-provided tags with standard computed tags
-  common_tags = merge(var.tags, {
-    "Environment" = var.environment
-    "Company"     = var.company_name
-  })
   # Database connection strings
   sql_server_fqdn      = var.use_existing_database ? var.existing_sql_server_fqdn : module.database[0].sql_server_fqdn
   ad_connection_string = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=AD;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"

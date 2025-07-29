@@ -44,8 +44,6 @@ resource "azurerm_service_plan" "ai_service_plan" {
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
   sku_name            = var.service_plan_sku
-
-  tags = var.tags
 }
 
 # Linux Web App for AI
@@ -134,12 +132,12 @@ resource "azurerm_linux_web_app" "ai_app" {
     }
   }
 
-  tags = merge(var.tags, {
+  tags = {
     product                  = "XMPro AI"
     createdby                = "devops"
     createdfor               = "XMPro AI application"
     aidbmigrate_container_id = substr(var.aidbmigrate_container_id, 0, 8) # Reference the AI DB migration container ID to establish dependency
-  })
+  }
 }
 
 # Add access policy for AI app to access Key Vault

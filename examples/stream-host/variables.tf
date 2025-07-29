@@ -140,17 +140,3 @@ variable "volumes" {
   default = []
 }
 
-# Tagging
-variable "tags" {
-  description = "A map of tags to apply to all resources"
-  type        = map(string)
-  default = {
-    "CreatedBy"      = "Terraform"
-    "ManagedBy"      = "Platform Engineering"
-    "Project"        = "XMPro Platform"
-    "Keep_or_delete" = "Keep"
-    "Billing"        = "Stream Host"
-    "Purpose"        = "Stream Host container deployment example"
-  }
-}
-

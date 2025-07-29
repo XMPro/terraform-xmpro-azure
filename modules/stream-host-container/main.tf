@@ -83,8 +83,10 @@ resource "azurerm_container_group" "stream_host" {
     }
   }
 
-  tags = merge(var.tags, {
-    "Product"    = "XMPro Stream Host Container"
-    "CreatedFor" = "Stream processing and agent hosting"
-  })
+  tags = {
+    product     = "XMPro Stream Host Container"
+    environment = var.environment
+    createdby   = "terraform"
+    createdfor  = "Stream processing and agent hosting"
+  }
 }

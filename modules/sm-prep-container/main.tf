@@ -135,9 +135,12 @@ resource "azurerm_container_group" "sm_zip_prep" {
   }
 
   # Resource tags
-  tags = merge(var.tags, {
-    "Purpose" = "sm-zip-preparation"
-  })
+  tags = {
+    Environment = var.environment
+    Purpose     = "sm-zip-preparation"
+    CreatedBy   = "terraform"
+    Company     = var.company_name
+  }
 
   # Ensure scripts are uploaded before container starts
   depends_on = [

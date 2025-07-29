@@ -84,7 +84,7 @@ variable "dns_zone_name" {
 variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "use_existing_dns_zone" {
@@ -171,7 +171,7 @@ variable "acr_password" {
 variable "acr_url_product" {
   description = "Azure Container Registry URL for product images"
   type        = string
-  default     = "xmpro.azurecr.io"
+  default     = "xmprononprod.azurecr.io"
 }
 
 # Image version
@@ -230,7 +230,7 @@ variable "db_allow_all_ips" {
 variable "enable_email_notification" {
   description = "Whether to enable email notifications"
   type        = bool
-  default     = false
+  default     = true
 }
 variable "smtp_server" {
   description = "SMTP server address"
@@ -271,14 +271,12 @@ variable "smtp_enable_ssl" {
 
 # Tagging configuration
 variable "tags" {
-  description = "A map of tags to apply to all resources. These will be merged with standard tags (Environment, Company, etc.)"
+  description = "A map of tags to apply to all resources"
   type        = map(string)
   default = {
-    "CreatedBy"      = "Terraform"
-    "ManagedBy"      = "Platform Engineering"
-    "Project"        = "XMPro Platform"
-    "Keep_or_delete" = "Keep"
-    "Billing"        = "Dev"
+    "Created_By" = "Terraform"
+    "ManagedBy"  = "Platform Engineering"
+    "Project"    = "XMPro Platform"
   }
 }
 
@@ -311,9 +309,9 @@ variable "stream_host_environment_variables" {
 
 # Evaluation Mode Configuration
 variable "is_evaluation_mode" {
-  description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
+  description = "Whether to deploy with built-in license provisioning. If true (default), deploys licenses container with evaluation settings. If false, skips licenses container and user provides their own license management."
   type        = bool
-  default     = false
+  default     = true
 }
 
 # SM Container Approach Variables
@@ -323,3 +321,14 @@ variable "sm_zip_download_url" {
   default     = "download.nonprod.xmprodev.com"
 }
 
+variable "keep_or_delete_tag" {
+  description = "Flag to determine whether to keep or delete resources"
+  type        = string
+  default     = "Keep"
+}
+
+variable "billing_tag" {
+  description = "Billing information for the resources"
+  type        = string
+  default     = "Dev"
+}

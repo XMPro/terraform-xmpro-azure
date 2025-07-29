@@ -121,9 +121,3 @@ variable "dsdbmigrate_container_id" {
   type        = string
   default     = null
 }
-
-variable "tags" {
-  description = "A map of tags to apply to all resources"
-  type        = map(string)
-  default     = {}
-}

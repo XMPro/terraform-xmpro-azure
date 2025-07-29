@@ -47,7 +47,6 @@ resource "azurerm_service_plan" "ad_service_plan" {
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
   sku_name            = var.service_plan_sku
-  tags                = var.tags
 }
 
 # Linux Web App for AD
@@ -150,8 +149,6 @@ resource "azurerm_linux_web_app" "ad_app" {
       }
     }
   }
-
-  tags = var.tags
 }
 
 # Add access policy for AD app to access Key Vault
