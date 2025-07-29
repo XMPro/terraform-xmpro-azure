@@ -122,9 +122,3 @@ variable "ai_product_key" {
   sensitive   = true
   default     = "950ca93b-1ad9-514b-4263-4d3f510012e2"
 }
-
-variable "tags" {
-  description = "A map of tags to apply to all resources"
-  type        = map(string)
-  default     = {}
-}

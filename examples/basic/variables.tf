@@ -71,7 +71,7 @@ variable "company_admin_email_address" {
 variable "acr_url_product" {
   description = "The URL of the Azure Container Registry for product images"
   type        = string
-  default     = "xmpro.azurecr.io"
+  default     = "xmprononprod.azurecr.io"
 }
 
 variable "acr_username" {
@@ -105,19 +105,5 @@ variable "smtp_password" {
   type        = string
   sensitive   = true
   default     = "ExampleSmtpP@ssw0rd123!"
-}
-
-# Tagging
-variable "tags" {
-  description = "A map of tags to apply to all resources"
-  type        = map(string)
-  default = {
-    "CreatedBy"      = "Terraform"
-    "ManagedBy"      = "Platform Engineering"
-    "Project"        = "XMPro Platform"
-    "Keep_or_delete" = "Keep"
-    "Billing"        = "Sandbox"
-    "Purpose"        = "Basic XMPro deployment example"
-  }
 }
 

@@ -18,12 +18,13 @@ company_admin_password = "YourStrongAdminPassword123!"
 site_admin_password = "YourStrongSitePassword123!"
 
 # Container registry settings
-# Production ACR registry (public - no credentials needed)
+# For public images, leave acr_username and acr_password empty
 acr_url_product = "xmpro.azurecr.io"
-# ACR credentials not needed - xmpro.azurecr.io is public
+acr_username = ""
+acr_password = ""
 
-# Image version - use specific version for production deployment
-imageversion = "4.5.1"
+# Image version - use 4.5.0 for stable release
+imageversion = "4.5.0"
 
 # DNS configuration (optional)
 enable_custom_domain = false
@@ -31,23 +32,13 @@ enable_custom_domain = false
 # custom_domain_name = "mycompany.com"
 # dns_zone_resource_group = "dns-rg"
 
-# SMTP configuration for email notifications (optional)
-# Note: Email notifications are disabled by default for conservative deployment
-# To enable email notifications, set: enable_email_notification = true
-# smtp_server = "smtp.office365.com"
-# smtp_port = 587
-# smtp_username = "notifications@mycompany.com"
-# smtp_password = "your-smtp-password-here"
-# smtp_enable_ssl = true
+# SMTP configuration for email notifications
+smtp_password = "your-smtp-password-here"
 
-# Evaluation mode (optional)
-# Set to true to enable built-in license provisioning for evaluation/demo
-# is_evaluation_mode = true
 
-# Optional features (disabled by default for minimal deployment)
-# enable_stream_host = true
-# enable_backup = true
+# Optional: Enable Azure Application Insights for monitoring
 # enable_monitoring = true
 
-# Note: Custom SSL certificates not currently supported
-# Azure managed certificates are used automatically
+# Optional: Custom SSL certificate
+# ssl_certificate_path = "./certificate.pfx"
+# ssl_certificate_password = "certificate-password"
