@@ -28,8 +28,8 @@ imageversion = "4.5.1"
 # DNS configuration (optional)
 enable_custom_domain = false
 # If enable_custom_domain = true, also set:
-# custom_domain_name = "mycompany.com"
-# dns_zone_resource_group = "dns-rg"
+# dns_zone_name = "mycompany.com"
+# use_existing_dns_zone = true
 
 # SMTP configuration for email notifications (optional)
 # Note: Email notifications are disabled by default for conservative deployment
@@ -44,10 +44,8 @@ enable_custom_domain = false
 # Set to true to enable built-in license provisioning for evaluation/demo
 # is_evaluation_mode = true
 
-# Optional features (disabled by default for minimal deployment)
-# enable_stream_host = true
-# enable_backup = true
-# enable_monitoring = true
+# Additional optional features
+# See variables.tf for complete list of available configuration options
 
 # Note: Custom SSL certificates not currently supported
 # Azure managed certificates are used automatically

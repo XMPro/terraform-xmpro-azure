@@ -26,46 +26,7 @@ The XMPro platform consists of multiple interconnected services that provide a c
 - **Application Insights**: Monitoring and telemetry
 - **Log Analytics**: Centralized logging
 
-```mermaid
-graph TB
-    subgraph "Azure Resource Group"
-        subgraph "App Services"
-            SM[SM App Service]
-            AD[AD App Service] 
-            DS[DS App Service]
-            AI[AI App Service]
-        end
-        
-        subgraph "Database Layer"
-            SQL[(Azure SQL Server)]
-            DB_SM[(SM Database)]
-            DB_AD[(AD Database)]
-            DB_DS[(DS Database)]
-            DB_AI[(AI Database)]
-        end
-        
-        subgraph "Container Services"
-            SH[Stream Host Container]
-            MIG[Migration Containers]
-            LIC[Licenses Container]
-        end
-        
-        subgraph "Supporting Services"
-            KV[Key Vault]
-            ST[Storage Account]
-            DNS[DNS Zone]
-            MON[Monitoring]
-        end
-    end
-    
-    SM --> DB_SM
-    AD --> DB_AD
-    DS --> DB_DS
-    AI --> DB_AI
-    SH --> DS
-    MIG --> SQL
-    LIC --> DB_SM
-```
+For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/latest/installation/deployment/azure-terraform/#architecture).
 
 > ⚠️ **Security Notice**  
 > Use Azure Key Vault, environment variables, or your CI pipeline's secret store for all passwords, access tokens, and connection strings.  
