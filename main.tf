@@ -207,7 +207,7 @@ module "database" {
 
   db_allow_azure_services = true
   db_allow_all_ips        = var.db_allow_all_ips
-  is_azdo_pipeline        = var.is_azdo_pipeline
+  create_local_firewall_rule = var.create_local_firewall_rule
 
   tags = local.common_tags
 }

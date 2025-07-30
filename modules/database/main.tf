@@ -58,15 +58,15 @@ locals {
 }
 
 # External data source to fetch public IP using the script
-# Only execute when not in Azure DevOps pipeline and not using existing SQL server
+# Only execute when creating local firewall rule
 data "external" "get_public_ip" {
-  count   = var.is_azdo_pipeline ? 0 : 1
-  program = ["bash", "${path.module}/get_public_ip.sh"] # For Linux/macOS
+  count   = var.create_local_firewall_rule ? 1 : 0
+  program = substr(pathexpand("~"), 0, 1) == "/" ? ["bash", "${path.module}/get_public_ip.sh"] : ["powershell", "-File", "${path.module}/get_public_ip.ps1"]
 }
 
 # Firewall rule using the fetched IP
 resource "azurerm_mssql_firewall_rule" "allow_local_access" {
-  count            = var.is_azdo_pipeline ? 0 : 1
+  count            = var.create_local_firewall_rule ? 1 : 0
   name             = "allow-local-access"
   server_id        = azurerm_mssql_server.this.id
   start_ip_address = data.external.get_public_ip[0].result["public_ip"]

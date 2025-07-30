@@ -181,11 +181,11 @@ variable "imageversion" {
   default     = "4.5.0.82-alpha-9db64dab7e"
 }
 
-# Pipeline Configuration
-variable "is_azdo_pipeline" {
-  description = "Flag to determine whether this is running in an Azure DevOps pipeline"
+# Local Access Configuration
+variable "create_local_firewall_rule" {
+  description = "Flag to determine whether to create a firewall rule for local access"
   type        = bool
-  default     = false
+  default     = true
 }
 
 # License API configuration
