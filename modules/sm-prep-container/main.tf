@@ -14,7 +14,7 @@ locals {
 
   # Validate container group name length (Azure limit is 63 chars)
   container_group_name = format("aci-%s-%s-sm-prep-%s", var.company_name, var.environment, local.container_name_suffix)
-  
+
   # Complete SM.zip download URL
   sm_zip_url = "https://${var.sm_zip_download_url}/SM/SM-${var.release_version}.zip"
 }
@@ -71,6 +71,9 @@ resource "azurerm_container_group" "sm_zip_prep" {
       ENABLE_SECRETS_AZURE_KEY_VAULT = "true"
       ENABLE_SECRETS_AWS             = "false"
       ENABLE_SECRETS_NONE            = "false"
+
+      # Logging configuration
+      ENABLE_LOG_FILE_OUTPUT = "true"
 
       # Azure Key Vault integration
       AZURE_KEY_VAULT_NAME = var.azure_key_vault_name

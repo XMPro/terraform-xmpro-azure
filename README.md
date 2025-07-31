@@ -76,7 +76,7 @@ module "xmpro_platform" {
   source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
   # Basic Configuration
-  company_name = "mycompany"
+  company_name = "mycompany"  # Note: Requires licenses from XMPro
   environment  = "dev"
   location     = "australiaeast"
 
@@ -98,6 +98,33 @@ module "xmpro_platform" {
 }
 ```
 
+### Using Custom Company Name (Production Mode)
+
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
+
+  # Basic Configuration
+  company_name = "mycompany"    # Custom company name requires licenses
+  environment  = "prod"
+  location     = "eastus"
+  
+  # IMPORTANT: Disable evaluation mode to use custom company name
+  is_evaluation_mode = false     # Required for custom company names
+
+  # Container Registry Configuration
+  acr_url_product = "xmpro.azurecr.io"
+  imageversion    = "5.0.0"
+
+  # Secure Credentials
+  db_admin_password      = var.db_admin_password
+  company_admin_password = var.company_admin_password
+  site_admin_password    = var.site_admin_password
+}
+```
+
+> **Note**: Remember to request licenses from XMPro for your custom company name before deployment.
+
 ### Advanced Configuration with Existing Database
 
 ```hcl
@@ -105,7 +132,7 @@ module "xmpro_platform" {
   source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
   # Basic Configuration
-  company_name = "enterprise"
+  company_name = "enterprise"    # Requires is_evaluation_mode = false
   environment  = "prod"
   location     = "eastus"
 
@@ -172,6 +199,8 @@ module "xmpro_platform" {
 | site_admin_password | Site admin password | `string` | `"P@ssw0rd1234!"` |
 
 > **Note**: While these variables have defaults for development convenience, you should override them with secure passwords for production deployments.
+> 
+> **Important**: When `is_evaluation_mode = true`, the `company_name` is automatically set to "Evaluation" regardless of the value you provide. When using `is_evaluation_mode = false` (default) with a custom `company_name`, licenses must be requested from XMPro. The evaluation licenses are only valid for the "Evaluation" company name.
 
 ### Basic Configuration
 
@@ -346,7 +375,7 @@ This module is composed of the following submodules:
 
 ## 🔄 Evaluation vs Production Mode
 
-### Evaluation Mode (`is_evaluation_mode = true`, default)
+### Evaluation Mode (`is_evaluation_mode = true`)
 
 **Purpose**: Quick setup for demos, trials, and evaluation environments.
 
@@ -360,9 +389,14 @@ This module is composed of the following submodules:
 - Creates all infrastructure including licenses container
 - Uses predefined product IDs: AD, DS, AI, and XMPro Notebook
 - Configures evaluation licenses automatically
-- Company name defaults to "Evaluation"
+- **Forces company name to "Evaluation" (overrides any `company_name` variable value)**
 
-### Production Mode (`is_evaluation_mode = false`)
+> **⚠️ License Requirements**: To use a custom company name, you must:
+> 1. Set `is_evaluation_mode = false`
+> 2. Request licenses from XMPro for your specific company name
+> 3. The evaluation licenses are only valid for the "Evaluation" company name
+
+### Production Mode (`is_evaluation_mode = false`, default)
 
 **Purpose**: Production deployments where customers provide their own licensing.
 
