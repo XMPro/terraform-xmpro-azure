@@ -121,3 +121,9 @@ variable "tags" {
   }
 }
 
+# Evaluation mode flag
+variable "is_evaluation_mode" {
+  description = "Flag to indicate if the deployment is in evaluation mode"
+  type        = bool
+  default     = true
+} 

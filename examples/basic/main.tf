@@ -43,4 +43,6 @@ module "xmpro_platform" {
 
   # Resource tagging
   tags = var.tags
+
+  is_evaluation_mode = var.is_evaluation_mode
 } 

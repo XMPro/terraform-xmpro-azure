@@ -24,12 +24,30 @@ terraform init
 terraform apply
 ```
 
+## Configuration Notes
+
+### Evaluation Mode
+
+This example sets `is_evaluation_mode = true` by default, which:
+- Deploys a licenses container with evaluation product IDs and keys
+- Forces the company name to "Evaluation" (overrides any `company_name` value)
+- Allows quick setup for demos and testing
+
+To use a custom company name for production:
+1. Set `is_evaluation_mode = false` in your terraform.tfvars
+2. Request licenses from XMPro for your specific company name
+3. The evaluation licenses only work with "Evaluation" company name
+
 ## Required Variables
 
-- `acr_username` / `acr_password` - Container registry credentials
 - `db_admin_password` - SQL Server admin password
 - `company_admin_password` - XMPro company admin password
 - `site_admin_password` - XMPro site admin password
+
+## Optional Variables
+
+- `is_evaluation_mode` - Deploy with evaluation licensing (default: true)
+- `acr_username` / `acr_password` - Only needed for private container registries
 
 ## Accessing Your Deployment
 
