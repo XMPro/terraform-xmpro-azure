@@ -48,6 +48,9 @@ module "xmpro_platform" {
   # Resource tagging
   tags = var.tags
 
+  # Enable AI service
+  enable_ai = var.enable_ai
+
   # Evaluation mode flag
   is_evaluation_mode = var.is_evaluation_mode
 } 

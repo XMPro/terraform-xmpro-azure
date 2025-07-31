@@ -60,7 +60,7 @@ output "sm_app_url" {
 
 output "ai_app_url" {
   description = "The URL of the AI app service"
-  value       = var.enable_ai_service ? (var.enable_custom_domain ? local.ai_base_url : module.ai_app_service[0].app_url) : ""
+  value       = var.enable_ai ? (var.enable_custom_domain ? local.ai_base_url : module.ai_app_service[0].app_url) : ""
 }
 
 # Stream Host outputs

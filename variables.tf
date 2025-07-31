@@ -94,7 +94,7 @@ variable "use_existing_dns_zone" {
 }
 
 # AI Service Configuration
-variable "enable_ai_service" {
+variable "enable_ai" {
   description = "Whether to enable the AI service and database"
   type        = bool
   default     = false

@@ -121,6 +121,12 @@ variable "tags" {
   }
 }
 
+# AI Services Configuration
+variable "enable_ai" {
+  description = "Enable AI service in the deployment"
+  type        = bool
+  default     = false
+}
 # Evaluation mode flag
 variable "is_evaluation_mode" {
   description = "Flag to indicate if the deployment is in evaluation mode"

@@ -241,7 +241,7 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| enable_ai_service | Enable AI service and database | `bool` | `false` |
+| enable_ai | Enable AI service and database | `bool` | `false` |
 | sm_service_plan_sku | SM App Service plan SKU | `string` | `"B1"` |
 | ad_service_plan_sku | AD App Service plan SKU | `string` | `"B1"` |
 | ds_service_plan_sku | DS App Service plan SKU | `string` | `"B1"` |

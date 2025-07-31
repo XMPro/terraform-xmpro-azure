@@ -22,7 +22,7 @@ resource "random_uuid" "ad_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
 }
 resource "random_uuid" "ai_product_key" {
-  count = (var.enable_ai_service && !var.is_evaluation_mode) ? 1 : 0
+  count = (var.enable_ai && !var.is_evaluation_mode) ? 1 : 0
 }
 resource "random_uuid" "ds_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
@@ -79,7 +79,7 @@ module "dns_zone" {
     "sm" = {
       verification_id = module.sm_app_service.app_service_custom_domain_verification_id
     }
-    }, var.enable_ai_service ? {
+    }, var.enable_ai ? {
     "ai" = {
       verification_id = module.ai_app_service[0].app_service_custom_domain_verification_id
     }
@@ -95,7 +95,7 @@ module "dns_zone" {
     "sm" = {
       record = module.sm_app_service.app_service_default_hostname
     }
-    }, var.enable_ai_service ? {
+    }, var.enable_ai ? {
     "ai" = {
       record = module.ai_app_service[0].app_service_default_hostname
     }
@@ -111,7 +111,7 @@ module "dns_zone" {
     "sm" = {
       app_service_name = module.sm_app_service.app_name
     }
-    }, var.enable_ai_service ? {
+    }, var.enable_ai ? {
     "ai" = {
       app_service_name = module.ai_app_service[0].app_name
     }
@@ -194,7 +194,7 @@ module "database" {
       zone_redundant = false
       create_mode    = "Default"
     }
-    }, var.enable_ai_service ? {
+    }, var.enable_ai ? {
     "AI" = {
       collation      = "SQL_Latin1_General_CP1_CI_AS"
       max_size_gb    = 2
@@ -455,7 +455,7 @@ module "ds_dbmigrate" {
 
 # AI Database Migration (conditional)
 module "ai_dbmigrate" {
-  count  = var.enable_ai_service ? 1 : 0
+  count  = var.enable_ai ? 1 : 0
   source = "./modules/ai-dbmigrate"
 
   environment         = var.environment
@@ -483,7 +483,7 @@ module "ai_dbmigrate" {
 
 # AI App Service (conditional)
 module "ai_app_service" {
-  count  = var.enable_ai_service ? 1 : 0
+  count  = var.enable_ai ? 1 : 0
   source = "./modules/ai-app-service-container"
 
   resource_group_name = module.resource_group.name
@@ -515,7 +515,7 @@ module "ai_app_service" {
   service_plan_sku       = var.ai_service_plan_sku
 
   # Create implicit dependency on ai_dbmigrate container
-  aidbmigrate_container_id = var.enable_ai_service ? module.ai_dbmigrate[0].container_group_id : ""
+  aidbmigrate_container_id = var.enable_ai ? module.ai_dbmigrate[0].container_group_id : ""
 
   # Tags
   tags = local.common_tags

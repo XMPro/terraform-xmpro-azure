@@ -23,7 +23,7 @@ locals {
   # When custom domain is disabled, use standardized azurewebsites.net URLs
   ad_base_url = var.enable_custom_domain ? "https://ad.${local.dns_zone_name}/" : "https://app-ad-${var.company_name}-${local.name_suffix}.azurewebsites.net"
   ds_base_url = var.enable_custom_domain ? "https://ds.${local.dns_zone_name}/" : "https://app-ds-${var.company_name}-${local.name_suffix}.azurewebsites.net"
-  ai_base_url = var.enable_custom_domain ? "https://ai.${local.dns_zone_name}/" : "https://app-ai-${var.company_name}-${local.name_suffix}.azurewebsites.net"
+  ai_base_url = var.enable_ai ? (var.enable_custom_domain ? "https://ai.${local.dns_zone_name}/" : "https://app-ai-${var.company_name}-${local.name_suffix}.azurewebsites.net") : ""
   nb_base_url = var.enable_custom_domain ? "https://nb.${local.dns_zone_name}/" : "https://nb.example.com"
   sm_base_url = var.enable_custom_domain ? "https://sm.${local.dns_zone_name}/" : "https://app-sm-${var.company_name}-${local.name_suffix}.azurewebsites.net"
 
@@ -40,24 +40,24 @@ locals {
   # Predefined product IDs and keys for evaluation mode (same as licensing web service)
   evaluation_product_ids = var.is_evaluation_mode ? {
     ad = "fe011f90-5bb6-80ad-b0a2-56300bf3b65d"
-    ai = "b7be889b-01d3-4bd2-95c6-511017472ec8"
+    ai = var.enable_ai ? "b7be889b-01d3-4bd2-95c6-511017472ec8" : ""
     ds = "71435803-967a-e9ac-574c-face863f7ec0"
     nb = "3765f34c-ff4e-3cff-e24e-58ac5771d8c5"
     } : {
     ad = random_uuid.ad_product_id[0].result
-    ai = random_uuid.ai_product_id[0].result
+    ai = var.enable_ai ? random_uuid.ai_product_id[0].result : ""
     ds = random_uuid.ds_product_id[0].result
     nb = random_uuid.nb_product_id[0].result
   }
 
   evaluation_product_keys = var.is_evaluation_mode ? {
     ad = "f27eeb2d-c557-281c-9d4c-fe44cfb74a97"
-    ai = "950ca93b-1ad9-514b-4263-4d3f510012e2"
+    ai = var.enable_ai ? "950ca93b-1ad9-514b-4263-4d3f510012e2" : ""
     ds = "f744911d-e8a6-f8fb-9665-61b185845d6a"
     nb = "383526ff-8d3f-5941-4bc8-482ed83152be"
     } : {
     ad = random_uuid.ad_product_key[0].result
-    ai = var.enable_ai_service ? random_uuid.ai_product_key[0].result : ""
+    ai = var.enable_ai ? random_uuid.ai_product_key[0].result : ""
     ds = random_uuid.ds_product_key[0].result
     nb = random_uuid.nb_product_key[0].result
   }
