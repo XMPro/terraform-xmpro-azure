@@ -32,7 +32,8 @@ if [[ "$BRANCH_NAME" == release-* ]]; then
                 cp "${example_dir}main.tf" "${example_dir}main.tf.bak"
                 
                 # 1. Comment out the generic GitHub source line (without ref)
-                sed -i 's|^\(\s*\)source = "github.com/XMPro/terraform-xmpro-azure"\s*$|\1# source = "github.com/XMPro/terraform-xmpro-azure"|g' "${example_dir}main.tf"
+                # Match with or without trailing whitespace
+                sed -i 's|^\(\s*\)source = "github.com/XMPro/terraform-xmpro-azure"|\1# source = "github.com/XMPro/terraform-xmpro-azure"|g' "${example_dir}main.tf"
                 
                 # 2. Update the comment text to indicate this is the release version
                 sed -i "s|# For a specific version:|# Using release version:|g" "${example_dir}main.tf"
@@ -45,8 +46,8 @@ if [[ "$BRANCH_NAME" == release-* ]]; then
                 sed -i "s|^\(\s*\)source = \"github.com/XMPro/terraform-xmpro-azure?ref=.*\"|\1source = \"github.com/XMPro/terraform-xmpro-azure${SOURCE_REF}\"|g" "${example_dir}main.tf"
                 
                 # 5. Handle module subdirectory references (e.g., //modules/resource-group)
-                # Comment out generic module references
-                sed -i 's|^\(\s*\)source = "github.com/XMPro/terraform-xmpro-azure//modules/\([^"]*\)"\s*$|\1# source = "github.com/XMPro/terraform-xmpro-azure//modules/\2"|g' "${example_dir}main.tf"
+                # Comment out generic module references (without ref parameter)
+                sed -i 's|^\(\s*\)source = "github.com/XMPro/terraform-xmpro-azure//modules/\([^"]*\)"$|\1# source = "github.com/XMPro/terraform-xmpro-azure//modules/\2"|g' "${example_dir}main.tf"
                 
                 # Uncomment and update version-specific module references
                 sed -i "s|^\(\s*\)# source = \"github.com/XMPro/terraform-xmpro-azure//modules/\([^\"]*\)?ref=.*\"|\1source = \"github.com/XMPro/terraform-xmpro-azure//modules/\2${SOURCE_REF}\"|g" "${example_dir}main.tf"
