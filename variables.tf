@@ -132,6 +132,67 @@ variable "existing_sql_server_fqdn" {
   }
 }
 
+variable "existing_sm_product_id" {
+  description = "Product ID for the existing Stream Manager (required when use_existing_database is true)"
+  type        = string
+  default     = ""
+  validation {
+    condition     = var.existing_sm_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_sm_product_id))
+    error_message = "existing_sm_product_id must be a valid GUID format."
+  }
+}
+
+variable "existing_ad_product_id" {
+  description = "Product ID for the existing Active Directory (required when use_existing_database is true)"
+  type        = string
+  default     = ""
+  validation {
+    condition     = var.existing_ad_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_ad_product_id))
+    error_message = "existing_ad_product_id must be a valid GUID format."
+  }
+}
+
+variable "existing_ds_product_id" {
+  description = "Product ID for the existing Data Service (required when use_existing_database is true)"
+  type        = string
+  default     = ""
+  validation {
+    condition     = var.existing_ds_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_ds_product_id))
+    error_message = "existing_ds_product_id must be a valid GUID format."
+  }
+}
+
+variable "existing_ai_product_id" {
+  description = "Product ID for the existing AI Service (required when use_existing_database is true and enable_ai is true)"
+  type        = string
+  default     = ""
+  validation {
+    condition     = var.existing_ai_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_ai_product_id))
+    error_message = "existing_ai_product_id must be a valid GUID format."
+  }
+}
+
+variable "existing_ad_product_key" {
+  description = "Product key for the existing Active Directory (required when use_existing_database is true)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "existing_ds_product_key" {
+  description = "Product key for the existing Data Service (required when use_existing_database is true)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "existing_ai_product_key" {
+  description = "Product key for the existing AI Service (required when use_existing_database is true and enable_ai is true)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 # Application credentials
 variable "company_admin_password" {
   description = "Company admin password"
