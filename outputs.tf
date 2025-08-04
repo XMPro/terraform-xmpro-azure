@@ -73,7 +73,7 @@ output "stream_host_container_id" {
 output "company_details" {
   description = "Details about the company admin"
   value = {
-    company_name = var.company_name
+    company_name = var.is_evaluation_mode ? "Evaluation" : var.company_name
     first_name   = var.company_admin_first_name
     last_name    = var.company_admin_last_name
     email        = var.company_admin_email_address
