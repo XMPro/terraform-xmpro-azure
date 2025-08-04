@@ -343,7 +343,6 @@ module "sm_key_vault" {
   # Tags
   tags = local.common_tags
 
-  depends_on = [module.database]
 }
 
 # AD Database Migration (only when creating new databases)
@@ -375,7 +374,6 @@ module "ad_dbmigrate" {
   # Tags
   tags = local.common_tags
 
-  depends_on = [ module.database, module.sm_dbmigrate ]
 }
 
 # DS Database Migration (only when creating new databases)
@@ -408,7 +406,6 @@ module "ds_dbmigrate" {
   # Tags
   tags = local.common_tags
 
-  depends_on = [ module.database, module.sm_dbmigrate ]
 }
 
 # AI Database Migration (conditional)
@@ -438,7 +435,6 @@ module "ai_dbmigrate" {
   # Tags
   tags = local.common_tags
 
-  depends_on = [ module.database, module.sm_dbmigrate ]
 }
 
 # AI App Service (conditional)
