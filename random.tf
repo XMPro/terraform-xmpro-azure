@@ -31,7 +31,7 @@ resource "random_string" "ds_collection_secret" {
   lower   = true
   numeric = true
   special = false
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name
@@ -41,7 +41,7 @@ resource "random_string" "ds_collection_secret" {
 # Product IDs (generated when not in evaluation mode)
 resource "random_uuid" "ad_product_id" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name
@@ -51,18 +51,18 @@ resource "random_uuid" "ad_product_id" {
 
 resource "random_uuid" "ai_product_id" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
-    environment     = var.environment
-    company_name    = var.company_name
-    service         = "ai"
+    environment        = var.environment
+    company_name       = var.company_name
+    service            = "ai"
     ai_service_enabled = var.enable_ai
   }
 }
 
 resource "random_uuid" "ds_product_id" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name
@@ -72,7 +72,7 @@ resource "random_uuid" "ds_product_id" {
 
 resource "random_uuid" "nb_product_id" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name
@@ -83,7 +83,7 @@ resource "random_uuid" "nb_product_id" {
 # Product Keys (generated when not in evaluation mode)
 resource "random_uuid" "ad_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name
@@ -94,7 +94,7 @@ resource "random_uuid" "ad_product_key" {
 
 resource "random_uuid" "ai_product_key" {
   count = (var.enable_ai && !var.is_evaluation_mode) ? 1 : 0
-  
+
   keepers = {
     environment        = var.environment
     company_name       = var.company_name
@@ -106,7 +106,7 @@ resource "random_uuid" "ai_product_key" {
 
 resource "random_uuid" "ds_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name
@@ -117,7 +117,7 @@ resource "random_uuid" "ds_product_key" {
 
 resource "random_uuid" "nb_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
-  
+
   keepers = {
     environment  = var.environment
     company_name = var.company_name

@@ -40,6 +40,6 @@ resource "azurerm_container_group" "aidbmigrate" {
   tags = merge(var.tags, {
     "Product"    = "Database Migration Container"
     "CreatedFor" = "AI Database migration and initialization"
-    database_id = substr(var.ai_database_id, 0, 8) # Reference the database ID to establish dependency
+    database_id  = substr(var.ai_database_id, 0, 8) # Reference the database ID to establish dependency
   })
 }

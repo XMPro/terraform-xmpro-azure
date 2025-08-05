@@ -33,7 +33,8 @@ To use a custom company name:
 
 ```bash
 # Configure existing database details
-export TF_VAR_existing_sql_server_fqdn="my-existing-server.database.windows.net"
+export TF_VAR_existing_sql_server_name="my-existing-server"
+export TF_VAR_existing_sql_server_resource_group="my-rg"
 
 # Set required passwords
 export TF_VAR_db_admin_password="YourExistingPassword123!"
