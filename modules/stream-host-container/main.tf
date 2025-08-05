@@ -1,6 +1,6 @@
 # Container Group for XMPro Stream Host
 resource "azurerm_container_group" "stream_host" {
-  name                = substr(lower("cg-${var.company_name}-sh-${var.environment}-${var.location}"), 0, 63)
+  name                = substr(lower("cg-${var.company_name}-sh-${var.environment}-${var.name_suffix}"), 0, 63)
   location            = var.location
   resource_group_name = var.resource_group_name
   ip_address_type     = "Public"

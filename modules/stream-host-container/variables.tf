@@ -138,3 +138,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "name_suffix" {
+  description = "Suffix to append to resource names for uniqueness"
+  type        = string
+  default     = ""
+}

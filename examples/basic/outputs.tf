@@ -59,3 +59,8 @@ output "company_details" {
   description = "Details about the company admin"
   value       = module.xmpro_platform.company_details
 }
+
+output "evaluation_mode_status" {
+  description = "Status of the evaluation mode"
+  value       = module.xmpro_platform.evaluation_mode_status
+}

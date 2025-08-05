@@ -1,15 +1,4 @@
-# Generate a random UUID for collection ID
-resource "random_uuid" "collection_id" {
-}
-
-# Generate a random string for collection secret
-resource "random_string" "collection_secret" {
-  length  = 32
-  upper   = true
-  lower   = true
-  numeric = true
-  special = false
-}
+# Collection ID and secret are provided by the main module
 
 # Container Group for DS Database Migration
 resource "azurerm_container_group" "dsdbmigrate" {
@@ -42,8 +31,8 @@ resource "azurerm_container_group" "dsdbmigrate" {
 
     environment_variables = {
       "DSDB_COLLECTION_NAME"   = var.collection_name
-      "DSDB_COLLECTION_ID"     = coalesce(var.collection_id != "" ? var.collection_id : null, random_uuid.collection_id.result)
-      "DSDB_COLLECTION_SECRET" = coalesce(var.collection_secret != "" ? var.collection_secret : null, random_string.collection_secret.result)
+      "DSDB_COLLECTION_ID"     = var.collection_id
+      "DSDB_COLLECTION_SECRET" = var.collection_secret
       "DSDB_CONNECTIONSTRING"  = var.db_connection_string
     }
 
