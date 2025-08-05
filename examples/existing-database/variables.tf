@@ -113,52 +113,6 @@ variable "existing_sql_server_fqdn" {
   default     = "existing-sql-server.database.windows.net"
 }
 
-variable "existing_sm_product_id" {
-  description = "The product ID for SM, shared between modules when using existing database"
-  type        = string
-  default     = ""
-}
-
-variable "existing_ad_product_id" {
-  description = "The product ID for AD, shared between modules when using existing database"
-  type        = string
-  default     = ""
-}
-
-variable "existing_ds_product_id" {
-  description = "The product ID for DS, shared between modules when using existing database"
-  type        = string
-  default     = ""
-}
-
-variable "existing_ai_product_id" {
-  description = "The product ID for AI, shared between modules when using existing database"
-  type        = string
-  default     = ""
-}
-
-variable "existing_ad_product_key" {
-  description = "The product key for AD, shared between modules when using existing database"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "existing_ds_product_key" {
-  description = "The product key for DS, shared between modules when using existing database"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "existing_ai_product_key" {
-  description = "The product key for AI, shared between modules when using existing database"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-# SMTP configuration for email notifications
 variable "smtp_password" {
   description = "SMTP password for email notifications"
   type        = string

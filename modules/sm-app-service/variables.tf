@@ -92,6 +92,11 @@ variable "storage_sas_token" {
   default     = ""
 }
 
+variable "sm_product_id" {
+  description = "The product ID for SM, shared between modules"
+  type        = string
+}
+
 variable "service_plan_sku" {
   description = "The SKU for the App Service plan"
   type        = string

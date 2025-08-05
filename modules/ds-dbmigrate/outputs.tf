@@ -10,9 +10,9 @@ output "container_group_name" {
 
 output "collection_id" {
   description = "The collection ID used for DS database migration"
-  value       = var.collection_id
+  value       = coalesce(var.collection_id != "" ? var.collection_id : null, random_uuid.collection_id.result)
 }
 output "collection_secret" {
   description = "The collection secret used for DS database migration"
-  value       = var.collection_secret
+  value       = coalesce(var.collection_secret != "" ? var.collection_secret : null, random_string.collection_secret.result)
 }

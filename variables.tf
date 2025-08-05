@@ -85,6 +85,11 @@ variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.enable_custom_domain)))
+    error_message = "enable_custom_domain must be a boolean value"
+  }
 }
 
 variable "use_existing_dns_zone" {
@@ -130,67 +135,6 @@ variable "existing_sql_server_fqdn" {
     condition     = var.existing_sql_server_fqdn == "" || can(regex("^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\\.([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?))*\\.(database\\.windows\\.net|sql\\.azuresynapse\\.net|database\\.azure\\.com|[a-zA-Z]{2,})$", var.existing_sql_server_fqdn))
     error_message = "existing_sql_server_fqdn must be a valid FQDN format. Examples: myserver.database.windows.net, myserver.sql.azuresynapse.net, myserver.database.azure.com, or custom domain like myserver.company.com"
   }
-}
-
-variable "existing_sm_product_id" {
-  description = "Product ID for the existing Stream Manager (required when use_existing_database is true)"
-  type        = string
-  default     = ""
-  validation {
-    condition     = var.existing_sm_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_sm_product_id))
-    error_message = "existing_sm_product_id must be a valid GUID format."
-  }
-}
-
-variable "existing_ad_product_id" {
-  description = "Product ID for the existing Active Directory (required when use_existing_database is true)"
-  type        = string
-  default     = ""
-  validation {
-    condition     = var.existing_ad_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_ad_product_id))
-    error_message = "existing_ad_product_id must be a valid GUID format."
-  }
-}
-
-variable "existing_ds_product_id" {
-  description = "Product ID for the existing Data Service (required when use_existing_database is true)"
-  type        = string
-  default     = ""
-  validation {
-    condition     = var.existing_ds_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_ds_product_id))
-    error_message = "existing_ds_product_id must be a valid GUID format."
-  }
-}
-
-variable "existing_ai_product_id" {
-  description = "Product ID for the existing AI Service (required when use_existing_database is true and enable_ai is true)"
-  type        = string
-  default     = ""
-  validation {
-    condition     = var.existing_ai_product_id == "" || can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.existing_ai_product_id))
-    error_message = "existing_ai_product_id must be a valid GUID format."
-  }
-}
-
-variable "existing_ad_product_key" {
-  description = "Product key for the existing Active Directory (required when use_existing_database is true)"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "existing_ds_product_key" {
-  description = "Product key for the existing Data Service (required when use_existing_database is true)"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "existing_ai_product_key" {
-  description = "Product key for the existing AI Service (required when use_existing_database is true and enable_ai is true)"
-  type        = string
-  default     = ""
-  sensitive   = true
 }
 
 # Application credentials
@@ -375,6 +319,11 @@ variable "is_evaluation_mode" {
   description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.is_evaluation_mode)))
+    error_message = "is_evaluation_mode must be a boolean value"
+  }
 }
 
 # SM Container Approach Variables

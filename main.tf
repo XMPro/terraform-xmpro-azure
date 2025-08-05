@@ -1,6 +1,52 @@
 # Main Terraform configuration file
-# Random resources are consolidated in randoms.tf
 
+# Generate a random UUID for SM product ID
+resource "random_uuid" "sm_id" {}
+
+# Generate random UUIDs for product IDs when evaluation mode is disabled
+resource "random_uuid" "ad_product_id" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+resource "random_uuid" "ai_product_id" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+resource "random_uuid" "ds_product_id" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+resource "random_uuid" "nb_product_id" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+
+# Generate random UUIDs for product keys when evaluation mode is disabled
+resource "random_uuid" "ad_product_key" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+resource "random_uuid" "ai_product_key" {
+  count = (var.enable_ai && !var.is_evaluation_mode) ? 1 : 0
+}
+resource "random_uuid" "ds_product_key" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+resource "random_uuid" "nb_product_key" {
+  count = var.is_evaluation_mode ? 0 : 1
+}
+
+# Generate a random suffix for resource naming (adopting sandbox-sm-only approach)
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+
+# Generate a random UUID for DS collection ID
+resource "random_uuid" "ds_collection_id" {}
+
+# Generate a random string for DS collection secret (max 10 characters)
+resource "random_string" "ds_collection_secret" {
+  length  = 10
+  upper   = true
+  lower   = true
+  numeric = true
+  special = false
+}
 
 # Resource Group (adopting sandbox-sm-only naming approach)
 module "resource_group" {
@@ -211,7 +257,7 @@ module "ad_app_service" {
 
   # Product ID and Key Configuration
   ad_product_id  = local.effective_ad_product_id
-  ad_product_key = local.effective_ad_product_key
+  ad_product_key = local.evaluation_product_keys.ad
 
   # Create implicit dependency on ad_dbmigrate container (only when using new databases)
   addbmigrate_container_id = module.ad_dbmigrate.container_group_id
@@ -254,7 +300,7 @@ module "ds_app_service" {
 
   # Product ID and Key Configuration
   ds_product_id  = local.effective_ds_product_id
-  ds_product_key = local.effective_ds_product_key
+  ds_product_key = local.evaluation_product_keys.ds
 
   # Create implicit dependency on ds_dbmigrate container (only when using new databases)
   dsdbmigrate_container_id = module.ds_dbmigrate.container_group_id
@@ -325,8 +371,8 @@ module "sm_key_vault" {
   name_suffix         = "${var.company_name}-${random_id.suffix.hex}"
   db_admin_username   = var.db_admin_username
   db_admin_password   = var.db_admin_password
+  sm_product_id       = random_uuid.sm_id.result
   sql_server_fqdn     = local.sql_server_fqdn
-  sm_product_id       = local.effective_sm_product_id
 
   # SMTP Configuration
   enable_email_notification = var.enable_email_notification
@@ -571,6 +617,9 @@ module "sm_app_service" {
   db_connection_string = local.sm_connection_string
   sql_server_fqdn      = local.sql_server_fqdn
 
+  # SM Configuration
+  sm_product_id = random_uuid.sm_id.result
+
   # App Service configuration
   service_plan_sku = var.sm_service_plan_sku
 
@@ -607,7 +656,6 @@ module "stream_host_container" {
   location            = module.resource_group.location
   resource_group_name = module.resource_group.name
   company_name        = var.company_name
-  name_suffix         = local.name_suffix
 
   # Container Registry
   acr_url_product     = var.acr_url_product

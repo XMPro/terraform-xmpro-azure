@@ -3,13 +3,13 @@
 
 module "xmpro_platform" {
   # Use the latest version from GitHub
-  source = "github.com/XMPro/terraform-xmpro-azure"
+  # source = "github.com/XMPro/terraform-xmpro-azure"
   
   # For local development:
   # source = "../../"
   
-  # For a specific version:
-  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
+  # Using release version:
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.2"
 
   # Core settings - customize these for your local testing
   environment = var.environment
@@ -41,15 +41,6 @@ module "xmpro_platform" {
   # Existing database configuration
   use_existing_database    = var.use_existing_database
   existing_sql_server_fqdn = var.existing_sql_server_fqdn
-  # Existing product IDs for SM, AD, DS, AI when using existing databases
-  existing_sm_product_id = var.existing_sm_product_id
-  existing_ad_product_id = var.existing_ad_product_id
-  existing_ds_product_id = var.existing_ds_product_id
-  existing_ai_product_id = var.existing_ai_product_id
-  # Existing product keys for SM, AD, DS, AI when using existing databases
-  existing_ad_product_key = var.existing_ad_product_key
-  existing_ds_product_key = var.existing_ds_product_key
-  existing_ai_product_key = var.existing_ai_product_key
 
   # SMTP settings
   smtp_password = var.smtp_password

@@ -27,7 +27,7 @@ locals {
   nb_base_url = var.enable_custom_domain ? "https://nb.${local.dns_zone_name}/" : "https://nb.example.com"
   sm_base_url = var.enable_custom_domain ? "https://sm.${local.dns_zone_name}/" : "https://app-sm-${var.company_name}-${local.name_suffix}.azurewebsites.net"
 
-  # Collection Details (from consolidated randoms.tf)
+  # Collection Details
   ds_collection_id     = random_uuid.ds_collection_id.result
   ds_collection_secret = random_string.ds_collection_secret.result
 
@@ -63,14 +63,7 @@ locals {
   }
 
   # Product ID selection based on evaluation mode
-  effective_ad_product_id = var.use_existing_database ? var.existing_ad_product_id : local.evaluation_product_ids.ad
-  effective_ds_product_id = var.use_existing_database ? var.existing_ds_product_id : local.evaluation_product_ids.ds
-  effective_ai_product_id = var.use_existing_database ? var.existing_ai_product_id : local.evaluation_product_ids.ai
-
-  effective_ad_product_key = var.use_existing_database ? var.existing_ad_product_key : local.evaluation_product_keys.ad
-  effective_ds_product_key = var.use_existing_database ? var.existing_ds_product_key : local.evaluation_product_keys.ds
-  effective_ai_product_key = var.use_existing_database ? var.existing_ai_product_key : local.evaluation_product_keys.ai
-
-  effective_sm_product_id = var.use_existing_database ? var.existing_sm_product_id : random_uuid.sm_id.result
-
+  effective_ad_product_id = local.evaluation_product_ids.ad
+  effective_ds_product_id = local.evaluation_product_ids.ds
+  effective_ai_product_id = local.evaluation_product_ids.ai
 }

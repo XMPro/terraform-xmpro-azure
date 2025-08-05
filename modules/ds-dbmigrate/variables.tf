@@ -63,13 +63,15 @@ variable "collection_name" {
 }
 
 variable "collection_id" {
-  description = "The collection ID for DS database migration (provided by main module)"
+  description = "The collection ID for DS database migration (optional - will generate UUID if null)"
   type        = string
+  default     = null
 }
 
 variable "collection_secret" {
-  description = "The collection secret for DS database migration (provided by main module)"
+  description = "The collection secret for DS database migration (optional - will generate random string if null)"
   type        = string
+  default     = null
   sensitive   = true
 }
 
