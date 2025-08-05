@@ -4,13 +4,13 @@
 # Create a resource group for the stream host
 module "resource_group" {
   # Use the latest version from GitHub
-  source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group"
+  # source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group"
 
   # For local development:
   # source = "../../modules/resource-group"
 
-  # For a specific version:
-  # source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group?ref=v4.5.0"
+  # Using release version:
+  source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group?ref=v4.5.2"
 
   environment  = var.environment
   location     = var.location
@@ -25,13 +25,13 @@ module "resource_group" {
 # Deploy the Stream Host container
 module "stream_host" {
   # Use the latest version from GitHub
-  source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container"
+  # source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container"
 
   # For local development:
   # source = "../../modules/stream-host-container"
 
-  # For a specific version:
-  # source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container?ref=v4.5.0"
+  # Using release version:
+  source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container?ref=v4.5.2"
 
   # Core settings
   environment         = var.environment
