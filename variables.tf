@@ -287,40 +287,6 @@ variable "db_allow_all_ips" {
   default     = false
 }
 
-variable "db_sku_name" {
-  description = "The SKU name for all SQL databases (e.g., Basic, S0, S1, S2, S3, P1, P2, P4)"
-  type        = string
-  default     = "Basic"
-  validation {
-    condition = contains([
-      "Basic",
-      "S0", "S1", "S2", "S3", "S4", "S6", "S7", "S9", "S12",
-      "P1", "P2", "P4", "P6", "P11", "P15",
-      "GP_Gen5_2", "GP_Gen5_4", "GP_Gen5_6", "GP_Gen5_8", "GP_Gen5_10", "GP_Gen5_12", "GP_Gen5_14", "GP_Gen5_16", "GP_Gen5_18", "GP_Gen5_20", "GP_Gen5_24", "GP_Gen5_32", "GP_Gen5_40", "GP_Gen5_80",
-      "BC_Gen5_2", "BC_Gen5_4", "BC_Gen5_6", "BC_Gen5_8", "BC_Gen5_10", "BC_Gen5_12", "BC_Gen5_14", "BC_Gen5_16", "BC_Gen5_18", "BC_Gen5_20", "BC_Gen5_24", "BC_Gen5_32", "BC_Gen5_40", "BC_Gen5_80"
-    ], var.db_sku_name)
-    error_message = "Invalid db_sku_name. Must be one of: Basic, S0-S12, P1-P15, or General Purpose/Business Critical Gen5 SKUs. Common values: Basic, S0, S1, S2, S3, P1, P2, P4."
-  }
-}
-
-variable "db_max_size_gb" {
-  description = "The maximum size in GB for all SQL databases"
-  type        = number
-  default     = 2
-}
-
-variable "db_collation" {
-  description = "SQL collation for all databases"
-  type        = string
-  default     = "SQL_Latin1_General_CP1_CI_AS"
-}
-
-variable "db_zone_redundant" {
-  description = "Enable zone redundancy for databases (high availability)"
-  type        = bool
-  default     = false
-}
-
 # SMTP Configuration
 variable "enable_email_notification" {
   description = "Whether to enable email notifications"
@@ -330,19 +296,19 @@ variable "enable_email_notification" {
 variable "smtp_server" {
   description = "SMTP server address"
   type        = string
-  default     = "smtp.example.com"
+  default     = "sinprd0310.outlook.com"
 }
 
 variable "smtp_from_address" {
   description = "SMTP from address"
   type        = string
-  default     = "notifications@example.com"
+  default     = "Qa.Test@xmpro.com"
 }
 
 variable "smtp_username" {
   description = "SMTP username"
   type        = string
-  default     = "notifications@example.com"
+  default     = "Qa.Test@xmpro.com"
 }
 
 variable "smtp_password" {
