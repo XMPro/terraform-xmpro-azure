@@ -49,4 +49,7 @@ module "xmpro_platform" {
 
   # Evaluation mode
   is_evaluation_mode = var.is_evaluation_mode
-} 
+
+  # Set local firewall rule to false by default for examples
+  create_local_firewall_rule = false
+}
