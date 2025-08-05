@@ -604,10 +604,8 @@ This module is licensed under the MIT License. See the [LICENSE](LICENSE) file f
 
 For support with this Terraform module:
 
-1. **Documentation**: Review this README and module documentation
-2. **Issues**: Create an issue in the repository for bugs or feature requests  
-3. **Discussions**: Use repository discussions for questions and community support
-4. **Enterprise Support**: Contact XMPro for commercial support options
+1. **Documentation**: Review the [XMPro public documentation](https://documentation.xmpro.com) for comprehensive guides and resources
+2. **Enterprise Support**: Contact XMPro for commercial support options
 
 ---
 

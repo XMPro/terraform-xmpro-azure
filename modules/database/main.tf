@@ -61,7 +61,7 @@ locals {
 # Only execute when creating local firewall rule
 data "external" "get_public_ip" {
   count   = var.create_local_firewall_rule ? 1 : 0
-  program = substr(pathexpand("~"), 0, 1) == "/" ? ["bash", "${path.module}/get_public_ip.sh"] : ["powershell", "-File", "${path.module}/get_public_ip.ps1"]
+  program = substr(pathexpand("~"), 0, 1) == "/" ? ["bash", "${path.module}/get_public_ip.sh"] : ["powershell.exe", "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", "${path.module}/get_public_ip.ps1"]
 }
 
 # Firewall rule using the fetched IP
