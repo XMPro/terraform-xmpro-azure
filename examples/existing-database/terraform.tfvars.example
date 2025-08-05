@@ -24,7 +24,7 @@ acr_username = ""
 acr_password = ""
 
 # Image version - use 4.5.0 for stable release
-imageversion = "4.5.2"
+imageversion = "4.5.0"
 
 # Existing database configuration - REQUIRED for this example
 use_existing_database = true

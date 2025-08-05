@@ -20,7 +20,7 @@ acr_username = ""
 acr_password = ""
 
 # Image version
-imageversion = "4.5.2"
+imageversion = "4.5.0"
 
 # Resource allocation (optional - these are defaults)
 stream_host_cpu = 1
