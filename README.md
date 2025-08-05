@@ -3,7 +3,7 @@
 [![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/)
 
-A comprehensive Terraform module for deploying the XMPro Industrial IoT platform on Microsoft Azure. This module creates a complete, production-ready XMPro environment with all necessary Azure services, database infrastructure, monitoring, and security components.
+A comprehensive Terraform module for deploying the XMPro Industrial IoT platform on Microsoft Azure. This module creates a complete XMPro environment ready for production workloads with all necessary Azure services, database infrastructure, monitoring, and security components.
 
 ## 🏗️ Architecture Overview
 
@@ -26,7 +26,7 @@ The XMPro platform consists of multiple interconnected services that provide a c
 - **Application Insights**: Monitoring and telemetry
 - **Log Analytics**: Centralized logging
 
-For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/latest/installation/deployment/azure-terraform/#architecture).
+For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/4.5/installation/deployment/azure-terraform/#architecture).
 
 > ⚠️ **Security Notice**  
 > Use Azure Key Vault, environment variables, or your CI pipeline's secret store for all passwords, access tokens, and connection strings.  
@@ -45,10 +45,10 @@ For a visual representation of the architecture, see the [Azure Architecture Dia
 
 This module is available directly from GitHub and can be referenced in your Terraform configuration:
 
-**Recommended: Use a specific version for production**
+**Recommended: Use a specific version for production workloads**
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
   # ... configuration
 }
 ```
@@ -64,7 +64,7 @@ module "xmpro_platform" {
 **Use SSH for private repositories or when you have SSH keys configured**
 ```hcl
 module "xmpro_platform" {
-  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v4.5.0"
+  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v5.0.0"
   # ... configuration
 }
 ```
@@ -73,7 +73,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
 
   # Basic Configuration
   company_name = "mycompany"  # Note: Requires licenses from XMPro
@@ -98,11 +98,11 @@ module "xmpro_platform" {
 }
 ```
 
-### Using Custom Company Name (Production Mode)
+### Using Custom Company Name (For Production Workloads)
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
 
   # Basic Configuration
   company_name = "mycompany"    # Custom company name requires licenses
@@ -129,7 +129,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
 
   # Basic Configuration
   company_name = "enterprise"    # Requires is_evaluation_mode = false
@@ -142,7 +142,7 @@ module "xmpro_platform" {
   db_admin_username        = "admin"
   db_admin_password        = "ExistingPassword123!"
 
-  # Production Mode (no built-in licensing)
+  # For Production Workloads (no built-in licensing)
   is_evaluation_mode = false
 
   # Service Scaling
@@ -198,7 +198,7 @@ module "xmpro_platform" {
 | company_admin_password | Company admin password | `string` | `"P@ssw0rd1234!"` |
 | site_admin_password | Site admin password | `string` | `"P@ssw0rd1234!"` |
 
-> **Note**: While these variables have defaults for development convenience, you should override them with secure passwords for production deployments.
+> **Note**: While these variables have defaults for development convenience, you should override them with secure passwords for production workloads.
 > 
 > **Important**: When `is_evaluation_mode = true`, the `company_name` is automatically set to "Evaluation" regardless of the value you provide. When using `is_evaluation_mode = false` (default) with a custom `company_name`, licenses must be requested from XMPro. The evaluation licenses are only valid for the "Evaluation" company name.
 
@@ -373,7 +373,7 @@ This module is composed of the following submodules:
 - **licenses-container**: License provisioning container (evaluation mode)
 - **sm-prep-container**: SM deployment preparation container
 
-## 🔄 Evaluation vs Production Mode
+## 🔄 Evaluation vs For Production Workloads
 
 ### Evaluation Mode (`is_evaluation_mode = true`)
 
@@ -396,9 +396,9 @@ This module is composed of the following submodules:
 > 2. Request licenses from XMPro for your specific company name
 > 3. The evaluation licenses are only valid for the "Evaluation" company name
 
-### Production Mode (`is_evaluation_mode = false`, default)
+### For Production Workloads (`is_evaluation_mode = false`, default)
 
-**Purpose**: Production deployments where customers provide their own licensing.
+**Purpose**: Deployments for production workloads where customers provide their own licensing.
 
 **Features**:
 - Skips licenses container deployment
@@ -414,7 +414,7 @@ This module is composed of the following submodules:
 
 ### Migration Between Modes
 
-To switch from evaluation to production mode:
+To switch from evaluation to production workloads:
 
 1. Set `is_evaluation_mode = false`
 2. Provide your own product IDs via variables
