@@ -4,10 +4,10 @@
 module "xmpro_platform" {
   # Use the latest version from GitHub
   source = "github.com/XMPro/terraform-xmpro-azure"
-  
+
   # For local development:
   # source = "../../"
-  
+
   # For a specific version:
   # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.0"
 
@@ -21,35 +21,54 @@ module "xmpro_platform" {
   company_admin_last_name     = var.company_admin_last_name
   company_admin_email_address = var.company_admin_email_address
 
-  # Database credentials
-  db_admin_username      = var.db_admin_username
-  db_admin_password      = var.db_admin_password
-  company_admin_password = var.company_admin_password
-  site_admin_password    = var.site_admin_password
+  # Database configuration
+  db_admin_username          = var.db_admin_username
+  db_admin_password          = var.db_admin_password
+  company_admin_password     = var.company_admin_password
+  site_admin_password        = var.site_admin_password
+  db_sku_name                = var.db_sku_name
+  db_max_size_gb             = var.db_max_size_gb
+  db_collation               = var.db_collation
+  db_zone_redundant          = var.db_zone_redundant
+  db_allow_all_ips           = var.db_allow_all_ips
+  create_local_firewall_rule = var.create_local_firewall_rule
 
   # Docker registry
-  acr_url_product = var.acr_url_product
-  acr_username    = var.acr_username
-  acr_password    = var.acr_password
+  acr_url_product     = var.acr_url_product
+  acr_username        = var.acr_username
+  acr_password        = var.acr_password
+  is_private_registry = var.is_private_registry
 
   # Local-specific settings
   imageversion = var.imageversion
 
   # DNS configuration - customize for your testing
-  enable_custom_domain = var.enable_custom_domain
+  enable_custom_domain  = var.enable_custom_domain
+  dns_zone_name         = var.dns_zone_name
+  use_existing_dns_zone = var.use_existing_dns_zone
 
-  # SMTP settings
-  smtp_password = var.smtp_password
+  # SMTP configuration
+  enable_email_notification = var.enable_email_notification
+  smtp_server               = var.smtp_server
+  smtp_from_address         = var.smtp_from_address
+  smtp_username             = var.smtp_username
+  smtp_password             = var.smtp_password
+  smtp_port                 = var.smtp_port
+  smtp_enable_ssl           = var.smtp_enable_ssl
 
   # Resource tagging
   tags = var.tags
 
-  # Enable AI service
-  enable_ai = var.enable_ai
-
   # Evaluation mode
   is_evaluation_mode = var.is_evaluation_mode
 
-  # Set local firewall rule to false by default for examples
-  create_local_firewall_rule = false
+  # Service Plan SKUs
+  ad_service_plan_sku = var.ad_service_plan_sku
+  ds_service_plan_sku = var.ds_service_plan_sku
+  sm_service_plan_sku = var.sm_service_plan_sku
+
+  # Stream Host Configuration
+  stream_host_cpu                   = var.stream_host_cpu
+  stream_host_memory                = var.stream_host_memory
+  stream_host_environment_variables = var.stream_host_environment_variables
 }

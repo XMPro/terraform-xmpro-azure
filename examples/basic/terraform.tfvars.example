@@ -18,12 +18,13 @@ company_admin_password = "YourStrongAdminPassword123!"
 site_admin_password = "YourStrongSitePassword123!"
 
 # Container registry settings
-# ACR registry for production workloads (public - no credentials needed)
-acr_url_product = "xmpro.azurecr.io"
-# ACR credentials not needed - xmpro.azurecr.io is public
+# ACR registry for non-production images (public - no credentials needed)
+acr_url_product = "xmprononprod.azurecr.io"
+# is_private_registry = false  # Set to true if using private registry
+# ACR credentials not needed - xmprononprod.azurecr.io is public
 
-# Image version - use specific version for production workloads
-imageversion = "5.0.0"
+# Image version - use specific version for your deployment
+imageversion = "4.5.2"
 
 # DNS configuration (optional)
 enable_custom_domain = false
@@ -33,9 +34,11 @@ enable_custom_domain = false
 
 # SMTP configuration for email notifications (optional)
 # Note: Email notifications are disabled by default for conservative deployment
-# To enable email notifications, set: enable_email_notification = true
+# To enable email notifications, uncomment the following lines:
+# enable_email_notification = true
 # smtp_server = "smtp.office365.com"
 # smtp_port = 587
+# smtp_from_address = "notifications@mycompany.com"
 # smtp_username = "notifications@mycompany.com"
 # smtp_password = "your-smtp-password-here"
 # smtp_enable_ssl = true
@@ -43,6 +46,26 @@ enable_custom_domain = false
 # Evaluation mode (optional)
 # Set to true to enable built-in license provisioning for evaluation/demo
 # is_evaluation_mode = true
+
+# Database Configuration (optional)
+# db_sku_name = "Basic"  # Options: Basic, S0, S1, S2, S3, P1, P2, P4
+# db_max_size_gb = 2  # Maximum database size in GB (min: 1 for Basic, varies by SKU)
+# db_collation = "SQL_Latin1_General_CP1_CI_AS"  # SQL collation for databases
+# db_zone_redundant = false  # Enable zone redundancy for high availability
+# db_allow_all_ips = false  # Set to true to allow all IPs (less secure)
+# create_local_firewall_rule = false  # Set to true to add your current IP to firewall
+
+# Service Plan SKUs (optional) - Customize compute resources
+# ad_service_plan_sku = "B1"  # Options: B1, B2, B3, S1, S2, S3, P1v2, P2v2, P3v2, P1v3, P2v3, P3v3
+# ds_service_plan_sku = "B1"
+# sm_service_plan_sku = "B1"
+
+# Stream Host Configuration (optional) - Customize container resources
+# stream_host_cpu = 2      # CPU cores
+# stream_host_memory = 4   # Memory in GB
+# stream_host_environment_variables = {
+#   "CUSTOM_ENV_VAR" = "value"
+# }
 
 # Additional optional features
 # See variables.tf for complete list of available configuration options
