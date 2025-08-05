@@ -23,7 +23,7 @@ acr_url_product = "xmpro.azurecr.io"
 # ACR credentials not needed - xmpro.azurecr.io is public
 
 # Image version - use specific version for production workloads
-imageversion = "5.0.0"
+imageversion = "4.5.2"
 
 # DNS configuration (optional)
 enable_custom_domain = false
