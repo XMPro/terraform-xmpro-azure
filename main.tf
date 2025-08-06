@@ -125,42 +125,42 @@ module "database" {
 
   databases = merge({
     "AD" = {
-      collation      = "SQL_Latin1_General_CP1_CI_AS"
-      max_size_gb    = 2
+      collation      = var.db_collation
+      max_size_gb    = var.db_max_size_gb
       read_scale     = false
-      sku_name       = "Basic"
-      zone_redundant = false
+      sku_name       = var.db_sku_name
+      zone_redundant = var.db_zone_redundant
       create_mode    = "Default"
     },
     "DS" = {
-      collation      = "SQL_Latin1_General_CP1_CI_AS"
-      max_size_gb    = 2
+      collation      = var.db_collation
+      max_size_gb    = var.db_max_size_gb
       read_scale     = false
-      sku_name       = "Basic"
-      zone_redundant = false
+      sku_name       = var.db_sku_name
+      zone_redundant = var.db_zone_redundant
       create_mode    = "Default"
     },
     "SM" = {
-      collation      = "SQL_Latin1_General_CP1_CI_AS"
-      max_size_gb    = 2
+      collation      = var.db_collation
+      max_size_gb    = var.db_max_size_gb
       read_scale     = false
-      sku_name       = "Basic"
-      zone_redundant = false
+      sku_name       = var.db_sku_name
+      zone_redundant = var.db_zone_redundant
       create_mode    = "Default"
     }
     }, var.enable_ai ? {
     "AI" = {
-      collation      = "SQL_Latin1_General_CP1_CI_AS"
-      max_size_gb    = 2
+      collation      = var.db_collation
+      max_size_gb    = var.db_max_size_gb
       read_scale     = false
-      sku_name       = "Basic"
-      zone_redundant = false
+      sku_name       = var.db_sku_name
+      zone_redundant = var.db_zone_redundant
       create_mode    = "Default"
     }
   } : {})
 
-  db_allow_azure_services = true
-  db_allow_all_ips        = var.db_allow_all_ips
+  db_allow_azure_services    = true
+  db_allow_all_ips           = var.db_allow_all_ips
   create_local_firewall_rule = var.create_local_firewall_rule
 
   tags = local.common_tags
