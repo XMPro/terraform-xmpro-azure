@@ -1,18 +1,25 @@
-# XMPro Stream Host Example
+# XMPro Stream Host Terraform Example
 
-This example demonstrates how to deploy an XMPro Stream Host container using Terraform. The Stream Host is a lightweight component that connects to an existing XMPro Data Stream Designer instance to run stream processing workloads.
+This example demonstrates how to deploy an XMPro Stream Host container on Azure using Terraform.
 
 ## Overview
 
 This deployment creates:
-- Resource Group
+- Resource Group (or uses existing)
 - Stream Host Container Instance (Azure Container Instances)
 - Necessary networking and security configurations
+
+## Documentation
+
+For comprehensive Stream Host documentation, see:
+- [Stream Host Overview](https://documentation.xmpro.com/installation/install-stream-host)
+- [Docker Variants and Configuration](https://documentation.xmpro.com/installation/install-stream-host/docker#available-variants)
+- [Azure Terraform Deployment](https://documentation.xmpro.com/installation/install-stream-host/azure-terraform)
 
 ## Prerequisites
 
 1. An existing XMPro Data Stream Designer instance
-2. Collection ID and Secret from your DS instance
+2. Collection ID and Secret from your DS instance ([How to obtain](https://documentation.xmpro.com/installation/install-stream-host#download-the-connection-profile))
 3. Terraform installed (version 1.0 or later)
 4. Azure CLI installed and authenticated
 
@@ -70,58 +77,18 @@ imageversion = "4.5.0"
 
 ## Optional Configuration
 
-### Resource Allocation
+See `terraform.tfvars.example` for all available options including:
+- Docker image variants (bookworm-slim, bookworm-slim-python3.12, alpine3.21)
+- Resource allocation (CPU/memory)
+- Using existing resource groups
+- Python package installation (for Python variant)
+- Monitoring integration
+- Custom environment variables
+- Volume mounts
 
-```hcl
-# CPU and memory allocation
-stream_host_cpu = 1        # Between 0.25 and 4 cores
-stream_host_memory = 4     # Between 0.5 and 16 GB
-```
-
-### Private Registry
-
-If using private container images:
-
-```hcl
-is_private_registry = true
-acr_username = "your-registry-username"
-acr_password = "your-registry-password"
-```
-
-### Monitoring Integration
-
-```hcl
-# Application Insights
-app_insights_connection_string = "InstrumentationKey=your-key"
-
-# Log Analytics
-log_analytics_workspace_id = "your-workspace-id"
-log_analytics_primary_shared_key = "your-workspace-key"
-```
-
-### Custom Environment Variables
-
-```hcl
-environment_variables = {
-  "CUSTOM_SETTING" = "value"
-  "LOG_LEVEL" = "Debug"
-}
-```
-
-### Volume Mounts
-
-```hcl
-volumes = [
-  {
-    name       = "config-volume"
-    mount_path = "/app/config"
-    read_only  = true
-    secret = {
-      "config.json" = base64encode(file("./config.json"))
-    }
-  }
-]
-```
+For detailed configuration options, refer to:
+- [Docker Environment Variables](https://documentation.xmpro.com/installation/install-stream-host/docker#configuration)
+- [Python Package Installation](https://documentation.xmpro.com/installation/install-stream-host/docker#python-package-installation)
 
 ## Outputs
 
@@ -133,41 +100,20 @@ After deployment, the following outputs are available:
 
 ## Getting Collection Credentials
 
-To obtain the required collection credentials:
-
-1. Open your XMPro Data Stream Designer
-2. Navigate to **Collections**
-3. Select or create a collection for the Stream Host
-4. Go to **Settings** tab
-5. Copy the **Collection ID** and **Collection Secret**
+See [How to obtain Collection credentials](https://documentation.xmpro.com/installation/install-stream-host#download-the-connection-profile) in the documentation.
 
 ## Troubleshooting
 
-### Container Won't Start
+For troubleshooting Stream Host connection issues, see:
+- [Stream Host Troubleshooting](https://documentation.xmpro.com/installation/install-stream-host#troubleshooting)
 
-1. **Check DS URL**: Ensure `ds_server_url` is accessible from Azure
-2. **Verify Credentials**: Confirm collection ID and secret are correct
-3. **Check Logs**: Use Azure portal to view container logs
-4. **Network Access**: Ensure firewall allows outbound HTTPS connections
-
-### Connection Issues
-
+To check container status and logs:
 ```bash
 # Check container logs
 az container logs --resource-group <resource-group> --name <container-name>
 
 # Check container status
 az container show --resource-group <resource-group> --name <container-name>
-```
-
-### Resource Constraints
-
-If the container is running out of resources:
-
-```hcl
-# Increase CPU/memory allocation
-stream_host_cpu = 2
-stream_host_memory = 8
 ```
 
 ## Cleanup

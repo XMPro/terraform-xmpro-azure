@@ -46,6 +46,21 @@ variable "imageversion" {
   default     = "5.0.0-alpha"
 }
 
+variable "stream_host_variant" {
+  description = "The Stream Host Docker image variant suffix. Options: '' (default, same as bookworm-slim), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21'"
+  type        = string
+  default     = ""
+  validation {
+    condition = contains([
+      "",
+      "bookworm-slim",
+      "bookworm-slim-python3.12",
+      "alpine3.21"
+    ], var.stream_host_variant)
+    error_message = "The stream_host_variant must be one of: '' (default), 'bookworm-slim', 'bookworm-slim-python3.12', or 'alpine3.21'."
+  }
+}
+
 # Stream Host specific configuration
 variable "ds_server_url" {
   description = "The URL of the Data Stream server (e.g., https://ds.example.com)"

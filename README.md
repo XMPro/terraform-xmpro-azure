@@ -281,6 +281,7 @@ module "xmpro_platform" {
 | stream_host_cpu | CPU allocation for stream host | `number` | `1` |
 | stream_host_memory | Memory allocation (GB) for stream host | `number` | `4` |
 | stream_host_environment_variables | Additional environment variables | `map(string)` | `{}` |
+| stream_host_variant | Stream Host Docker image variant. Options: '' (default), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21' | `string` | `""` |
 
 ### Deployment Configuration
 
@@ -461,6 +462,19 @@ db_admin_password = "your-admin-password"
 - Ensure firewall rules allow connections from new App Services and Container Instances
 - Database migration containers are skipped, so schema must be pre-configured
 - Variables like `company_name`, product IDs, and URLs should match existing database values
+
+## Stream Host Variants
+
+The Stream Host container supports multiple Docker image variants. Use the `stream_host_variant` variable to select a variant:
+
+```hcl
+# Example: Using Python variant for pip package installation
+stream_host_variant = "bookworm-slim-python3.12"
+```
+
+For detailed information about available variants and their capabilities, see the [Stream Host Docker Variants documentation](https://documentation.xmpro.com/4.5/src/installation/install-stream-host/docker.html#available-variants).
+
+**Important**: Python package installation environment variables (`SH_PIP_MODULES`, `PIP_REQUIREMENTS_PATH`) are only available with the `bookworm-slim-python3.12` variant.
 
 ## 🏗️ Infrastructure Requirements
 

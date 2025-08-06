@@ -404,6 +404,21 @@ variable "stream_host_environment_variables" {
   default     = {}
 }
 
+variable "stream_host_variant" {
+  description = "The Stream Host Docker image variant suffix. Options: '' (default, same as bookworm-slim), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21'. Note: pip and SH_PIP_MODULES env vars are only available for bookworm-slim-python3.12 variant."
+  type        = string
+  default     = ""
+  validation {
+    condition = contains([
+      "",
+      "bookworm-slim",
+      "bookworm-slim-python3.12",
+      "alpine3.21"
+    ], var.stream_host_variant)
+    error_message = "The stream_host_variant must be one of: '' (default), 'bookworm-slim', 'bookworm-slim-python3.12', or 'alpine3.21'."
+  }
+}
+
 # Evaluation Mode Configuration
 variable "is_evaluation_mode" {
   description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."

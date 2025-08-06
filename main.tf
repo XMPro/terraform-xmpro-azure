@@ -616,7 +616,8 @@ module "stream_host_container" {
   is_private_registry = var.is_private_registry
 
   # Container Image
-  imageversion = var.imageversion
+  imageversion        = var.imageversion
+  stream_host_variant = var.stream_host_variant
 
   # Stream Host Configuration
   ds_server_url                 = local.ds_base_url

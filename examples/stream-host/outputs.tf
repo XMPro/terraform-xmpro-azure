@@ -2,12 +2,12 @@
 
 output "resource_group_name" {
   description = "The name of the resource group"
-  value       = module.resource_group.name
+  value       = local.resource_group_name
 }
 
 output "resource_group_id" {
   description = "The ID of the resource group"
-  value       = module.resource_group.id
+  value       = var.use_existing_resource_group ? data.azurerm_resource_group.existing[0].id : module.resource_group[0].id
 }
 
 output "stream_host_container_group_id" {

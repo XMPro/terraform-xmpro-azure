@@ -20,6 +20,18 @@ variable "company_name" {
   default     = "xmprosbx"
 }
 
+variable "use_existing_resource_group" {
+  description = "Whether to use an existing resource group instead of creating a new one"
+  type        = bool
+  default     = false
+}
+
+variable "existing_resource_group_name" {
+  description = "The name of the existing resource group to use (required if use_existing_resource_group is true)"
+  type        = string
+  default     = ""
+}
+
 # Container registry settings
 variable "is_private_registry" {
   description = "Whether to use private registry authentication for container images"
@@ -50,6 +62,21 @@ variable "imageversion" {
   description = "The version of the container image to use"
   type        = string
   default     = "4.5.0"
+}
+
+variable "stream_host_variant" {
+  description = "Stream Host Docker image variant. Options: '' (default/bookworm-slim), 'bookworm-slim-python3.12' (with Python support), 'alpine3.21' (lightweight). Python package env vars (SH_PIP_MODULES, PIP_REQUIREMENTS_PATH) only work with bookworm-slim-python3.12."
+  type        = string
+  default     = ""
+  validation {
+    condition = contains([
+      "",
+      "bookworm-slim",
+      "bookworm-slim-python3.12",
+      "alpine3.21"
+    ], var.stream_host_variant)
+    error_message = "The stream_host_variant must be one of: '' (default), 'bookworm-slim', 'bookworm-slim-python3.12', or 'alpine3.21'."
+  }
 }
 
 # Stream Host specific configuration

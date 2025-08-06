@@ -62,6 +62,7 @@ module "stream_host_container" {
 | acr_username | The username for the Azure Container Registry | `string` | n/a | yes |
 | acr_password | The password for the Azure Container Registry | `string` | n/a | yes |
 | imageversion | The version of the container image to use | `string` | `"5.0.0-alpha"` | no |
+| stream_host_variant | The Stream Host Docker image variant suffix. Options: '' (default, same as bookworm-slim), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21' | `string` | `""` | no |
 | ds_server_url | The URL of the Data Stream server | `string` | n/a | yes |
 | stream_host_collection_id | The collection ID for DS authentication | `string` | n/a | yes |
 | stream_host_collection_secret | The collection secret for DS authentication | `string` | n/a | yes |
@@ -150,7 +151,11 @@ module "stream_host_container" {
   stream_host_cpu    = 2
   stream_host_memory = 8
 
+  # Use Python variant for pip package installation
+  stream_host_variant = "bookworm-slim-python3.12"
+
   # Custom environment variables for Python packages
+  # Note: These pip and custom env vars are only available with bookworm-slim-python3.12 variant
   environment_variables = {
     "ADDITIONAL_INSTALLS" = "build-base gcc g++ python3-dev"
     "SH_PIP_MODULES"     = "pandas numpy scikit-learn"
@@ -171,3 +176,9 @@ module "stream_host_container" {
 - Environment variables are automatically configured for XMPro platform integration
 - The container uses restart policy "Always" to ensure high availability
 - Resource allocation can be adjusted based on workload requirements
+
+## Stream Host Variants
+
+The Stream Host supports multiple Docker image variants configured via the `stream_host_variant` variable. For detailed information about available variants and their capabilities, see the [Stream Host Docker Variants documentation](https://documentation.xmpro.com/4.5/src/installation/install-stream-host/docker.html#available-variants).
+
+**Important**: Python package installation environment variables (`SH_PIP_MODULES`, `PIP_REQUIREMENTS_PATH`, `ADDITIONAL_INSTALLS`) are only available with the `bookworm-slim-python3.12` variant.

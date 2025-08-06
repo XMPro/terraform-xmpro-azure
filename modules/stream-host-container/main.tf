@@ -23,7 +23,7 @@ resource "azurerm_container_group" "stream_host" {
 
   container {
     name   = "stream-host"
-    image  = "${var.acr_url_product}/stream-host:${var.imageversion}"
+    image  = "${var.acr_url_product}/stream-host:${var.imageversion}${var.stream_host_variant != "" ? "-${var.stream_host_variant}" : ""}"
     cpu    = var.stream_host_cpu
     memory = var.stream_host_memory
 
