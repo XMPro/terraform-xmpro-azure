@@ -18,10 +18,10 @@ company_admin_password = "YourStrongAdminPassword123!"
 site_admin_password = "YourStrongSitePassword123!"
 
 # Container registry settings
-# ACR registry for non-production images (public - no credentials needed)
-acr_url_product = "xmprononprod.azurecr.io"
+# ACR registry for production images (public - no credentials needed)
+acr_url_product = "xmpro.azurecr.io"
 # is_private_registry = false  # Set to true if using private registry
-# ACR credentials not needed - xmprononprod.azurecr.io is public
+# ACR credentials not needed - xmpro.azurecr.io is public
 
 # Image version - use specific version for your deployment
 imageversion = "4.5.2"
