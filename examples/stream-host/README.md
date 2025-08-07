@@ -34,8 +34,11 @@ For comprehensive Stream Host documentation, see:
 
 2. **Configure variables**
    ```bash
-   # Copy the example variables file
+   # Linux/Mac
    cp terraform.tfvars.example terraform.tfvars
+   
+   # Windows
+   copy terraform.tfvars.example terraform.tfvars
    
    # Edit with your specific values
    nano terraform.tfvars
@@ -72,7 +75,7 @@ location = "southeastasia"
 company_name = "mycompany"
 
 # Image version
-imageversion = "4.5.0"
+imageversion = "4.5.2"
 ```
 
 ## Optional Configuration
