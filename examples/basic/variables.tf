@@ -71,7 +71,7 @@ variable "company_admin_email_address" {
 variable "acr_url_product" {
   description = "The URL of the Azure Container Registry for product images"
   type        = string
-  default     = "xmpro.azurecr.io"
+  default     = "xmprononprod.azurecr.io"
 }
 
 variable "acr_username" {
