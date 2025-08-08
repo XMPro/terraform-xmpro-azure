@@ -23,7 +23,7 @@ acr_url_product = "xmpro.azurecr.io"
 acr_username = ""
 acr_password = ""
 
-# Image version - use 4.5.0 for stable release
+# Image version - use 4.5.2 for stable release
 imageversion = "4.5.2"
 
 # Existing database configuration - REQUIRED for this example
