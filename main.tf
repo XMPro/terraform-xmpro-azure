@@ -342,6 +342,7 @@ module "sm_key_vault" {
 
   # Tags
   tags = local.common_tags
+
 }
 
 # AD Database Migration (only when creating new databases)
@@ -372,6 +373,7 @@ module "ad_dbmigrate" {
 
   # Tags
   tags = local.common_tags
+
 }
 
 # DS Database Migration (only when creating new databases)
@@ -403,6 +405,7 @@ module "ds_dbmigrate" {
 
   # Tags
   tags = local.common_tags
+
 }
 
 # AI Database Migration (conditional)
@@ -431,6 +434,7 @@ module "ai_dbmigrate" {
 
   # Tags
   tags = local.common_tags
+
 }
 
 # AI App Service (conditional)
@@ -498,6 +502,8 @@ module "sm_prep_container" {
 
   # Tags
   tags = local.common_tags
+
+  # Implicit dependencies through variable references handle storage account dependency
 }
 
 # Licenses Container (only when creating new databases)

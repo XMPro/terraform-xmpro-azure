@@ -7,7 +7,6 @@ module "ds_key_vault" {
   location            = var.location
   tenant_id           = data.azurerm_client_config.current.tenant_id
   object_id           = data.azurerm_client_config.current.object_id
-  tags                = var.tags
 
   # Secrets for DS app
   secrets = {
