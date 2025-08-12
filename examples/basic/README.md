@@ -40,6 +40,7 @@ To use a custom company name for production:
 
 ## Required Variables
 
+- `acr_username` / `acr_password` - Container registry credentials
 - `db_admin_password` - SQL Server admin password
 - `company_admin_password` - XMPro company admin password
 - `site_admin_password` - XMPro site admin password
