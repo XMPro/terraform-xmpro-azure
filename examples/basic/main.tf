@@ -3,7 +3,7 @@
 
 module "xmpro_platform" {
   # Use the latest version from GitHub
-  # source = "github.com/XMPro/terraform-xmpro-azure"
+  source = "github.com/XMPro/terraform-xmpro-azure"
 
   # For local development:
   # source = "../../"
