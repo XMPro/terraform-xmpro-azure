@@ -251,7 +251,7 @@ variable "ds_service_plan_sku" {
 variable "sm_service_plan_sku" {
   description = "The SKU for the SM App Service Plan"
   type        = string
-  default     = "B1"
+  default     = "B2"
 }
 
 # Stream Host Configuration
