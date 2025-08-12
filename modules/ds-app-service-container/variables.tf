@@ -127,3 +127,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "streamhost_download_base_url" {
+  description = "Base URL for StreamHost downloads"
+  type        = string
+  default     = "https://download.app.xmpro.com/"
+}

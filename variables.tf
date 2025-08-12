@@ -433,3 +433,9 @@ variable "sm_zip_download_url" {
   default     = "download.nonprod.xmprodev.com"
 }
 
+variable "streamhost_download_base_url" {
+  description = "Base URL for StreamHost downloads"
+  type        = string
+  default     = "https://download.app.xmpro.com/"
+}
+
