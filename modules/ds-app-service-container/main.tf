@@ -93,7 +93,7 @@ resource "azurerm_linux_web_app" "ds_app" {
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLEAPPLICATIONINSIGHTSTELEMETRY" = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
-    "XM__XMPRO__DATASTREAMDESIGNER__STREAMHOSTDOWNLOADBASEURL"                        = var.streamhost_download_base_url
+    "XM__XMPRO__DATASTREAMDESIGNER__STREAMHOSTDOWNLOADBASEURL"                        = "https://download.app.xmpro.com/"
 
     # Health Check URLs Configuration
     "XM__XMPRO__HEALTHCHECKS__URLS__0__URL"     = "${var.sm_url}/health/ping"

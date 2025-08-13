@@ -11,13 +11,13 @@ module "resource_group" {
   count = var.use_existing_resource_group ? 0 : 1
   
   # Use the latest version from GitHub
-  source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group"
+  # source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group"
   
   # For local development:
   # source = "../../modules/resource-group"
 
   # For specific latest stable released version:
-  # source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group?ref=v4.5.2"
+  source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group?ref=v4.5.2"
 
   name     = "rg-${var.company_name}-${var.environment}-sh-${random_id.suffix.hex}"
   location = var.location
@@ -37,13 +37,13 @@ data "azurerm_resource_group" "existing" {
 # Deploy the Stream Host container
 module "stream_host" {
   # Use the latest version from GitHub
-  source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container"
+  # source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container"
   
   # For local development:
   # source = "../../modules/stream-host-container"
 
   # For specific latest stable released version:
-  # source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container?ref=v4.5.2"
+  source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container?ref=v4.5.2"
 
   # Core settings
   environment         = var.environment
