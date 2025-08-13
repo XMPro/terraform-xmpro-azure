@@ -141,6 +141,16 @@ module "xmpro_platform" {
   existing_sql_server_fqdn = "existing-server.database.windows.net"
   db_admin_username        = "admin"
   db_admin_password        = "ExistingPassword123!"
+  # Existing product IDs for SM, AD, DS, AI when using existing databases
+  existing_sm_product_id = ""
+  existing_ad_product_id = ""
+  existing_ds_product_id = ""
+  existing_ai_product_id = ""
+  # Existing product keys for SM, AD, DS, AI when using existing databases
+  existing_ad_product_key = ""
+  existing_ds_product_key = ""
+  existing_ai_product_key = ""
+
 
   # For Production Workloads (no built-in licensing)
   is_evaluation_mode = false
@@ -436,17 +446,28 @@ existing_sql_server_fqdn = "your-server.database.windows.net"
 # Standard database and authentication settings
 db_admin_username = "your-admin-username"
 db_admin_password = "your-admin-password"
+
+# Existing product IDs for SM, AD, DS, AI when using existing databases
+existing_sm_product_id = ""
+existing_ad_product_id = ""
+existing_ds_product_id = ""
+existing_ai_product_id = ""
+# Existing product keys for SM, AD, DS, AI when using existing databases
+existing_ad_product_key = ""
+existing_ds_product_key = ""
+existing_ai_product_key = ""
 ```
 
 ### Behavior When Using Existing Database
 
 **Skipped Resources**:
 - SQL Server and database creation
-- Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate)
+- Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate, sm-prep)
 - Licenses container deployment
 
 **Created Resources**:
 - All App Services with existing database connectivity
+- Keyvault with predefined values
 - Monitoring and supporting infrastructure
 - Stream Host and other container services
 
@@ -461,7 +482,7 @@ db_admin_password = "your-admin-password"
 
 - Ensure firewall rules allow connections from new App Services and Container Instances
 - Database migration containers are skipped, so schema must be pre-configured
-- Variables like `company_name`, product IDs, and URLs should match existing database values
+- Variables like `company_name`, `product_id`, `product_key`, and `url` should match existing database values
 
 ## Stream Host Variants
 

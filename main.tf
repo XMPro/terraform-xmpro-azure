@@ -259,6 +259,9 @@ module "ds_app_service" {
   # Create implicit dependency on ds_dbmigrate container (only when using new databases)
   dsdbmigrate_container_id = module.ds_dbmigrate.container_group_id
 
+  # StreamHost download URL
+  streamhost_download_base_url = var.streamhost_download_base_url
+
   # Tags
   tags = local.common_tags
 }

@@ -85,11 +85,6 @@ variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
   default     = false
-
-  validation {
-    condition     = can(regex("^(true|false)$", tostring(var.enable_custom_domain)))
-    error_message = "enable_custom_domain must be a boolean value"
-  }
 }
 
 variable "use_existing_dns_zone" {
@@ -429,11 +424,6 @@ variable "is_evaluation_mode" {
   description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
   type        = bool
   default     = false
-
-  validation {
-    condition     = can(regex("^(true|false)$", tostring(var.is_evaluation_mode)))
-    error_message = "is_evaluation_mode must be a boolean value"
-  }
 }
 
 # SM Container Approach Variables
@@ -441,5 +431,11 @@ variable "sm_zip_download_url" {
   description = "Base domain for SM.zip download from storage account (e.g. 'download.nonprod.xmprodev.com')"
   type        = string
   default     = "download.nonprod.xmprodev.com"
+}
+
+variable "streamhost_download_base_url" {
+  description = "Base URL for StreamHost downloads"
+  type        = string
+  default     = "https://download.app.xmpro.com/"
 }
 
