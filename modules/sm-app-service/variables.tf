@@ -95,7 +95,7 @@ variable "storage_sas_token" {
 variable "service_plan_sku" {
   description = "The SKU for the App Service plan"
   type        = string
-  default     = "B1"
+  default     = "B2"
 }
 
 variable "tags" {

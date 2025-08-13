@@ -265,7 +265,7 @@ variable "license_api_url" {
 variable "sm_service_plan_sku" {
   description = "SKU for the SM App Service plan"
   type        = string
-  default     = "B1"
+  default     = "B2"
 }
 
 variable "ad_service_plan_sku" {
