@@ -47,6 +47,14 @@ enable_custom_domain = false
 # Set to true to enable built-in license provisioning for evaluation/demo
 # is_evaluation_mode = true
 
+# SSO Configuration (optional)
+# Enable Single Sign-On with Azure AD
+# sso_enabled = true
+# sso_azure_ad_client_id = "your-azure-ad-app-client-id"
+# sso_azure_ad_secret = "your-azure-ad-app-secret"
+# sso_business_role_claim = "optional-claim-name-for-role-sync"  # Leave empty if not using role sync
+# sso_azure_ad_tenant_id = "optional-tenant-id-for-guest-users"  # Leave empty for single tenant
+
 # Database Configuration (optional)
 # db_sku_name = "Basic"  # Options: Basic, S0, S1, S2, S3, P1, P2, P4
 # db_max_size_gb = 2  # Maximum database size in GB (min: 1 for Basic, varies by SKU)

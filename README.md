@@ -284,6 +284,16 @@ module "xmpro_platform" {
 | smtp_port | SMTP port | `number` | `587` |
 | smtp_enable_ssl | Enable SSL for SMTP | `bool` | `false` |
 
+### SSO Configuration (Azure AD)
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| sso_enabled | Enable SSO configuration for Azure AD | `bool` | `false` |
+| sso_azure_ad_client_id | Azure AD application client ID for SSO | `string` | `""` |
+| sso_azure_ad_secret | Azure AD application secret for SSO | `string` | `""` |
+| sso_business_role_claim | Azure AD claim name for business role synchronization | `string` | `""` |
+| sso_azure_ad_tenant_id | Azure AD tenant ID for SSO (optional, for guest user access) | `string` | `""` |
+
 ### Stream Host Configuration
 
 | Name | Description | Type | Default |
@@ -431,6 +441,52 @@ To switch from evaluation to production workloads:
 2. Provide your own product IDs via variables
 3. Set up external license management
 4. Apply the Terraform configuration
+
+## 🔐 SSO Configuration
+
+The module supports Single Sign-On (SSO) configuration with Azure Active Directory. When enabled, the SM preparation container will automatically configure SSO settings in the Web.config file.
+
+### Prerequisites
+
+1. Create an Azure AD application registration
+2. Configure redirect URIs for your SM instance
+3. Grant necessary API permissions
+4. Create a client secret
+
+### Configuration Example
+
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+  
+  # ... other configuration ...
+
+  # Enable SSO with Azure AD
+  sso_enabled             = true
+  sso_azure_ad_client_id  = "12345678-1234-1234-1234-123456789012"
+  sso_azure_ad_secret     = "your-client-secret-value"
+  
+  # Optional: Role synchronization
+  sso_business_role_claim = "groups"  # Or any custom claim name
+  
+  # Optional: For multi-tenant scenarios
+  sso_azure_ad_tenant_id  = "87654321-4321-4321-4321-210987654321"
+}
+```
+
+### Azure AD Configuration Steps
+
+1. **Register Application**: In Azure Portal, navigate to Azure Active Directory → App registrations → New registration
+2. **Configure Redirect URI**: Add `https://your-sm-url/identity/signin-azuread`
+3. **Create Client Secret**: Under Certificates & secrets, create a new client secret
+4. **Set API Permissions**: Grant necessary permissions for user sign-in and profile reading
+
+### Important Notes
+
+- SSO configuration is applied during the SM preparation container execution
+- The Web.config file is automatically modified with the provided SSO settings
+- For production, store sensitive values like `sso_azure_ad_secret` in Azure Key Vault or environment variables
+- Refer to the [XMPro SSO documentation](https://documentation.xmpro.com/4.4/src/installation/complete-installation/configure-sso-optional/sso-azure-ad.html) for detailed setup instructions
 
 ## 🗄️ Existing Database Support
 

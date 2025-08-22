@@ -147,7 +147,6 @@ function Initialize-WebConfig {
     Write-Log "Web.config ready for processing: $webConfigPath"
 }
 
-
 # Process configuration files using bundled Install.ps1 directly
 function Invoke-ConfigProcessing {
     Write-Log "Processing configuration files..."
