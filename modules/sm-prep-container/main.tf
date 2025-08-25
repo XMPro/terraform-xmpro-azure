@@ -74,6 +74,7 @@ resource "azurerm_container_group" "sm_zip_prep" {
 
       # Logging configuration
       ENABLE_LOG_FILE_OUTPUT = "true"
+      LOG_FILE_PATH          = "D:\\home\\LogFiles\\Application\\sm-log-.txt"
 
       # Azure Key Vault integration
       AZURE_KEY_VAULT_NAME = var.azure_key_vault_name
