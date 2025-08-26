@@ -343,6 +343,13 @@ module "sm_key_vault" {
   # SM Base URL for configuration
   sm_base_url = local.sm_base_url
 
+  # SSO Configuration
+  sso_enabled             = var.sso_enabled
+  sso_azure_ad_client_id  = var.sso_azure_ad_client_id
+  sso_azure_ad_secret     = var.sso_azure_ad_secret
+  sso_business_role_claim = var.sso_business_role_claim
+  sso_azure_ad_tenant_id  = var.sso_azure_ad_tenant_id
+
   # Tags
   tags = local.common_tags
 }
