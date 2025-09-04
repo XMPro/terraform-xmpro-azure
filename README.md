@@ -514,12 +514,26 @@ existing_ds_product_key = ""
 existing_ai_product_key = ""
 ```
 
+### SMTP Configuration (Required)
+
+⚠️ **Important**: SMTP configuration is **mandatory** for existing database deployments. These settings are stored in Azure Key Vault and used by the applications for email notifications. Omitting SMTP configuration will cause email functionality to fail.
+
+```hcl
+# SMTP configuration - ALL variables required
+smtp_server       = "smtp.office365.com"
+smtp_from_address = "notifications@company.com"
+smtp_username     = "smtp-user"
+smtp_password     = "smtp-password"
+smtp_port         = 587
+smtp_enable_ssl   = true
+```
+
 ### Behavior When Using Existing Database
 
 **Skipped Resources**:
 - SQL Server and database creation
 - Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate, sm-prep)
-- Licenses container deployment
+- **Licenses container deployment** (regardless of `is_evaluation_mode` setting)
 
 **Created Resources**:
 - All App Services with existing database connectivity
@@ -533,8 +547,12 @@ existing_ai_product_key = ""
 2. **Firewall Rules**: Must allow connections from the newly created Azure resources
 3. **Schema Compatibility**: Database schemas should be compatible with the specified `imageversion`
 4. **Authentication**: Provided credentials must have sufficient privileges
+5. **SMTP Configuration**: All SMTP variables must be provided as they are stored in Key Vault for application use
+6. **Licensing**: Must be managed manually through SM interface - `is_evaluation_mode` has no effect
 
 ### Warnings and Considerations
+
+⚠️ **Evaluation Mode Note**: The `is_evaluation_mode` variable is irrelevant when using existing databases because the licenses container is never deployed. The existing-database example intentionally omits this variable to avoid confusion.
 
 - Ensure firewall rules allow connections from new App Services and Container Instances
 - Database migration containers are skipped, so schema must be pre-configured

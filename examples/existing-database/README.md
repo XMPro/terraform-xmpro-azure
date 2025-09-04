@@ -46,6 +46,15 @@ existing_ai_product_id = "2cf2bb72-ec7d-430a-a383-b7f6c956b237"  # Optional: AI 
 existing_ad_product_key = "cc72a497-baa2-4f7f-af07-e065682a18b4"  # Replace with your AD Product Key
 existing_ds_product_key = "7569167d-10f0-4de4-9347-95c1c93e184f"  # Replace with your DS Product Key
 existing_ai_product_key = "1f6b18eb-7dbb-4c7e-9b27-f8a81f0e6ae8"  # Optional: AI Product Key
+
+# SMTP Configuration (Required)
+# SMTP settings are mandatory as they are stored in Key Vault for application use
+smtp_server = "smtp.office365.com"
+smtp_port = 587
+smtp_from_address = "notifications@mycompany.com"
+smtp_username = "notifications@mycompany.com"
+smtp_password = "your-smtp-password-here"
+smtp_enable_ssl = true
 ```
 
 ### 2. Deploy
@@ -77,14 +86,72 @@ terraform apply
 
 **Licensing**: When using existing databases, the licenses container is skipped. You'll need to manage licenses through the SM interface after deployment.
 
-## 🔐 Evaluation Mode
+**SMTP Configuration**: SMTP settings are mandatory for existing database deployments as they are stored in Azure Key Vault and used by the applications for email notifications. All SMTP variables must be provided.
 
-The `is_evaluation_mode` variable defaults to `true` for consistency but doesn't affect licensing when using existing databases.
+## 🔐 Licensing with Existing Databases
 
-To use custom licensing:
-1. Set `is_evaluation_mode = false`
-2. Request licenses from XMPro for your company
-3. Upload licenses manually through SM after deployment
+⚠️ **Important**: The `is_evaluation_mode` variable is **intentionally not included** in this existing database example because it has no effect when `use_existing_database = true`.
+
+**Why Evaluation Mode is Not Relevant:**
+- The licenses container is **never deployed** when using existing databases
+- Licensing must always be managed manually through the SM interface
+- Including `is_evaluation_mode` would be misleading and serve no purpose
+
+**Licensing Management:**
+1. Deploy the infrastructure using this example
+2. Access the SM (Subscription Manager) interface after deployment
+3. Upload your licenses manually through the SM admin panel
+4. Configure licensing for AD, DS, and AI services as needed
+
+## 🔧 Troubleshooting
+
+### SMTP Configuration Issues
+
+#### Scenario 1: Forgot to Configure SMTP During Initial Deployment
+
+**Problem**: Deployed without SMTP configuration, now email notifications don't work
+
+**Symptoms**:
+- No email notifications being sent from XMPro applications
+- Default/example SMTP values are being used
+- Email functionality appears disabled
+
+**Solution**: 
+1. Add all required SMTP variables to your `terraform.tfvars`:
+   ```hcl
+   smtp_server       = "smtp.office365.com"
+   smtp_from_address = "notifications@yourdomain.com"
+   smtp_username     = "your-smtp-username"
+   smtp_password     = "your-smtp-password"
+   smtp_port         = 587
+   smtp_enable_ssl   = true
+   ```
+
+2. Re-run Terraform to update the Key Vault secrets:
+   ```bash
+   terraform apply
+   ```
+
+3. The App Services will automatically restart and load the updated SMTP configuration from Key Vault
+
+#### Scenario 2: SMTP Configuration Not Working
+
+**Problem**: SMTP is configured but email notifications still not working
+
+**Symptoms**:
+- SMTP settings appear correct in terraform.tfvars
+- Still no email notifications
+- Possible authentication errors in logs
+
+**Solution**:
+1. Verify SMTP credentials are correct and account has permission to send emails
+2. Test SMTP settings outside of XMPro to confirm they work
+3. Check Azure Key Vault to confirm SMTP secrets were properly stored:
+   - Navigate to your Key Vault in Azure Portal
+   - Verify secrets: SMTPSERVER, SMTPUSER, SMTPPASS, etc.
+4. If Key Vault secrets are incorrect, update `terraform.tfvars` and run `terraform apply` again
+
+**Note**: SMTP settings are stored in Azure Key Vault and are essential for email functionality. The applications read these values from Key Vault at startup.
 
 ## 📚 Additional Resources
 

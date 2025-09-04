@@ -52,7 +52,12 @@ module "xmpro_platform" {
   existing_ai_product_key = var.existing_ai_product_key
 
   # SMTP settings
-  smtp_password = var.smtp_password
+  smtp_server       = var.smtp_server
+  smtp_from_address = var.smtp_from_address
+  smtp_username     = var.smtp_username
+  smtp_password     = var.smtp_password
+  smtp_port         = var.smtp_port
+  smtp_enable_ssl   = var.smtp_enable_ssl
 
   # Resource tagging
   tags = var.tags
@@ -60,6 +65,6 @@ module "xmpro_platform" {
   # Enable AI service
   enable_ai = var.enable_ai
 
-  # Evaluation mode flag
-  is_evaluation_mode = var.is_evaluation_mode
+  # Note: is_evaluation_mode is not specified because it has no effect with existing databases
+  # The licenses container is never deployed when use_existing_database = true
 } 
