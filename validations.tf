@@ -30,6 +30,21 @@ resource "terraform_data" "existing_db_validation" {
 }
 
 # -----------------------------------------------------------------------------
+# Redis Auto-Scale Configuration Validation
+# -----------------------------------------------------------------------------
+# Validates that redis_connection_string is provided when auto-scaling is enabled
+# Exception: When create_redis_cache is true, the connection string will be
+# automatically generated from the created Redis cache
+resource "terraform_data" "auto_scale_validation" {
+  lifecycle {
+    precondition {
+      condition     = !var.enable_auto_scale || var.redis_connection_string != "" || var.create_redis_cache
+      error_message = "When enable_auto_scale=true, either provide redis_connection_string or set create_redis_cache=true. Format: 'your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False'"
+    }
+  }
+}
+
+# -----------------------------------------------------------------------------
 # Future Validation Placeholders
 # -----------------------------------------------------------------------------
 # Add additional validation resources here as needed:
