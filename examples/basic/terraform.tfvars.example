@@ -34,7 +34,7 @@ environment = "dev"
 
 # Container registry settings (defaults to public XMPro registry)
 acr_url_product = "xmpro.azurecr.io"
-imageversion = "4.5.2"
+imageversion = "4.5.3"
 # is_private_registry = false  # Set to true if using private registry
 # acr_username = ""            # Only needed for private registry
 # acr_password = ""            # Only needed for private registry

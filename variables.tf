@@ -85,6 +85,11 @@ variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.enable_custom_domain)))
+    error_message = "enable_custom_domain must be a boolean value"
+  }
 }
 
 variable "use_existing_dns_zone" {
@@ -424,6 +429,11 @@ variable "is_evaluation_mode" {
   description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.is_evaluation_mode)))
+    error_message = "is_evaluation_mode must be a boolean value"
+  }
 }
 
 # SM Container Approach Variables
@@ -437,37 +447,5 @@ variable "streamhost_download_base_url" {
   description = "Base URL for StreamHost downloads"
   type        = string
   default     = "https://download.app.xmpro.com/"
-}
-
-# SSO Configuration Variables
-variable "sso_enabled" {
-  description = "Enable SSO configuration for Azure AD"
-  type        = bool
-  default     = false
-}
-
-variable "sso_azure_ad_client_id" {
-  description = "Azure AD application client ID for SSO"
-  type        = string
-  default     = ""
-}
-
-variable "sso_azure_ad_secret" {
-  description = "Azure AD application secret for SSO"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-variable "sso_business_role_claim" {
-  description = "Azure AD claim name for business role synchronization"
-  type        = string
-  default     = ""
-}
-
-variable "sso_azure_ad_tenant_id" {
-  description = "Azure AD tenant ID for SSO (optional, for guest user access)"
-  type        = string
-  default     = ""
 }
 
