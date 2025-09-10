@@ -133,16 +133,3 @@ variable "streamhost_download_base_url" {
   type        = string
   default     = "https://download.app.xmpro.com/"
 }
-
-variable "enable_auto_scale" {
-  description = "Enable auto-scaling with Redis distributed caching"
-  type        = bool
-  default     = false
-}
-
-variable "redis_connection_string" {
-  description = "Redis connection string for auto-scaling"
-  type        = string
-  default     = ""
-  sensitive   = true
-}

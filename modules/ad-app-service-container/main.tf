@@ -96,10 +96,6 @@ resource "azurerm_linux_web_app" "ad_app" {
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLEAPPLICATIONINSIGHTSTELEMETRY" = tostring(true)
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
-    
-    # Auto-scaling and Redis configuration
-    "XM__XMPRO__AUTOSCALE__ENABLED"         = tostring(var.enable_auto_scale)
-    "XM__XMPRO__AUTOSCALE__CONNECTIONSTRING" = var.enable_auto_scale ? var.redis_connection_string : ""
 
     # Health Check URLs Configuration
     "XM__XMPRO__HEALTHCHECKS__URLS__0__URL"     = "${var.sm_url}/health/ping"
