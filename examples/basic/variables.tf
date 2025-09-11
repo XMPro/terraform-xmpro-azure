@@ -273,4 +273,25 @@ variable "stream_host_environment_variables" {
   default     = {}
 }
 
+# Redis Cache Configuration
+variable "create_redis_cache" {
+  description = "Whether to create an Azure Redis Cache instance"
+  type        = bool
+  default     = false
+}
+
+# Auto Scale Configuration
+variable "enable_auto_scale" {
+  description = "Enable auto-scaling with Redis distributed caching"
+  type        = bool
+  default     = false
+}
+
+variable "redis_connection_string" {
+  description = "Redis connection string for auto-scaling (e.g., 'your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False')"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
  

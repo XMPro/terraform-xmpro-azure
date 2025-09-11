@@ -47,3 +47,14 @@ output "sm_zip_download_url" {
   description = "The configured SM.zip download URL (empty means use default load balancer URL)"
   value       = var.sm_zip_download_url != "" ? var.sm_zip_download_url : "https://download.nonprod.xmprodev.com/SM/SM-${var.release_version}.zip"
 }
+
+# SSO Configuration Status
+output "sso_configuration_status" {
+  description = "SSO configuration status and details"
+  value = {
+    enabled    = var.sso_enabled
+    client_id  = var.sso_enabled ? var.sso_azure_ad_client_id : "N/A"
+    tenant_id  = var.sso_enabled && var.sso_azure_ad_tenant_id != "" ? var.sso_azure_ad_tenant_id : "Default Tenant"
+    role_claim = var.sso_enabled && var.sso_business_role_claim != "" ? var.sso_business_role_claim : "Not configured"
+  }
+}

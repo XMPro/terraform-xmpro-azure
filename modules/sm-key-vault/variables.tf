@@ -102,8 +102,54 @@ variable "sm_base_url" {
   type        = string
 }
 
+# SSO Configuration Variables
+variable "sso_enabled" {
+  description = "Enable SSO configuration for Azure AD"
+  type        = bool
+  default     = false
+}
+
+variable "sso_azure_ad_client_id" {
+  description = "Azure AD application client ID for SSO"
+  type        = string
+  default     = ""
+}
+
+variable "sso_azure_ad_secret" {
+  description = "Azure AD application secret for SSO"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "sso_business_role_claim" {
+  description = "Azure AD claim name for business role synchronization"
+  type        = string
+  default     = ""
+}
+
+variable "sso_azure_ad_tenant_id" {
+  description = "Azure AD tenant ID for SSO (optional, for guest user access)"
+  type        = string
+  default     = ""
+}
+
 variable "tags" {
   description = "A map of tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+# Auto Scale Configuration
+variable "enable_auto_scale" {
+  description = "Enable auto-scaling with Redis distributed caching"
+  type        = bool
+  default     = false
+}
+
+variable "redis_connection_string" {
+  description = "Redis connection string for auto-scaling"
+  type        = string
+  default     = ""
+  sensitive   = true
 }
