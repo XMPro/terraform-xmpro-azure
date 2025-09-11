@@ -6,7 +6,7 @@ module "xmpro_platform" {
   # source = "github.com/XMPro/terraform-xmpro-azure"
 
   # For local development:
-  source = "../../"
+  # source = "../../"
 
   # For specific latest stable released version:
   # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.2"
@@ -71,11 +71,4 @@ module "xmpro_platform" {
   stream_host_cpu                   = var.stream_host_cpu
   stream_host_memory                = var.stream_host_memory
   stream_host_environment_variables = var.stream_host_environment_variables
-
-  # Redis Cache Configuration
-  create_redis_cache = var.create_redis_cache
-
-  # Auto Scale Configuration
-  enable_auto_scale       = var.enable_auto_scale
-  redis_connection_string = var.redis_connection_string
 }

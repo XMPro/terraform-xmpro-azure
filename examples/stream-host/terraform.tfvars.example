@@ -25,7 +25,7 @@ acr_url_product = "xmpro.azurecr.io"
 # acr_password = "your-password"
 
 # Image version
-imageversion = "4.5.2"
+imageversion = "4.5.3"
 
 # ====================
 # OPTIONAL SETTINGS

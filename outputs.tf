@@ -82,28 +82,6 @@ output "company_details" {
 }
 
 # Existing Database Configuration Warnings
-# Redis Cache outputs
-output "redis_hostname" {
-  description = "The hostname of the Redis cache"
-  value       = var.create_redis_cache ? module.redis_cache[0].redis_hostname : null
-}
-
-output "redis_port" {
-  description = "The SSL port of the Redis cache"
-  value       = var.create_redis_cache ? module.redis_cache[0].redis_port : null
-}
-
-output "redis_primary_connection_string" {
-  description = "The primary connection string for the Redis cache"
-  value       = var.create_redis_cache ? module.redis_cache[0].redis_primary_connection_string : null
-  sensitive   = true
-}
-
-output "redis_configuration" {
-  description = "The Redis cache configuration"
-  value       = var.create_redis_cache ? module.redis_cache[0].redis_configuration : null
-}
-
 output "existing_database_firewall_warning" {
   description = "Warning about firewall rules when using existing database"
   value       = var.use_existing_database ? "WARNING: When using an existing database, ensure that the SQL Server firewall rules allow connections from the newly created Azure resources (App Services, Container Instances). The following resources may need database access: ${module.resource_group.name} resource group containing AD, DS, SM App Services and associated Container Instances." : null

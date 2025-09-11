@@ -74,7 +74,6 @@ resource "azurerm_container_group" "sm_zip_prep" {
 
       # Logging configuration
       ENABLE_LOG_FILE_OUTPUT = "true"
-      LOG_FILE_PATH          = "D:\\home\\LogFiles\\Application\\sm-log-.txt"
 
       # Azure Key Vault integration
       AZURE_KEY_VAULT_NAME = var.azure_key_vault_name
@@ -108,13 +107,13 @@ resource "azurerm_container_group" "sm_zip_prep" {
       EMAIL_FROM_ADDRESS            = "$${SMTPFrom}"
       EMAIL_TEMPLATE_FOLDER         = "~/App_Data/Templates/"
       EMAIL_WEB_APPLICATION         = "true"
-
+      
       # SSO Configuration (Azure AD) - Use same pattern as SMTP variables with $$
-      ENABLE_SSO              = var.sso_enabled ? "true" : "false"
-      SSO_AZURE_AD_CLIENT_ID  = var.sso_enabled ? "$${SSO-AZURE-AD-CLIENT-ID}" : ""
-      SSO_BUSINESS_ROLE_CLAIM = var.sso_enabled ? "$${SSO-BUSINESS-ROLE-CLAIM}" : ""
-      SSO_AZURE_AD_TENANT_ID  = var.sso_enabled ? "$${SSO-AZURE-AD-TENANT-ID}" : ""
-      SSO_AZURE_AD_SECRET     = var.sso_enabled ? "$${SSO-AZURE-AD-SECRET}" : ""
+      ENABLE_SSO                = var.sso_enabled ? "true" : "false"
+      SSO_AZURE_AD_CLIENT_ID    = var.sso_enabled ? "$${SSO-AZURE-AD-CLIENT-ID}" : ""
+      SSO_BUSINESS_ROLE_CLAIM   = var.sso_enabled ? "$${SSO-BUSINESS-ROLE-CLAIM}" : ""
+      SSO_AZURE_AD_TENANT_ID    = var.sso_enabled ? "$${SSO-AZURE-AD-TENANT-ID}" : ""
+      SSO_AZURE_AD_SECRET       = var.sso_enabled ? "$${SSO-AZURE-AD-SECRET}" : ""
     }
 
     # Secure environment variables

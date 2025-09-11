@@ -95,10 +95,6 @@ resource "azurerm_linux_web_app" "ds_app" {
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__STREAMHOSTDOWNLOADBASEURL"                        = var.streamhost_download_base_url
 
-    # Auto-scaling and Redis configuration
-    "XM__XMPRO__AUTOSCALE__ENABLED"          = tostring(var.enable_auto_scale)
-    "XM__XMPRO__AUTOSCALE__CONNECTIONSTRING" = var.enable_auto_scale ? var.redis_connection_string : ""
-
     # Health Check URLs Configuration
     "XM__XMPRO__HEALTHCHECKS__URLS__0__URL"     = "${var.sm_url}/health/ping"
     "XM__XMPRO__HEALTHCHECKS__URLS__0__NAME"    = "Subscription Manager API"

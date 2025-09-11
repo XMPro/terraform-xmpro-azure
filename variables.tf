@@ -85,6 +85,11 @@ variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.enable_custom_domain)))
+    error_message = "enable_custom_domain must be a boolean value"
+  }
 }
 
 variable "use_existing_dns_zone" {
@@ -98,27 +103,6 @@ variable "enable_ai" {
   description = "Whether to enable the AI service and database"
   type        = bool
   default     = false
-}
-
-# Redis Cache Configuration
-variable "create_redis_cache" {
-  description = "Whether to create an Azure Redis Cache instance"
-  type        = bool
-  default     = false
-}
-
-# Auto Scale Configuration
-variable "enable_auto_scale" {
-  description = "Enable auto-scaling with Redis distributed caching"
-  type        = bool
-  default     = false
-}
-
-variable "redis_connection_string" {
-  description = "Redis connection string for auto-scaling (e.g., 'your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False'). Required when enable_auto_scale is true."
-  type        = string
-  default     = ""
-  sensitive   = true
 }
 
 # Database credentials
@@ -445,6 +429,11 @@ variable "is_evaluation_mode" {
   description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.is_evaluation_mode)))
+    error_message = "is_evaluation_mode must be a boolean value"
+  }
 }
 
 # SM Container Approach Variables
@@ -489,13 +478,6 @@ variable "sso_business_role_claim" {
 variable "sso_azure_ad_tenant_id" {
   description = "Azure AD tenant ID for SSO (optional, for guest user access)"
   type        = string
-  default     = ""
-}
-
-variable "ad_encryption_key" {
-  description = "Encryption key for AD application to encrypt/decrypt server variables"
-  type        = string
-  sensitive   = true
   default     = ""
 }
 
