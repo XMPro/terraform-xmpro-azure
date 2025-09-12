@@ -56,6 +56,9 @@ module "xmpro_platform" {
   smtp_port                 = var.smtp_port
   smtp_enable_ssl           = var.smtp_enable_ssl
 
+  # Security Headers Configuration
+  enable_security_headers = var.enable_security_headers
+
   # Resource tagging
   tags = var.tags
 

@@ -94,6 +94,7 @@ resource "azurerm_linux_web_app" "ds_app" {
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__STREAMHOSTDOWNLOADBASEURL"                        = var.streamhost_download_base_url
+    "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLESECURITYHEADERS"              = tostring(var.enable_security_headers)
 
     # Auto-scaling and Redis configuration
     "XM__XMPRO__AUTOSCALE__ENABLED"          = tostring(var.enable_auto_scale)

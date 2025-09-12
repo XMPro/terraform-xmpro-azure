@@ -154,6 +154,13 @@ variable "smtp_enable_ssl" {
   default     = true
 }
 
+# Security Headers Configuration
+variable "enable_security_headers" {
+  description = "Whether to enable security headers for AD and DS applications"
+  type        = bool
+  default     = true
+}
+
 # Tagging
 variable "tags" {
   description = "A map of tags to apply to all resources"

@@ -202,6 +202,9 @@ module "xmpro_platform" {
   smtp_port                 = 587
   smtp_enable_ssl           = true
 
+  # Security Configuration
+  enable_security_headers = true  # Enable security headers for AD and DS
+
   tags = {
     Environment = "Production"
     Team        = "Platform"
@@ -366,6 +369,12 @@ redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,
 | sso_azure_ad_secret | Azure AD application secret for SSO | `string` | `""` |
 | sso_business_role_claim | Azure AD claim name for business role synchronization | `string` | `""` |
 | sso_azure_ad_tenant_id | Azure AD tenant ID for SSO (optional, for guest user access) | `string` | `""` |
+
+### Security Configuration
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| enable_security_headers | Enable security headers for AD and DS applications | `bool` | `true` |
 
 ### Stream Host Configuration
 

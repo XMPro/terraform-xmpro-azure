@@ -152,6 +152,13 @@ variable "smtp_enable_ssl" {
   default     = true
 }
 
+# Security Headers Configuration
+variable "enable_security_headers" {
+  description = "Whether to enable security headers for AD application"
+  type        = bool
+  default     = true
+}
+
 variable "ad_product_id" {
   description = "The product ID for AD"
   type        = string
