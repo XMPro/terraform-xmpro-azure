@@ -28,6 +28,9 @@ module "ad_key_vault" {
     },
     "xmpro--xmnotification--email--password" = {
       value = var.smtp_password
+    },
+    "xmpro--appDesigner--encryptionKey" = {
+      value = var.ad_encryption_key
     }
   }
 }
@@ -97,6 +100,10 @@ resource "azurerm_linux_web_app" "ad_app" {
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
 
+    # Auto-scaling and Redis configuration
+    "XM__XMPRO__AUTOSCALE__ENABLED"          = tostring(var.enable_auto_scale)
+    "XM__XMPRO__AUTOSCALE__CONNECTIONSTRING" = var.enable_auto_scale ? var.redis_connection_string : ""
+
     # Health Check URLs Configuration
     "XM__XMPRO__HEALTHCHECKS__URLS__0__URL"     = "${var.sm_url}/health/ping"
     "XM__XMPRO__HEALTHCHECKS__URLS__0__NAME"    = "Subscription Manager API"
@@ -122,6 +129,7 @@ resource "azurerm_linux_web_app" "ad_app" {
     "XMPRO__DATA__CONNECTIONSTRING"             = "@Microsoft.KeyVault(SecretUri=${module.ad_key_vault.secret_ids["xmpro--data--connectionString"]})"
     "XM__XMPRO__XMIDENTITY__CLIENT__ID"         = "@Microsoft.KeyVault(SecretUri=${module.ad_key_vault.secret_ids["xmpro--xmidentity--client--id"]})"
     "XM__XMPRO__XMIDENTITY__CLIENT__SHAREDKEY"  = "@Microsoft.KeyVault(SecretUri=${module.ad_key_vault.secret_ids["xmpro--xmidentity--client--sharedkey"]})"
+    "XMPRO__APPDESIGNER__ENCRYPTIONKEY"         = "@Microsoft.KeyVault(SecretUri=${module.ad_key_vault.secret_ids["xmpro--appDesigner--encryptionKey"]})"
 
     # database migrations feature flag
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__DBMIGRATIONSENABLED" = tostring(false)
