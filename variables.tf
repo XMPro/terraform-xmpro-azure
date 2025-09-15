@@ -85,6 +85,11 @@ variable "enable_custom_domain" {
   description = "Whether to enable custom domain for the web apps"
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.enable_custom_domain)))
+    error_message = "enable_custom_domain must be a boolean value"
+  }
 }
 
 variable "use_existing_dns_zone" {
@@ -98,27 +103,6 @@ variable "enable_ai" {
   description = "Whether to enable the AI service and database"
   type        = bool
   default     = false
-}
-
-# Redis Cache Configuration
-variable "create_redis_cache" {
-  description = "Whether to create an Azure Redis Cache instance"
-  type        = bool
-  default     = false
-}
-
-# Auto Scale Configuration
-variable "enable_auto_scale" {
-  description = "Enable auto-scaling with Redis distributed caching"
-  type        = bool
-  default     = false
-}
-
-variable "redis_connection_string" {
-  description = "Redis connection string for auto-scaling (e.g., 'your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False'). Required when enable_auto_scale is true."
-  type        = string
-  default     = ""
-  sensitive   = true
 }
 
 # Database credentials
@@ -385,13 +369,6 @@ variable "smtp_enable_ssl" {
   default     = true
 }
 
-# Security Headers Configuration
-variable "enable_security_headers" {
-  description = "Whether to enable security headers for AD and DS applications"
-  type        = bool
-  default     = true
-}
-
 # Tagging configuration
 variable "tags" {
   description = "A map of tags to apply to all resources. These will be merged with standard tags (Environment, Company, etc.)"
@@ -452,6 +429,11 @@ variable "is_evaluation_mode" {
   description = "Whether to deploy with built-in license provisioning. If true, deploys licenses container with evaluation settings. If false (default), skips licenses container and user provides their own license management."
   type        = bool
   default     = false
+
+  validation {
+    condition     = can(regex("^(true|false)$", tostring(var.is_evaluation_mode)))
+    error_message = "is_evaluation_mode must be a boolean value"
+  }
 }
 
 # SM Container Approach Variables
@@ -496,33 +478,6 @@ variable "sso_business_role_claim" {
 variable "sso_azure_ad_tenant_id" {
   description = "Azure AD tenant ID for SSO (optional, for guest user access)"
   type        = string
-  default     = ""
-}
-
-variable "ad_encryption_key" {
-  description = "Encryption key for AD application to encrypt/decrypt server variables"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-# Master Data Configuration
-variable "create_masterdata" {
-  description = "Whether to create the Master Data database"
-  type        = bool
-  default     = false
-}
-
-variable "masterdata_db_admin_username" {
-  description = "The administrator username for the Master Data database (for application access)"
-  type        = string
-  default     = "masterdata_admin"
-}
-
-variable "masterdata_db_admin_password" {
-  description = "The administrator password for the Master Data database (for application access)"
-  type        = string
-  sensitive   = true
   default     = ""
 }
 
