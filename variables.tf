@@ -526,3 +526,128 @@ variable "masterdata_db_admin_password" {
   default     = ""
 }
 
+# Monitoring and Alerting Variables
+variable "enable_alerting" {
+  description = "Master switch to enable or disable all alerting resources"
+  type        = bool
+  default     = false
+}
+
+variable "enable_email_alerts" {
+  description = "Enable email notifications for alerts"
+  type        = bool
+  default     = false
+}
+
+variable "alert_email_addresses" {
+  description = "List of email addresses to receive alert notifications"
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_sms_alerts" {
+  description = "Enable SMS notifications for alerts"
+  type        = bool
+  default     = false
+}
+
+variable "alert_phone_numbers" {
+  description = "List of phone numbers to receive SMS alert notifications"
+  type        = list(string)
+  default     = []
+}
+
+variable "alert_phone_country_code" {
+  description = "Country code for SMS alert phone numbers"
+  type        = string
+  default     = "1"
+}
+
+variable "enable_webhook_alerts" {
+  description = "Enable webhook notifications for alerts"
+  type        = bool
+  default     = false
+}
+
+variable "alert_webhook_urls" {
+  description = "List of webhook URLs to receive alert notifications"
+  type        = list(string)
+  default     = []
+}
+
+variable "enable_cpu_alerts" {
+  description = "Enable CPU usage alerts for Stream Host containers"
+  type        = bool
+  default     = false
+}
+
+variable "cpu_alert_threshold" {
+  description = "CPU usage percentage threshold for alerts"
+  type        = number
+  default     = 80
+  validation {
+    condition     = var.cpu_alert_threshold > 0 && var.cpu_alert_threshold <= 100
+    error_message = "CPU alert threshold must be between 1 and 100 percent."
+  }
+}
+
+variable "cpu_alert_severity" {
+  description = "Severity level for CPU alerts (0-4, where 0 is critical)"
+  type        = number
+  default     = 2
+  validation {
+    condition     = var.cpu_alert_severity >= 0 && var.cpu_alert_severity <= 4
+    error_message = "Alert severity must be between 0 (critical) and 4 (informational)."
+  }
+}
+
+variable "enable_memory_alerts" {
+  description = "Enable memory usage alerts for Stream Host containers"
+  type        = bool
+  default     = false
+}
+
+variable "memory_alert_threshold" {
+  description = "Memory usage percentage threshold for alerts"
+  type        = number
+  default     = 80
+  validation {
+    condition     = var.memory_alert_threshold > 0 && var.memory_alert_threshold <= 100
+    error_message = "Memory alert threshold must be between 1 and 100 percent."
+  }
+}
+
+variable "memory_alert_severity" {
+  description = "Severity level for memory alerts (0-4, where 0 is critical)"
+  type        = number
+  default     = 2
+  validation {
+    condition     = var.memory_alert_severity >= 0 && var.memory_alert_severity <= 4
+    error_message = "Alert severity must be between 0 (critical) and 4 (informational)."
+  }
+}
+
+variable "enable_container_restart_alerts" {
+  description = "Enable container restart alerts for Stream Host containers"
+  type        = bool
+  default     = false
+}
+
+variable "enable_container_stop_alerts" {
+  description = "Enable container stop alerts for Stream Host containers"
+  type        = bool
+  default     = false
+}
+
+variable "alert_window_size" {
+  description = "The time window for metric alerts (ISO 8601 duration format)"
+  type        = string
+  default     = "PT5M"
+}
+
+variable "alert_evaluation_frequency" {
+  description = "The evaluation frequency for metric alerts (ISO 8601 duration format)"
+  type        = string
+  default     = "PT1M"
+}
+

@@ -19,3 +19,23 @@ output "stream_host_container_group_name" {
   description = "The name of the stream host container group"
   value       = module.stream_host.container_group_name
 }
+
+# Monitoring outputs (conditional based on enable_monitoring)
+
+output "app_insights_connection_string" {
+  description = "Application Insights connection string for monitoring"
+  value       = var.enable_monitoring ? module.monitoring[0].app_insights_connection_string : null
+  sensitive   = true
+}
+
+output "log_analytics_workspace_id" {
+  description = "Log Analytics workspace ID"
+  value       = var.enable_monitoring ? module.monitoring[0].log_analytics_workspace_id : null
+}
+
+# Alerting outputs (conditional based on enable_alerting)
+
+output "action_group_id" {
+  description = "The ID of the action group for alerts"
+  value       = var.enable_alerting ? module.stream_host_alerting[0].action_group_id : null
+}

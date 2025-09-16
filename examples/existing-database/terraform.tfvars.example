@@ -69,4 +69,3 @@ smtp_enable_ssl = true
 # AI Services (optional)
 # Set to true to enable AI services in the deployment
 enable_ai = false
-

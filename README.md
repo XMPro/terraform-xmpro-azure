@@ -25,6 +25,7 @@ The XMPro platform consists of multiple interconnected services that provide a c
 - **Azure DNS Zone**: Custom domain management (optional)
 - **Application Insights**: Monitoring and telemetry
 - **Log Analytics**: Centralized logging
+- **Azure Monitor Alerting**: Stream Host container monitoring and alerting
 
 For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/4.5/installation/deployment/azure-terraform/#architecture).
 
@@ -405,6 +406,22 @@ redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,
 
 **Note:** When `create_masterdata` is set to `true`, a dedicated SQL Server instance (`sqldb-masterdata-{company}-{suffix}`) is created exclusively for the Master Data database. This provides complete isolation from the XMPro platform databases with dedicated credentials. The `masterdata_db_admin_password` must be provided when enabling this feature.
 
+### Stream Host Alerting Configuration
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| enable_alerting | Enable alerting for Stream Host containers | `bool` | `false` |
+| enable_email_alerts | Enable email notifications for alerts | `bool` | `false` |
+| alert_email_addresses | List of email addresses to receive alert notifications | `list(string)` | `[]` |
+| enable_sms_alerts | Enable SMS notifications for alerts | `bool` | `false` |
+| alert_phone_numbers | List of phone numbers to receive SMS alert notifications | `list(string)` | `[]` |
+| enable_cpu_alerts | Enable CPU usage alerts for Stream Host containers | `bool` | `false` |
+| cpu_alert_threshold | CPU usage percentage threshold for alerts | `number` | `80` |
+| enable_memory_alerts | Enable memory usage alerts for Stream Host containers | `bool` | `false` |
+| memory_alert_threshold | Memory usage percentage threshold for alerts | `number` | `80` |
+| enable_container_restart_alerts | Enable container restart alerts | `bool` | `false` |
+| enable_container_stop_alerts | Enable container stop alerts | `bool` | `false` |
+
 ### Deployment Configuration
 
 | Name | Description | Type | Default |
@@ -458,6 +475,13 @@ redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,
 | stream_host_container_id | The ID of the stream host container group |
 | company_details | Details about the company admin |
 
+### Alerting Information
+
+| Name | Description |
+|------|-------------|
+| alerting_action_group_id | The ID of the action group for Stream Host alerts (when alerting enabled) |
+| alerting_action_group_name | The name of the action group for Stream Host alerts (when alerting enabled) |
+
 ### Deployment Warnings
 
 | Name | Description |
@@ -488,6 +512,7 @@ This module is composed of the following submodules:
 - **storage-account**: Azure Storage for deployment artifacts
 - **dns-zone**: Custom domain and DNS management
 - **monitoring**: Application Insights and Log Analytics
+- **alerting**: Azure Monitor alerting for Stream Host containers
 - **key-vault**: Azure Key Vault for secrets management
 - **sm-key-vault**: Specialized Key Vault for SM service
 

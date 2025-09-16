@@ -8,6 +8,7 @@ This deployment creates:
 - Resource Group (or uses existing)
 - Stream Host Container Instance (Azure Container Instances)
 - Necessary networking and security configurations
+- Optional monitoring and alerting infrastructure (Application Insights, Log Analytics, Action Groups)
 
 ## Documentation
 
@@ -80,6 +81,99 @@ imageversion = "4.5.2"
 
 ## Optional Configuration
 
+### Monitoring and Alerting
+
+You can enable monitoring and alerting independently based on your needs:
+
+#### Option 1: Enable Both (Recommended for new deployments)
+```hcl
+# Creates Application Insights and Log Analytics
+enable_monitoring = true
+
+# Enables alerting using the created monitoring infrastructure
+enable_alerting = true
+
+# Email notifications
+enable_email_alerts = true
+alert_email_addresses = ["admin@company.com", "ops@company.com"]
+
+# Container-specific alerts
+enable_cpu_alerts = true
+cpu_alert_threshold = 80  # Percentage
+enable_memory_alerts = true
+memory_alert_threshold = 80  # Percentage
+enable_container_restart_alerts = true
+enable_container_stop_alerts = true
+```
+
+#### Option 2: Monitoring Only
+```hcl
+# Creates Application Insights and Log Analytics without alerting
+enable_monitoring = true
+```
+
+#### Option 3: Alerting with External Monitoring
+```hcl
+# Monitoring should be set to false
+enable_monitoring = false
+# Use existing Application Insights for alerting
+enable_alerting = true
+external_app_insights_id = "/subscriptions/your-sub/resourceGroups/your-rg/providers/Microsoft.Insights/components/your-appinsights"
+
+# Configure alerts as needed
+enable_cpu_alerts = true
+# ... other alert settings
+```
+
+#### Option 4: Complete External Monitoring (Container Telemetry + Alerting)
+```hcl
+# Disable internal monitoring completely
+enable_monitoring = false
+
+# External monitoring for container telemetry
+existing_app_insights_connection_string = "InstrumentationKey=your-key;IngestionEndpoint=https://..."
+existing_log_analytics_workspace_id = "/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.OperationalInsights/workspaces/xxx"
+existing_log_analytics_primary_shared_key = "your-workspace-key"
+
+# External monitoring for alerting
+enable_alerting = true
+external_app_insights_id = "/subscriptions/your-sub/resourceGroups/your-rg/providers/Microsoft.Insights/components/your-appinsights"
+enable_cpu_alerts = true
+# ... other alert settings
+```
+
+⚠️ **Important**: When `enable_alerting = true` and `enable_monitoring = false`, you **must** provide `external_app_insights_id`. Terraform will validate this requirement and throw an error if the App Insights dependency is not satisfied.
+
+The alerting system provides:
+- **CPU Usage Alerts**: When container CPU exceeds threshold
+- **Memory Usage Alerts**: When container memory exceeds threshold  
+- **Container Restart Alerts**: When container restarts unexpectedly
+- **Container Stop Alerts**: When container stops
+- **Multiple Notification Methods**: Email, SMS, and webhook notifications
+
+### Resource Group Configuration
+
+By default, a new resource group is created for the Stream Host deployment. You can use an existing resource group instead:
+
+```hcl
+# Use existing resource group
+use_existing_resource_group = true
+existing_resource_group_name = "my-existing-rg"
+```
+
+### Log Analytics Cost Control
+
+When `enable_monitoring = true`, you can control Log Analytics daily ingestion costs:
+
+```hcl
+# Set daily quota to prevent unexpected charges (default: 1 GB)
+log_analytics_quota = 5  # GB per day
+```
+
+⚠️ **Note**: Azure daily caps may not work reliably. Consider data filtering for better cost control.
+
+### Other Configuration Options
+
 See `terraform.tfvars.example` for all available options including:
 - Docker image variants (bookworm-slim, bookworm-slim-python3.12, alpine3.21)
 - Resource allocation (CPU/memory)
@@ -97,9 +191,18 @@ For detailed configuration options, refer to:
 
 After deployment, the following outputs are available:
 
+### Core Outputs
 - `resource_group_name` - Name of the created resource group
 - `stream_host_container_group_id` - ID of the Stream Host container group
 - `stream_host_container_group_name` - Name of the Stream Host container group
+
+### Monitoring Outputs (when `enable_monitoring = true`)
+- `app_insights_connection_string` - Application Insights connection string (sensitive)
+- `app_insights_instrumentation_key` - Application Insights instrumentation key (sensitive)
+- `log_analytics_workspace_id` - Log Analytics workspace ID
+
+### Alerting Outputs (when `enable_alerting = true`)
+- `action_group_id` - Action group ID for alert notifications
 
 ## Getting Collection Credentials
 

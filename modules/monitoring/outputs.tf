@@ -45,3 +45,4 @@ output "app_insights_app_id" {
   description = "The App ID of the Application Insights instance"
   value       = var.enable_app_insights ? azurerm_application_insights.this[0].app_id : null
 }
+
