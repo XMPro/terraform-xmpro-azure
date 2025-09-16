@@ -1,0 +1,20 @@
+# Redis Standalone Deployment Configuration
+# This creates a Redis cache that can be shared across multiple XMPro deployments
+
+# Basic Configuration
+prefix      = "xmpro"
+environment = "shared"
+location    = "southeastasia"
+
+# Redis Configuration
+redis_capacity = 0        # 0 = C0 (250MB), 1 = C1 (1GB), etc.
+redis_family   = "C"      # C = Standard, P = Premium
+redis_sku_name = "Standard"  # Basic, Standard, or Premium
+
+# Tags
+tags = {
+  Purpose     = "SharedRedisCache"
+  ManagedBy   = "Terraform"
+  Environment = "Shared"
+  CreatedBy   = "XMPro"
+}
