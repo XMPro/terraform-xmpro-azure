@@ -51,18 +51,18 @@ module "sm_key_vault" {
       value = var.enable_email_notification
     },
     "AutoScaleEnable" = {
-      value = tostring(var.enable_auto_scale)
+      value = "false"
     },
     "SALT" = {
       value = random_string.salt.result
     },
     "REDIS" = {
-      value = var.enable_auto_scale && var.redis_connection_string != "" ? var.redis_connection_string : "-"
+      value = "-"
     },
     "CERT" = {
       value = "CN=${var.companyname}-SM-SigningCert"
     }
-    }, var.sso_enabled ? {
+  }, var.sso_enabled ? {
     "SSO-AZURE-AD-CLIENT-ID" = {
       value = var.sso_azure_ad_client_id
     },

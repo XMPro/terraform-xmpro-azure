@@ -154,13 +154,6 @@ variable "smtp_enable_ssl" {
   default     = true
 }
 
-# Security Headers Configuration
-variable "enable_security_headers" {
-  description = "Whether to enable security headers for AD and DS applications"
-  type        = bool
-  default     = true
-}
-
 # Tagging
 variable "tags" {
   description = "A map of tags to apply to all resources"
@@ -278,47 +271,6 @@ variable "stream_host_environment_variables" {
   description = "Additional environment variables for Stream Host"
   type        = map(string)
   default     = {}
-}
-
-# Redis Cache Configuration
-variable "create_redis_cache" {
-  description = "Whether to create an Azure Redis Cache instance"
-  type        = bool
-  default     = false
-}
-
-# Auto Scale Configuration
-variable "enable_auto_scale" {
-  description = "Enable auto-scaling with Redis distributed caching"
-  type        = bool
-  default     = false
-}
-
-variable "redis_connection_string" {
-  description = "Redis connection string for auto-scaling (e.g., 'your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False')"
-  type        = string
-  default     = ""
-  sensitive   = true
-}
-
-# Master Data Configuration
-variable "create_masterdata" {
-  description = "Whether to create the Master Data database"
-  type        = bool
-  default     = false
-}
-
-variable "masterdata_db_admin_username" {
-  description = "The administrator username for the Master Data database (for application access)"
-  type        = string
-  default     = "masterdata_admin"
-}
-
-variable "masterdata_db_admin_password" {
-  description = "The administrator password for the Master Data database (for application access)"
-  type        = string
-  sensitive   = true
-  default     = ""
 }
 
  
