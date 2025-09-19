@@ -96,6 +96,13 @@ variable "ds_product_key" {
   sensitive   = true
 }
 
+# Security Headers Configuration
+variable "enable_security_headers" {
+  description = "Whether to enable security headers for DS application"
+  type        = bool
+  default     = true
+}
+
 # New variables for service plan
 variable "service_plan_sku" {
   description = "The SKU of the App Service Plan"

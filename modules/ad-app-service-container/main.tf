@@ -96,6 +96,7 @@ resource "azurerm_linux_web_app" "ad_app" {
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLEAPPLICATIONINSIGHTSTELEMETRY" = tostring(true)
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
+    "XM__XMPRO__APPDESIGNER__FEATUREFLAGS__ENABLESECURITYHEADERS"              = tostring(var.enable_security_headers)
 
     # Health Check URLs Configuration
     "XM__XMPRO__HEALTHCHECKS__URLS__0__URL"     = "${var.sm_url}/health/ping"

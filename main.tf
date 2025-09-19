@@ -209,6 +209,9 @@ module "ad_app_service" {
   smtp_port                 = var.smtp_port
   smtp_enable_ssl           = var.smtp_enable_ssl
 
+  # Security Headers Configuration
+  enable_security_headers = var.enable_security_headers
+
   # Product ID and Key Configuration
   ad_product_id  = local.effective_ad_product_id
   ad_product_key = local.effective_ad_product_key
@@ -251,6 +254,9 @@ module "ds_app_service" {
   # Environment settings
   aspnetcore_environment = "dev"
   service_plan_sku       = var.ds_service_plan_sku
+
+  # Security Headers Configuration
+  enable_security_headers = var.enable_security_headers
 
   # Product ID and Key Configuration
   ds_product_id  = local.effective_ds_product_id
