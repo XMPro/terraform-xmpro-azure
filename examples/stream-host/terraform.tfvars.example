@@ -25,7 +25,7 @@ acr_url_product = "xmpro.azurecr.io"
 # acr_password = "your-password"
 
 # Image version
-imageversion = "4.5.3"
+imageversion = "4.5.2"
 
 # ====================
 # OPTIONAL SETTINGS
@@ -46,14 +46,49 @@ imageversion = "4.5.3"
 stream_host_cpu = 1
 stream_host_memory = 4
 
-# Monitoring (optional)
+# Monitoring and Alerting Configuration (optional)
 # app_insights_connection_string = "InstrumentationKey=your-key-here"
 # log_analytics_workspace_id = "your-workspace-id"
 # log_analytics_primary_shared_key = "your-workspace-key"
 
-# Resource tagging
-billing_tag = "engineering"
-keep_or_delete_tag = "delete"
+# Monitoring infrastructure (optional)
+# enable_monitoring = true  # Creates Application Insights + Log Analytics
+# log_analytics_quota = 1   # Daily data ingestion quota in GB (default: 1)
+
+# External monitoring configuration (when enable_monitoring = false)
+# existing_app_insights_connection_string = "InstrumentationKey=your-key;IngestionEndpoint=https://..."
+# existing_log_analytics_workspace_id = "/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.OperationalInsights/workspaces/xxx"  
+# existing_log_analytics_primary_shared_key = "your-workspace-key"
+
+# Alerting configuration (optional)
+# Option 1: Enable both monitoring and alerting (recommended for new deployments)
+# enable_monitoring = true
+# enable_alerting = true
+
+# Option 2: Enable alerting with external monitoring (for existing monitoring infrastructure)
+# enable_alerting = true
+# external_app_insights_id = "/subscriptions/your-sub/resourceGroups/your-rg/providers/Microsoft.Insights/components/your-appinsights"
+# enable_email_alerts = true
+# alert_email_addresses = ["admin@company.com", "ops@company.com"]
+# enable_sms_alerts = false
+# alert_phone_numbers = []
+# alert_phone_country_code = "1"
+# enable_webhook_alerts = false
+# alert_webhook_urls = []
+
+# Stream Host Container Alerts (optional)
+# enable_cpu_alerts = true
+# cpu_alert_threshold = 80  # CPU usage percentage threshold
+# cpu_alert_severity = 2  # Severity: 0=critical, 1=error, 2=warning, 3=info, 4=verbose
+# enable_memory_alerts = true
+# memory_alert_threshold = 80  # Memory usage percentage threshold
+# memory_alert_severity = 2
+# enable_container_restart_alerts = true
+# enable_container_stop_alerts = true
+
+# Alert timing (optional - using defaults)
+# alert_window_size = "PT5M"  # 5 minute window
+# alert_evaluation_frequency = "PT1M"  # Evaluate every minute
 
 # Additional environment variables (optional)
 # All variants support custom environment variables and ADDITIONAL_INSTALLS
