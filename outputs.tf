@@ -124,25 +124,3 @@ output "evaluation_mode_status" {
     effective_ds_product_id     = local.effective_ds_product_id
   }
 }
-
-# Master Data outputs
-output "masterdata_sql_server_name" {
-  description = "The name of the Master Data SQL server (if created)"
-  value       = var.create_masterdata ? module.masterdata_database[0].sql_server_name : ""
-}
-
-output "masterdata_sql_server_fqdn" {
-  description = "The FQDN of the Master Data SQL server (if created)"
-  value       = local.masterdata_sql_server_fqdn
-}
-
-output "masterdata_connection_string" {
-  description = "Connection string for the Master Data database (if created)"
-  value       = local.masterdata_connection_string
-  sensitive   = true
-}
-
-output "masterdata_database_created" {
-  description = "Whether the Master Data database was created"
-  value       = var.create_masterdata
-}

@@ -25,7 +25,6 @@ The XMPro platform consists of multiple interconnected services that provide a c
 - **Azure DNS Zone**: Custom domain management (optional)
 - **Application Insights**: Monitoring and telemetry
 - **Log Analytics**: Centralized logging
-- **Azure Monitor Alerting**: Stream Host container monitoring and alerting
 
 For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/4.5/installation/deployment/azure-terraform/#architecture).
 
@@ -170,16 +169,6 @@ module "xmpro_platform" {
   existing_sql_server_fqdn = "existing-server.database.windows.net"
   db_admin_username        = "admin"
   db_admin_password        = "ExistingPassword123!"
-  # Existing product IDs for SM, AD, DS, AI when using existing databases
-  existing_sm_product_id = ""
-  existing_ad_product_id = ""
-  existing_ds_product_id = ""
-  existing_ai_product_id = ""
-  # Existing product keys for SM, AD, DS, AI when using existing databases
-  existing_ad_product_key = ""
-  existing_ds_product_key = ""
-  existing_ai_product_key = ""
-
 
   # For Production Workloads (no built-in licensing)
   is_evaluation_mode = false
@@ -396,32 +385,6 @@ redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,
 
 **Note:** When `enable_auto_scale` is set to `true`, you must provide a `redis_connection_string`. The connection string format should be: `your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False`
 
-### Master Data Database Configuration
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| create_masterdata | Create a separate SQL Server with Master Data database | `bool` | `false` |
-| masterdata_db_admin_username | Master Data SQL Server administrator username | `string` | `"masterdata_admin"` |
-| masterdata_db_admin_password | Master Data SQL Server administrator password | `string` | `""` |
-
-**Note:** When `create_masterdata` is set to `true`, a dedicated SQL Server instance (`sqldb-masterdata-{company}-{suffix}`) is created exclusively for the Master Data database. This provides complete isolation from the XMPro platform databases with dedicated credentials. The `masterdata_db_admin_password` must be provided when enabling this feature.
-
-### Stream Host Alerting Configuration
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| enable_alerting | Enable alerting for Stream Host containers | `bool` | `false` |
-| enable_email_alerts | Enable email notifications for alerts | `bool` | `false` |
-| alert_email_addresses | List of email addresses to receive alert notifications | `list(string)` | `[]` |
-| enable_sms_alerts | Enable SMS notifications for alerts | `bool` | `false` |
-| alert_phone_numbers | List of phone numbers to receive SMS alert notifications | `list(string)` | `[]` |
-| enable_cpu_alerts | Enable CPU usage alerts for Stream Host containers | `bool` | `false` |
-| cpu_alert_threshold | CPU usage percentage threshold for alerts | `number` | `80` |
-| enable_memory_alerts | Enable memory usage alerts for Stream Host containers | `bool` | `false` |
-| memory_alert_threshold | Memory usage percentage threshold for alerts | `number` | `80` |
-| enable_container_restart_alerts | Enable container restart alerts | `bool` | `false` |
-| enable_container_stop_alerts | Enable container stop alerts | `bool` | `false` |
-
 ### Deployment Configuration
 
 | Name | Description | Type | Default |
@@ -475,13 +438,6 @@ redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,
 | stream_host_container_id | The ID of the stream host container group |
 | company_details | Details about the company admin |
 
-### Alerting Information
-
-| Name | Description |
-|------|-------------|
-| alerting_action_group_id | The ID of the action group for Stream Host alerts (when alerting enabled) |
-| alerting_action_group_name | The name of the action group for Stream Host alerts (when alerting enabled) |
-
 ### Deployment Warnings
 
 | Name | Description |
@@ -512,7 +468,6 @@ This module is composed of the following submodules:
 - **storage-account**: Azure Storage for deployment artifacts
 - **dns-zone**: Custom domain and DNS management
 - **monitoring**: Application Insights and Log Analytics
-- **alerting**: Azure Monitor alerting for Stream Host containers
 - **key-vault**: Azure Key Vault for secrets management
 - **sm-key-vault**: Specialized Key Vault for SM service
 
@@ -629,42 +584,17 @@ existing_sql_server_fqdn = "your-server.database.windows.net"
 # Standard database and authentication settings
 db_admin_username = "your-admin-username"
 db_admin_password = "your-admin-password"
-
-# Existing product IDs for SM, AD, DS, AI when using existing databases
-existing_sm_product_id = ""
-existing_ad_product_id = ""
-existing_ds_product_id = ""
-existing_ai_product_id = ""
-# Existing product keys for SM, AD, DS, AI when using existing databases
-existing_ad_product_key = ""
-existing_ds_product_key = ""
-existing_ai_product_key = ""
-```
-
-### SMTP Configuration (Required)
-
-⚠️ **Important**: SMTP configuration is **mandatory** for existing database deployments. These settings are stored in Azure Key Vault and used by the applications for email notifications. Omitting SMTP configuration will cause email functionality to fail.
-
-```hcl
-# SMTP configuration - ALL variables required
-smtp_server       = "smtp.office365.com"
-smtp_from_address = "notifications@company.com"
-smtp_username     = "smtp-user"
-smtp_password     = "smtp-password"
-smtp_port         = 587
-smtp_enable_ssl   = true
 ```
 
 ### Behavior When Using Existing Database
 
 **Skipped Resources**:
 - SQL Server and database creation
-- Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate, sm-prep)
-- **Licenses container deployment** (regardless of `is_evaluation_mode` setting)
+- Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate)
+- Licenses container deployment
 
 **Created Resources**:
 - All App Services with existing database connectivity
-- Keyvault with predefined values
 - Monitoring and supporting infrastructure
 - Stream Host and other container services
 
@@ -674,16 +604,12 @@ smtp_enable_ssl   = true
 2. **Firewall Rules**: Must allow connections from the newly created Azure resources
 3. **Schema Compatibility**: Database schemas should be compatible with the specified `imageversion`
 4. **Authentication**: Provided credentials must have sufficient privileges
-5. **SMTP Configuration**: All SMTP variables must be provided as they are stored in Key Vault for application use
-6. **Licensing**: Must be managed manually through SM interface - `is_evaluation_mode` has no effect
 
 ### Warnings and Considerations
 
-⚠️ **Evaluation Mode Note**: The `is_evaluation_mode` variable is irrelevant when using existing databases because the licenses container is never deployed. The existing-database example intentionally omits this variable to avoid confusion.
-
 - Ensure firewall rules allow connections from new App Services and Container Instances
 - Database migration containers are skipped, so schema must be pre-configured
-- Variables like `company_name`, `product_id`, `product_key`, and `url` should match existing database values
+- Variables like `company_name`, product IDs, and URLs should match existing database values
 
 ## Stream Host Variants
 

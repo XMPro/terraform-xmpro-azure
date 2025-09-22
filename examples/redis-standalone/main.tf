@@ -31,17 +31,17 @@ resource "azurerm_resource_group" "redis" {
 # Create Redis Cache
 module "redis_cache" {
   source = "../../modules/redis-cache"
-
+  
   prefix              = var.prefix
   environment         = var.environment
   location            = var.location
   resource_group_name = azurerm_resource_group.redis.name
   unique_suffix       = random_id.unique.hex
-
-  redis_capacity = var.redis_capacity
-  redis_family   = var.redis_family
-  redis_sku_name = var.redis_sku_name
-
+  
+  redis_capacity  = var.redis_capacity
+  redis_family    = var.redis_family
+  redis_sku_name  = var.redis_sku_name
+  
   tags = var.tags
 }
 

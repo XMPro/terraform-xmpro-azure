@@ -62,7 +62,7 @@ module "sm_key_vault" {
     "CERT" = {
       value = "CN=${var.companyname}-SM-SigningCert"
     }
-    }, var.sso_enabled ? {
+  }, var.sso_enabled ? {
     "SSO-AZURE-AD-CLIENT-ID" = {
       value = var.sso_azure_ad_client_id
     },

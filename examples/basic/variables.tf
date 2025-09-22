@@ -301,32 +301,4 @@ variable "redis_connection_string" {
   sensitive   = true
 }
 
-# Master Data Configuration
-variable "create_masterdata" {
-  description = "Whether to create the Master Data database"
-  type        = bool
-  default     = false
-}
-
-variable "masterdata_db_admin_username" {
-  description = "The administrator username for the Master Data database (for application access)"
-  type        = string
-  default     = "masterdata_admin"
-}
-
-variable "masterdata_db_admin_password" {
-  description = "The administrator password for the Master Data database (for application access)"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-# AD Encryption Configuration
-variable "ad_encryption_key" {
-  description = "Encryption key for AD server variables (32 bytes base64 encoded). If not provided, will be auto-generated."
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
  

@@ -159,41 +159,11 @@ variable "existing_ai_product_key" {
 }
 
 # SMTP configuration for email notifications
-variable "smtp_server" {
-  description = "SMTP server address"
-  type        = string
-  default     = "smtp.example.com"
-}
-
-variable "smtp_from_address" {
-  description = "SMTP from address"
-  type        = string
-  default     = "notifications@example.com"
-}
-
-variable "smtp_username" {
-  description = "SMTP username"
-  type        = string
-  default     = "notifications@example.com"
-}
-
 variable "smtp_password" {
   description = "SMTP password for email notifications"
   type        = string
   sensitive   = true
   default     = "ExampleSmtpP@ssw0rd123!"
-}
-
-variable "smtp_port" {
-  description = "SMTP port"
-  type        = number
-  default     = 587
-}
-
-variable "smtp_enable_ssl" {
-  description = "Whether to enable SSL for SMTP"
-  type        = bool
-  default     = true
 }
 
 # Tagging
@@ -217,14 +187,9 @@ variable "enable_ai" {
   default     = false
 }
 
-# AD Encryption Configuration
-variable "ad_encryption_key" {
-  description = "Encryption key for AD server variables (32 bytes base64 encoded). If not provided, will be auto-generated."
-  type        = string
-  sensitive   = true
-  default     = ""
+# Evaluation mode flag
+variable "is_evaluation_mode" {
+  description = "Flag to indicate if the deployment is in evaluation mode"
+  type        = bool
+  default     = true
 }
-
-# Note: is_evaluation_mode variable is not included in this existing database example
-# because it has no effect when use_existing_database = true. The licenses container
-# is never deployed with existing databases, so evaluation mode is irrelevant.

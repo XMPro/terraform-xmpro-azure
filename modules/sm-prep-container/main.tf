@@ -48,20 +48,10 @@ resource "azurerm_container_group" "sm_zip_prep" {
   os_type             = "Linux"
   restart_policy      = "Never"
 
-  # Image registry credentials for private ACR
-  dynamic "image_registry_credential" {
-    for_each = var.is_private_registry ? [1] : []
-    content {
-      server   = var.acr_url_product
-      username = var.acr_username
-      password = var.acr_password
-    }
-  }
-
   # Container definition
   container {
     name   = "sm-zip-prep"
-    image  = "${var.acr_url_product}/powershell:${var.imageversion}"
+    image  = "mcr.microsoft.com/powershell:latest"
     cpu    = 0.25
     memory = 0.5
 
@@ -118,13 +108,13 @@ resource "azurerm_container_group" "sm_zip_prep" {
       EMAIL_FROM_ADDRESS            = "$${SMTPFrom}"
       EMAIL_TEMPLATE_FOLDER         = "~/App_Data/Templates/"
       EMAIL_WEB_APPLICATION         = "true"
-
+      
       # SSO Configuration (Azure AD) - Use same pattern as SMTP variables with $$
-      ENABLE_SSO              = var.sso_enabled ? "true" : "false"
-      SSO_AZURE_AD_CLIENT_ID  = var.sso_enabled ? "$${SSO-AZURE-AD-CLIENT-ID}" : ""
-      SSO_BUSINESS_ROLE_CLAIM = var.sso_enabled ? "$${SSO-BUSINESS-ROLE-CLAIM}" : ""
-      SSO_AZURE_AD_TENANT_ID  = var.sso_enabled ? "$${SSO-AZURE-AD-TENANT-ID}" : ""
-      SSO_AZURE_AD_SECRET     = var.sso_enabled ? "$${SSO-AZURE-AD-SECRET}" : ""
+      ENABLE_SSO                = var.sso_enabled ? "true" : "false"
+      SSO_AZURE_AD_CLIENT_ID    = var.sso_enabled ? "$${SSO-AZURE-AD-CLIENT-ID}" : ""
+      SSO_BUSINESS_ROLE_CLAIM   = var.sso_enabled ? "$${SSO-BUSINESS-ROLE-CLAIM}" : ""
+      SSO_AZURE_AD_TENANT_ID    = var.sso_enabled ? "$${SSO-AZURE-AD-TENANT-ID}" : ""
+      SSO_AZURE_AD_SECRET       = var.sso_enabled ? "$${SSO-AZURE-AD-SECRET}" : ""
     }
 
     # Secure environment variables

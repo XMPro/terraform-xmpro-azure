@@ -81,12 +81,4 @@ module "xmpro_platform" {
   # Auto Scale Configuration
   enable_auto_scale       = var.enable_auto_scale
   redis_connection_string = var.redis_connection_string
-
-  # Master Data Configuration
-  create_masterdata             = var.create_masterdata
-  masterdata_db_admin_username  = var.masterdata_db_admin_username
-  masterdata_db_admin_password  = var.masterdata_db_admin_password
-
-  # AD Encryption Key
-  ad_encryption_key = var.ad_encryption_key
 }

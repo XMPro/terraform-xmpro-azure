@@ -8,7 +8,7 @@ variable "environment" {
   description = "Environment name"
   type        = string
   default     = "shared"
-
+  
   validation {
     condition     = can(regex("^(dev|qa|staging|prod|shared|sandbox).*$", var.environment))
     error_message = "Environment must be one of: dev*, qa*, staging, prod, shared, sandbox"
