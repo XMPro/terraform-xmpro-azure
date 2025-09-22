@@ -124,11 +124,6 @@ variable "acr_password" {
   sensitive   = true
 }
 
-variable "imageversion" {
-  description = "The version of the container image to use"
-  type        = string
-}
-
 variable "is_private_registry" {
   description = "Whether to use a private container registry"
   type        = bool

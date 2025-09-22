@@ -61,7 +61,7 @@ resource "azurerm_container_group" "sm_zip_prep" {
   # Container definition
   container {
     name   = "sm-zip-prep"
-    image  = "${var.acr_url_product}/powershell:${var.imageversion}"
+    image  = "${var.acr_url_product}/powershell:latest"
     cpu    = 0.25
     memory = 0.5
 

@@ -595,7 +595,6 @@ module "sm_prep_container" {
   acr_url_product     = var.acr_url_product
   acr_username        = var.acr_username
   acr_password        = var.acr_password
-  imageversion        = var.imageversion
   is_private_registry = var.is_private_registry
 
   # SSO Configuration
