@@ -65,6 +65,9 @@ module "xmpro_platform" {
   # Enable AI service
   enable_ai = var.enable_ai
 
+  # AD Encryption Key
+  ad_encryption_key = var.ad_encryption_key
+
   # Note: is_evaluation_mode is not specified because it has no effect with existing databases
   # The licenses container is never deployed when use_existing_database = true
 } 

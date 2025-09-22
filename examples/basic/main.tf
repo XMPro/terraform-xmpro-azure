@@ -86,4 +86,7 @@ module "xmpro_platform" {
   create_masterdata             = var.create_masterdata
   masterdata_db_admin_username  = var.masterdata_db_admin_username
   masterdata_db_admin_password  = var.masterdata_db_admin_password
+
+  # AD Encryption Key
+  ad_encryption_key = var.ad_encryption_key
 }

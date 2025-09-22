@@ -321,4 +321,12 @@ variable "masterdata_db_admin_password" {
   default     = ""
 }
 
+# AD Encryption Configuration
+variable "ad_encryption_key" {
+  description = "Encryption key for AD server variables (32 bytes base64 encoded). If not provided, will be auto-generated."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
  
