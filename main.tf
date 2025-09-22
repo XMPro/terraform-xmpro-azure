@@ -591,6 +591,13 @@ module "sm_prep_container" {
   # Key Vault configuration (calculated name - no dependency needed)
   azure_key_vault_name = "kv-sm-${substr("${var.company_name}-${random_id.suffix.hex}", 0, 16)}"
 
+  # Container registry configuration
+  acr_url_product     = var.acr_url_product
+  acr_username        = var.acr_username
+  acr_password        = var.acr_password
+  imageversion        = var.imageversion
+  is_private_registry = var.is_private_registry
+
   # SSO Configuration
   sso_enabled             = var.sso_enabled
   sso_azure_ad_client_id  = var.sso_azure_ad_client_id

@@ -48,10 +48,20 @@ resource "azurerm_container_group" "sm_zip_prep" {
   os_type             = "Linux"
   restart_policy      = "Never"
 
+  # Image registry credentials for private ACR
+  dynamic "image_registry_credential" {
+    for_each = var.is_private_registry ? [1] : []
+    content {
+      server   = var.acr_url_product
+      username = var.acr_username
+      password = var.acr_password
+    }
+  }
+
   # Container definition
   container {
     name   = "sm-zip-prep"
-    image  = "mcr.microsoft.com/powershell:latest"
+    image  = "${var.acr_url_product}/powershell:${var.imageversion}"
     cpu    = 0.25
     memory = 0.5
 

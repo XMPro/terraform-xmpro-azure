@@ -106,3 +106,31 @@ variable "sso_azure_ad_tenant_id" {
   type        = string
   default     = ""
 }
+
+# Container registry configuration
+variable "acr_url_product" {
+  description = "The URL of the Azure Container Registry for product images"
+  type        = string
+}
+
+variable "acr_username" {
+  description = "The username for accessing the Azure Container Registry"
+  type        = string
+}
+
+variable "acr_password" {
+  description = "The password for accessing the Azure Container Registry"
+  type        = string
+  sensitive   = true
+}
+
+variable "imageversion" {
+  description = "The version of the container image to use"
+  type        = string
+}
+
+variable "is_private_registry" {
+  description = "Whether to use a private container registry"
+  type        = bool
+  default     = true
+}
