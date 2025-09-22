@@ -216,12 +216,15 @@ module "ad_app_service" {
   ad_product_id  = local.effective_ad_product_id
   ad_product_key = local.effective_ad_product_key
 
+  # Encryption Key Configuration
+  ad_encryption_key = var.ad_encryption_key
+
   # Redis and Auto-scaling Configuration
-  enable_auto_scale       = var.enable_auto_scale
+  enable_auto_scale = var.enable_auto_scale
   redis_connection_string = var.enable_auto_scale ? (
     var.create_redis_cache
-      ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
-      : var.redis_connection_string
+    ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
+    : var.redis_connection_string
   ) : ""
 
   # Create implicit dependency on ad_dbmigrate container (only when using new databases)
@@ -271,11 +274,11 @@ module "ds_app_service" {
   ds_product_key = local.effective_ds_product_key
 
   # Redis and Auto-scaling Configuration
-  enable_auto_scale       = var.enable_auto_scale
+  enable_auto_scale = var.enable_auto_scale
   redis_connection_string = var.enable_auto_scale ? (
     var.create_redis_cache
-      ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
-      : var.redis_connection_string
+    ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
+    : var.redis_connection_string
   ) : ""
 
   # Create implicit dependency on ds_dbmigrate container (only when using new databases)
@@ -373,12 +376,12 @@ module "sm_key_vault" {
   sso_azure_ad_tenant_id  = var.sso_azure_ad_tenant_id
 
   # Auto Scale Configuration
-  enable_auto_scale       = var.enable_auto_scale
+  enable_auto_scale = var.enable_auto_scale
   # Use Redis connection string from created cache if available, otherwise use provided string
   redis_connection_string = var.enable_auto_scale ? (
     var.create_redis_cache
-      ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
-      : var.redis_connection_string
+    ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
+    : var.redis_connection_string
   ) : ""
 
   # Tags

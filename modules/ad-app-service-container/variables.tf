@@ -188,3 +188,10 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "ad_encryption_key" {
+  description = "Encryption key for AD application to encrypt/decrypt server variables"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

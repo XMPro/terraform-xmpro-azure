@@ -52,9 +52,9 @@ output "sm_zip_download_url" {
 output "sso_configuration_status" {
   description = "SSO configuration status and details"
   value = {
-    enabled     = var.sso_enabled
-    client_id   = var.sso_enabled ? var.sso_azure_ad_client_id : "N/A"
-    tenant_id   = var.sso_enabled && var.sso_azure_ad_tenant_id != "" ? var.sso_azure_ad_tenant_id : "Default Tenant"
-    role_claim  = var.sso_enabled && var.sso_business_role_claim != "" ? var.sso_business_role_claim : "Not configured"
+    enabled    = var.sso_enabled
+    client_id  = var.sso_enabled ? var.sso_azure_ad_client_id : "N/A"
+    tenant_id  = var.sso_enabled && var.sso_azure_ad_tenant_id != "" ? var.sso_azure_ad_tenant_id : "Default Tenant"
+    role_claim = var.sso_enabled && var.sso_business_role_claim != "" ? var.sso_business_role_claim : "Not configured"
   }
 }

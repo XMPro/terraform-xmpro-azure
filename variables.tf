@@ -509,3 +509,10 @@ variable "sso_azure_ad_tenant_id" {
   default     = ""
 }
 
+variable "ad_encryption_key" {
+  description = "Encryption key for AD application to encrypt/decrypt server variables"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
