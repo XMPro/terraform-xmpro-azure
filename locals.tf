@@ -10,10 +10,13 @@ locals {
   })
   # Database connection strings
   sql_server_fqdn      = var.use_existing_database ? var.existing_sql_server_fqdn : module.database[0].sql_server_fqdn
-  ad_connection_string = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=AD;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-  ds_connection_string = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=DS;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-  ai_connection_string = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=AI;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-  sm_connection_string = "Server=tcp:${local.sql_server_fqdn};persist security info=True;user id=${var.db_admin_username};password=${var.db_admin_password};Initial Catalog=SM;"
+  ad_connection_string         = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=AD;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  ds_connection_string         = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=DS;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  ai_connection_string         = "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=AI;Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  sm_connection_string         = "Server=tcp:${local.sql_server_fqdn};persist security info=True;user id=${var.db_admin_username};password=${var.db_admin_password};Initial Catalog=SM;"
+  # Master Data server FQDN (separate server)
+  masterdata_sql_server_fqdn   = var.create_masterdata ? module.masterdata_database[0].sql_server_fqdn : ""
+  masterdata_connection_string = var.create_masterdata ? "Server=tcp:${local.masterdata_sql_server_fqdn},1433;Initial Catalog=MasterData;Persist Security Info=False;User ID=${var.masterdata_db_admin_username};Password=${var.masterdata_db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" : ""
 
   # DNS zone name - use existing or created one
   dns_zone_name = var.enable_custom_domain ? (var.use_existing_dns_zone ? var.dns_zone_name : try(module.dns_zone[0].name, "")) : ""

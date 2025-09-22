@@ -34,7 +34,7 @@ environment = "dev"
 
 # Container registry settings (defaults to public XMPro registry)
 acr_url_product = "xmpro.azurecr.io"
-imageversion = "4.5.3"
+imageversion = "4.5.2"
 # is_private_registry = false  # Set to true if using private registry
 # acr_username = ""            # Only needed for private registry
 # acr_password = ""            # Only needed for private registry
@@ -100,6 +100,46 @@ enable_custom_domain = false
 # Enable auto-scaling with Redis distributed caching
 # enable_auto_scale = true
 # redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False"
+
+# Master Data Configuration (optional)
+# Create a separate SQL Server with Master Data database (completely isolated from XMPro databases)
+# create_masterdata = true  # Creates dedicated SQL Server for Master Data (defaults to false)
+# masterdata_db_admin_username = "masterdata_admin"  # SQL Server administrator username
+# masterdata_db_admin_password = "SecurePassword123!"  # SQL Server administrator password (required when enabled)
+# Note: Master Data uses its own SQL Server (sqldb-masterdata-{company}-{suffix}) for complete isolation
+
+# Monitoring and Alerting Configuration (optional)
+# Enable comprehensive monitoring and alerting for your deployment
+# enable_alerting = true
+
+# Alert notification methods (at least one required when alerting is enabled)
+# Email alerts
+# enable_email_alerts = true
+# alert_email_addresses = ["devops@mycompany.com", "admin@mycompany.com"]
+
+# SMS alerts (optional)
+# enable_sms_alerts = true
+# alert_phone_numbers = ["5551234567", "5559876543"]
+# alert_phone_country_code = "1"  # US country code
+
+# Webhook alerts (optional)  
+# enable_webhook_alerts = true
+# alert_webhook_urls = ["https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"]
+
+# Stream Host Container Alerts (optional)
+# Note: These alerts monitor the Stream Host container specifically
+# enable_cpu_alerts = true
+# cpu_alert_threshold = 80  # CPU usage percentage threshold
+# cpu_alert_severity = 2  # Severity: 0=critical, 1=error, 2=warning, 3=info, 4=verbose
+# enable_memory_alerts = true
+# memory_alert_threshold = 80  # Memory usage percentage threshold
+# memory_alert_severity = 2
+# enable_container_restart_alerts = true
+# enable_container_stop_alerts = true
+
+# Alert timing (optional - using defaults)
+# alert_window_size = "PT5M"  # 5 minute window
+# alert_evaluation_frequency = "PT1M"  # Evaluate every minute
 
 # Additional optional features
 # See variables.tf for complete list of available configuration options

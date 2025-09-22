@@ -40,12 +40,12 @@ output "redis_secondary_connection_string" {
 output "redis_configuration" {
   description = "The Redis configuration"
   value = {
-    hostname            = azurerm_redis_cache.redis.hostname
-    port                = azurerm_redis_cache.redis.ssl_port
-    ssl_enabled         = true
-    non_ssl_port        = azurerm_redis_cache.redis.port
-    sku_name            = azurerm_redis_cache.redis.sku_name
-    family              = azurerm_redis_cache.redis.family
-    capacity            = azurerm_redis_cache.redis.capacity
+    hostname     = azurerm_redis_cache.redis.hostname
+    port         = azurerm_redis_cache.redis.ssl_port
+    ssl_enabled  = true
+    non_ssl_port = azurerm_redis_cache.redis.port
+    sku_name     = azurerm_redis_cache.redis.sku_name
+    family       = azurerm_redis_cache.redis.family
+    capacity     = azurerm_redis_cache.redis.capacity
   }
 }

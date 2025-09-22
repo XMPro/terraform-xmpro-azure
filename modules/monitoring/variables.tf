@@ -59,6 +59,16 @@ variable "log_retention_days" {
   default     = 30
 }
 
+variable "log_analytics_daily_quota_gb" {
+  description = "Daily ingestion quota in GB for Log Analytics workspace (for cost control). Set to -1 for unlimited. NOTE: Azure daily caps may not work reliably in 2024 - consider data filtering instead."
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.log_analytics_daily_quota_gb >= -1
+    error_message = "Daily quota must be -1 (unlimited) or a positive number."
+  }
+}
+
 # Application Insights variables
 variable "enable_app_insights" {
   description = "Whether to create an Application Insights instance"
@@ -83,4 +93,5 @@ variable "enable_app_insights_telemetry" {
   type        = bool
   default     = true
 }
+
 

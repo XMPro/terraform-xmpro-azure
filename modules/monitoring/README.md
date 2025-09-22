@@ -64,8 +64,6 @@ module "monitoring" {
 | app_insights_name | The name of the Application Insights instance. If not provided, a name will be generated. | `string` | `""` | no |
 | application_type | The type of Application Insights to create | `string` | `"web"` | no |
 | enable_app_insights_telemetry | Whether to enable Application Insights telemetry collection | `bool` | `true` | no |
-| generate_random_suffix | Whether to generate a random suffix for resource names | `bool` | `false` | no |
-| random_suffix_length | The length of the random suffix to generate | `number` | `5` | no |
 
 ## Outputs
 
@@ -79,3 +77,29 @@ module "monitoring" {
 | app_insights_connection_string | The connection string for the Application Insights instance |
 | app_insights_instrumentation_key | The instrumentation key for the Application Insights instance |
 | app_insights_app_id | The App ID of the Application Insights instance |
+
+## Related Modules
+
+For alerting capabilities, use the companion alerting module:
+
+```hcl
+module "alerting" {
+  source = "../modules/alerting"
+  
+  company_name        = var.company_name
+  environment         = var.environment
+  location            = var.location
+  resource_group_name = module.resource_group.name
+  app_insights_id     = module.monitoring.app_insights_id
+  
+  # Enable alerting
+  enable_alerting = true
+  enable_email_alerts = true
+  alert_email_addresses = ["devops@mycompany.com"]
+  
+  tags = {
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
+}
+```

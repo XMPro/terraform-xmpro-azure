@@ -108,7 +108,9 @@ module "monitoring" {
   enable_log_analytics = true
   enable_app_insights  = true
   app_insights_name    = "appinsights-${var.company_name}-${var.environment}"
+
 }
+
 
 # Database
 module "database" {
@@ -164,6 +166,36 @@ module "database" {
   create_local_firewall_rule = var.create_local_firewall_rule
 
   tags = local.common_tags
+}
+
+# Master Data Database Server (separate server)
+module "masterdata_database" {
+  count  = var.create_masterdata ? 1 : 0
+  source = "./modules/database"
+  
+  company_name                 = var.company_name
+  environment                  = var.environment
+  resource_group_name          = module.resource_group.name
+  location                     = module.resource_group.location
+  administrator_login          = var.masterdata_db_admin_username
+  administrator_login_password = var.masterdata_db_admin_password
+  db_server_name               = "sqldb-masterdata-${var.company_name}-${random_id.suffix.hex}"
+  
+  databases = {
+    "MasterData" = {
+      collation      = var.db_collation
+      max_size_gb    = var.db_max_size_gb
+      read_scale     = false
+      sku_name       = var.db_sku_name
+      zone_redundant = var.db_zone_redundant
+      create_mode    = "Default"
+    }
+  }
+  
+  db_allow_azure_services    = true
+  db_allow_all_ips           = var.db_allow_all_ips
+  create_local_firewall_rule = var.create_local_firewall_rule
+  tags                       = local.common_tags
 }
 
 # Connection strings and URLs are defined in locals.tf
@@ -559,6 +591,13 @@ module "sm_prep_container" {
   # Key Vault configuration (calculated name - no dependency needed)
   azure_key_vault_name = "kv-sm-${substr("${var.company_name}-${random_id.suffix.hex}", 0, 16)}"
 
+  # Container registry configuration
+  acr_url_product     = var.acr_url_product
+  acr_username        = var.acr_username
+  acr_password        = var.acr_password
+  imageversion        = var.imageversion
+  is_private_registry = var.is_private_registry
+
   # SSO Configuration
   sso_enabled             = var.sso_enabled
   sso_azure_ad_client_id  = var.sso_azure_ad_client_id
@@ -698,4 +737,42 @@ module "stream_host_container" {
 
   # Tags
   tags = local.common_tags
+}
+
+# Alerting for Stream Host Container
+module "stream_host_alerting" {
+  count               = var.enable_alerting ? 1 : 0
+  source              = "./modules/alerting"
+
+  company_name        = var.company_name
+  environment         = var.environment
+  resource_group_name = module.resource_group.name
+  location            = module.resource_group.location
+  app_insights_id     = module.monitoring.app_insights_id
+  tags                = local.common_tags
+
+  # Alerting configuration
+  enable_email_alerts      = var.enable_email_alerts
+  alert_email_addresses    = var.alert_email_addresses
+  enable_sms_alerts        = var.enable_sms_alerts
+  alert_phone_numbers      = var.alert_phone_numbers
+  alert_phone_country_code = var.alert_phone_country_code
+  enable_webhook_alerts    = var.enable_webhook_alerts
+  alert_webhook_urls       = var.alert_webhook_urls
+
+  # Container metrics configuration - reference the stream host container
+  container_group_id          = module.stream_host_container.container_group_id
+  enable_cpu_alerts           = var.enable_cpu_alerts
+  cpu_alert_threshold         = var.cpu_alert_threshold
+  cpu_alert_severity          = var.cpu_alert_severity
+  stream_host_cpu_cores       = var.stream_host_cpu
+  enable_memory_alerts        = var.enable_memory_alerts
+  memory_alert_threshold      = var.memory_alert_threshold
+  memory_alert_severity       = var.memory_alert_severity
+  stream_host_memory_gb       = var.stream_host_memory
+  enable_container_restart_alerts = var.enable_container_restart_alerts
+  enable_container_stop_alerts    = var.enable_container_stop_alerts
+
+  alert_window_size          = var.alert_window_size
+  alert_evaluation_frequency = var.alert_evaluation_frequency
 }
