@@ -3,7 +3,7 @@
 
 module "xmpro_platform" {
   # Use the latest version from GitHub
-  source = "github.com/XMPro/terraform-xmpro-azure"
+  # source = "github.com/XMPro/terraform-xmpro-azure"
 
   # For local development:
   # source = "../../"
@@ -52,12 +52,7 @@ module "xmpro_platform" {
   existing_ai_product_key = var.existing_ai_product_key
 
   # SMTP settings
-  smtp_server       = var.smtp_server
-  smtp_from_address = var.smtp_from_address
-  smtp_username     = var.smtp_username
-  smtp_password     = var.smtp_password
-  smtp_port         = var.smtp_port
-  smtp_enable_ssl   = var.smtp_enable_ssl
+  smtp_password = var.smtp_password
 
   # Resource tagging
   tags = var.tags
@@ -68,6 +63,6 @@ module "xmpro_platform" {
   # AD Encryption Key
   ad_encryption_key = var.ad_encryption_key
 
-  # Note: is_evaluation_mode is not specified because it has no effect with existing databases
-  # The licenses container is never deployed when use_existing_database = true
+  # AD Encryption Key
+  ad_encryption_key = var.ad_encryption_key
 } 

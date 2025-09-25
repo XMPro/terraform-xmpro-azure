@@ -13,10 +13,10 @@ resource "azurerm_redis_cache" "redis" {
     maxmemory_delta                 = var.redis_maxmemory_delta
     maxmemory_policy                = var.redis_maxmemory_policy
     maxfragmentationmemory_reserved = var.redis_maxfragmentationmemory_reserved
-    rdb_backup_enabled              = var.redis_enable_backup
-    rdb_backup_frequency            = var.redis_enable_backup ? var.redis_backup_frequency : null
-    rdb_backup_max_snapshot_count   = var.redis_enable_backup ? var.redis_backup_max_snapshot_count : null
-    rdb_storage_connection_string   = var.redis_enable_backup ? var.redis_backup_storage_connection_string : null
+    rdb_backup_enabled               = var.redis_enable_backup
+    rdb_backup_frequency             = var.redis_enable_backup ? var.redis_backup_frequency : null
+    rdb_backup_max_snapshot_count    = var.redis_enable_backup ? var.redis_backup_max_snapshot_count : null
+    rdb_storage_connection_string    = var.redis_enable_backup ? var.redis_backup_storage_connection_string : null
   }
 
   public_network_access_enabled = var.redis_public_network_access_enabled
