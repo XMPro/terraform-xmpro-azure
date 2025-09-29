@@ -1,0 +1,58 @@
+# Example terraform.tfvars for XMPro Platform deployment with existing database
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# Core platform settings - customize these for your deployment
+environment = "dev"
+location = "southeastasia"
+company_name = "mycompany"
+
+# Company administrator details
+company_admin_first_name = "John"
+company_admin_last_name = "Doe"
+company_admin_email_address = "admin@mycompany.com"
+
+# Database credentials - use credentials for your existing SQL Server
+db_admin_username = "existing-sql-admin"
+db_admin_password = "YourExistingSqlPassword123!"
+company_admin_password = "YourStrongAdminPassword123!"
+site_admin_password = "YourStrongSitePassword123!"
+
+# Container registry settings
+# For public images, leave acr_username and acr_password empty
+acr_url_product = "xmpro.azurecr.io"
+acr_username = ""
+acr_password = ""
+
+# Image version - use 4.5.2 for stable release
+imageversion = "4.5.2"
+
+# Existing database configuration - REQUIRED for this example
+use_existing_database = true
+existing_sql_server_fqdn = "your-existing-sql-server.database.windows.net"
+# Existing product IDs for SM, AD, DS, AI when using existing databases
+existing_sm_product_id = "f239d3d4-6d77-4e36-a740-e4eb3091efb9" # Sample value for reference – should not be used
+existing_ad_product_id = "9a2e17d3-33cc-4034-80de-50a1898a7467" # Sample value for reference – should not be used
+existing_ds_product_id = "e6e5ac1f-31b2-4a4f-a607-a79e309cd9b1" # Sample value for reference – should not be used
+existing_ai_product_id = "2cf2bb72-ec7d-430a-a383-b7f6c956b237" # Sample value for reference – should not be used
+# Existing product keys for SM, AD, DS, AI when using existing databases
+existing_ad_product_key = "cc72a497-baa2-4f7f-af07-e065682a18b4" # Sample value for reference – should not be used
+existing_ds_product_key = "7569167d-10f0-4de4-9347-95c1c93e184f" # Sample value for reference – should not be used
+existing_ai_product_key = "1f6b18eb-7dbb-4c7e-9b27-f8a81f0e6ae8" # Sample value for reference – should not be used
+
+# Note: When using existing databases, ensure the following databases exist:
+# - [company_name]AD (for App Designer)
+# - [company_name]DS (for Data Stream Designer)  
+# - [company_name]SM (for Subscription Manager)
+#
+# Example: if company_name = "mycompany", databases should be:
+# - mycompanyAD, mycompanyDS, mycompanySM
+
+# DNS configuration (optional)
+enable_custom_domain = false
+# If enable_custom_domain = true, also set:
+# custom_domain_name = "mycompany.com"
+# dns_zone_resource_group = "dns-rg"
+
+# SMTP configuration for email notifications
+smtp_password = "your-smtp-password-here"
+
