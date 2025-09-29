@@ -1,30 +1,43 @@
 # Example terraform.tfvars for Basic XMPro Platform deployment
 # Copy this file to terraform.tfvars and customize the values for your environment
 
-# Core platform settings - customize these for your deployment
-environment = "dev"
-location = "southeastasia"
-company_name = "mycompany"
+# ==========================================
+# QUICK START - Essential settings (required)
+# ==========================================
+
+# Core platform settings
+location = "eastus"                           # Azure region (e.g., eastus, westus2, westeurope)
+company_name = "mycompany"                    # Your company name (must be unique)
+
+# Database credentials - IMPORTANT: Don't change these after deployment!
+db_admin_username = "xmadmin"                 # Database admin username
+db_admin_password = "YourStrongPassword123!"  # Database admin password
+
+# Application passwords
+site_admin_password = "YourStrongSitePassword123!"      # Super admin password
+company_admin_password = "YourStrongAdminPassword123!"  # Company admin password
 
 # Company administrator details
-company_admin_first_name = "John"
-company_admin_last_name = "Doe"
-company_admin_email_address = "admin@mycompany.com"
+company_admin_email_address = "admin@mycompany.com"     # Your email address
+company_admin_first_name = "John"                       # Your first name
+company_admin_last_name = "Doe"                         # Your last name
 
-# Database credentials - IMPORTANT: Use strong passwords for production workloads
-db_admin_username = "xmadmin"
-db_admin_password = "YourStrongPassword123!"
-company_admin_password = "YourStrongAdminPassword123!"
-site_admin_password = "YourStrongSitePassword123!"
+# Evaluation mode - Set to true for testing/demo (includes licenses)
+is_evaluation_mode = true
 
-# Container registry settings
-# ACR registry for production images (public - no credentials needed)
+# ==========================================
+# OPTIONAL - Advanced settings
+# ==========================================
+
+# Environment name (default: "dev")
+environment = "dev"
+
+# Container registry settings (defaults to public XMPro registry)
 acr_url_product = "xmpro.azurecr.io"
+imageversion = "4.5.3"
 # is_private_registry = false  # Set to true if using private registry
-# ACR credentials not needed - xmpro.azurecr.io is public
-
-# Image version - use specific version for your deployment
-imageversion = "4.5.2"
+# acr_username = ""            # Only needed for private registry
+# acr_password = ""            # Only needed for private registry
 
 # DNS configuration (optional)
 enable_custom_domain = false
@@ -43,11 +56,15 @@ enable_custom_domain = false
 # smtp_password = "your-smtp-password-here"
 # smtp_enable_ssl = true
 
+# Security Headers Configuration (optional)
+# Enable security headers for AD and DS applications (enabled by default)
+# enable_security_headers = true
+
 # Evaluation mode (optional)
 # Set to true to enable built-in license provisioning for evaluation/demo
 # is_evaluation_mode = true
 
-# Database Configuration (optional)
+# Database Configuration (optional) - Advanced tuning
 # db_sku_name = "Basic"  # Options: Basic, S0, S1, S2, S3, P1, P2, P4
 # db_max_size_gb = 2  # Maximum database size in GB (min: 1 for Basic, varies by SKU)
 # db_collation = "SQL_Latin1_General_CP1_CI_AS"  # SQL collation for databases

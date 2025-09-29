@@ -15,8 +15,8 @@ module "sm_key_vault" {
   object_id           = data.azurerm_client_config.current.object_id
   tags                = var.tags
 
-  # Secrets for SM app
-  secrets = {
+  # Secrets for SM app - merge base secrets with conditional SSO secrets
+  secrets = merge({
     "SQLSERVER" = {
       value = format("Data Source=tcp:%s,1433;Initial Catalog=SM;User ID=%s;Password=%s;",
         var.sql_server_fqdn,
@@ -51,18 +51,31 @@ module "sm_key_vault" {
       value = var.enable_email_notification
     },
     "AutoScaleEnable" = {
-      value = "false"
+      value = tostring(var.enable_auto_scale)
     },
     "SALT" = {
       value = random_string.salt.result
     },
     "REDIS" = {
-      value = "-"
+      value = var.enable_auto_scale && var.redis_connection_string != "" ? var.redis_connection_string : "-"
     },
     "CERT" = {
       value = "CN=${var.companyname}-SM-SigningCert"
     }
-  }
+    }, var.sso_enabled ? {
+    "SSO-AZURE-AD-CLIENT-ID" = {
+      value = var.sso_azure_ad_client_id
+    },
+    "SSO-AZURE-AD-SECRET" = {
+      value = var.sso_azure_ad_secret
+    },
+    "SSO-BUSINESS-ROLE-CLAIM" = {
+      value = var.sso_business_role_claim
+    },
+    "SSO-AZURE-AD-TENANT-ID" = {
+      value = var.sso_azure_ad_tenant_id
+    }
+  } : {})
 }
 
 # Certificate for SM app

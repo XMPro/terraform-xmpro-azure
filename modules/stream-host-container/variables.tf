@@ -43,7 +43,7 @@ variable "acr_password" {
 variable "imageversion" {
   description = "The version of the container image to use"
   type        = string
-  default     = "5.0.0-alpha"
+  default     = "4.5.3"
 }
 
 variable "stream_host_variant" {

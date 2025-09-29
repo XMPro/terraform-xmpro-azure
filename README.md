@@ -48,7 +48,7 @@ This module is available directly from GitHub and can be referenced in your Terr
 **Recommended: Use a specific version for production workloads**
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
   # ... configuration
 }
 ```
@@ -64,7 +64,7 @@ module "xmpro_platform" {
 **Use SSH for private repositories or when you have SSH keys configured**
 ```hcl
 module "xmpro_platform" {
-  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v5.0.0"
+  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v4.5.3"
   # ... configuration
 }
 ```
@@ -73,7 +73,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
 
   # Basic Configuration
   company_name = "mycompany"  # Note: Requires licenses from XMPro
@@ -90,7 +90,7 @@ module "xmpro_platform" {
 
   # Container Registry (public XMPro registry - no credentials needed)
   acr_url_product = "xmpro.azurecr.io"
-  imageversion    = "5.0.0"
+  imageversion    = "4.5.3"
 
   # Optional: Custom Domain
   enable_custom_domain = false  # Conservative default
@@ -102,7 +102,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
 
   # Basic Configuration
   company_name = "mycompany"    # Custom company name requires licenses
@@ -114,7 +114,7 @@ module "xmpro_platform" {
 
   # Container Registry Configuration
   acr_url_product = "xmpro.azurecr.io"
-  imageversion    = "5.0.0"
+  imageversion    = "4.5.3"
 
   # Secure Credentials
   db_admin_password      = var.db_admin_password
@@ -124,53 +124,6 @@ module "xmpro_platform" {
 ```
 
 > **Note**: Remember to request licenses from XMPro for your custom company name before deployment.
-
-### Advanced Configuration with Existing Database
-
-```hcl
-module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
-
-  # Basic Configuration
-  company_name = "enterprise"    # Requires is_evaluation_mode = false
-  environment  = "prod"
-  location     = "eastus"
-
-  # Existing Database Configuration
-  use_existing_database    = true
-  existing_sql_server_fqdn = "existing-server.database.windows.net"
-  db_admin_username        = "admin"
-  db_admin_password        = "ExistingPassword123!"
-
-  # For Production Workloads (no built-in licensing)
-  is_evaluation_mode = false
-
-  # Service Scaling
-  sm_service_plan_sku = "P1v3"
-  ad_service_plan_sku = "P1v3"
-  ds_service_plan_sku = "P1v3"
-  ai_service_plan_sku = "P1v3"
-
-  # Stream Host Resources
-  stream_host_cpu    = 2
-  stream_host_memory = 8
-
-  # Email Configuration
-  enable_email_notification = true
-  smtp_server               = "smtp.company.com"
-  smtp_from_address         = "noreply@company.com"
-  smtp_username             = "smtp-user"
-  smtp_password             = "smtp-password"
-  smtp_port                 = 587
-  smtp_enable_ssl           = true
-
-  tags = {
-    Environment = "Production"
-    Team        = "Platform"
-    CostCenter  = "IT"
-  }
-}
-```
 
 ## 📋 Requirements
 
@@ -215,8 +168,6 @@ module "xmpro_platform" {
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | db_admin_username | Database admin username | `string` | `"sqladmin"` |
-| use_existing_database | Use existing SQL Server and databases | `bool` | `false` |
-| existing_sql_server_fqdn | Existing SQL Server FQDN | `string` | `""` |
 | db_allow_all_ips | Allow all IPs to connect to database | `bool` | `false` |
 
 ### Container Registry
@@ -273,6 +224,13 @@ module "xmpro_platform" {
 | smtp_password | SMTP password | `string` | `"stored-in-keeper"` |
 | smtp_port | SMTP port | `number` | `587` |
 | smtp_enable_ssl | Enable SSL for SMTP | `bool` | `false` |
+
+
+### Security Configuration
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| enable_security_headers | Enable security headers for AD and DS applications | `bool` | `true` |
 
 ### Stream Host Configuration
 
@@ -340,8 +298,6 @@ module "xmpro_platform" {
 
 | Name | Description |
 |------|-------------|
-| existing_database_firewall_warning | Warning about firewall rules when using existing database |
-| existing_database_migration_warning | Warning about migration compatibility |
 | evaluation_mode_status | Status of evaluation mode deployment |
 
 ## 🧩 Submodules
@@ -422,47 +378,6 @@ To switch from evaluation to production workloads:
 3. Set up external license management
 4. Apply the Terraform configuration
 
-## 🗄️ Existing Database Support
-
-The module supports reusing existing SQL Server and databases for flexible deployment scenarios:
-
-### Configuration
-
-```hcl
-# Enable existing database mode
-use_existing_database    = true
-existing_sql_server_fqdn = "your-server.database.windows.net"
-
-# Standard database and authentication settings
-db_admin_username = "your-admin-username"
-db_admin_password = "your-admin-password"
-```
-
-### Behavior When Using Existing Database
-
-**Skipped Resources**:
-- SQL Server and database creation
-- Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate)
-- Licenses container deployment
-
-**Created Resources**:
-- All App Services with existing database connectivity
-- Monitoring and supporting infrastructure
-- Stream Host and other container services
-
-### Requirements for Existing Database
-
-1. **Database Names**: Must contain databases named `AD`, `DS`, `SM`, and optionally `AI`
-2. **Firewall Rules**: Must allow connections from the newly created Azure resources
-3. **Schema Compatibility**: Database schemas should be compatible with the specified `imageversion`
-4. **Authentication**: Provided credentials must have sufficient privileges
-
-### Warnings and Considerations
-
-- Ensure firewall rules allow connections from new App Services and Container Instances
-- Database migration containers are skipped, so schema must be pre-configured
-- Variables like `company_name`, product IDs, and URLs should match existing database values
-
 ## Stream Host Variants
 
 The Stream Host container supports multiple Docker image variants. Use the `stream_host_variant` variable to select a variant:
@@ -522,7 +437,6 @@ Ensure your Azure subscription has sufficient quotas for:
 **Solutions**:
 - Verify `db_admin_username` and `db_admin_password` are correct
 - Check SQL Server firewall rules allow Azure services
-- When using existing database, ensure firewall allows new resource IPs
 
 #### 3. DNS Resolution Issues
 

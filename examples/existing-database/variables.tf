@@ -187,9 +187,22 @@ variable "enable_ai" {
   default     = false
 }
 
-# Evaluation mode flag
-variable "is_evaluation_mode" {
-  description = "Flag to indicate if the deployment is in evaluation mode"
-  type        = bool
-  default     = true
+# AD Encryption Configuration
+variable "ad_encryption_key" {
+  description = "Encryption key for AD server variables (32 bytes base64 encoded). If not provided, will be auto-generated."
+  type        = string
+  sensitive   = true
+  default     = ""
 }
+
+# AD Encryption Configuration
+variable "ad_encryption_key" {
+  description = "Encryption key for AD server variables (32 bytes base64 encoded). If not provided, will be auto-generated."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+# Note: is_evaluation_mode variable is not included in this existing database example
+# because it has no effect when use_existing_database = true. The licenses container
+# is never deployed with existing databases, so evaluation mode is irrelevant.

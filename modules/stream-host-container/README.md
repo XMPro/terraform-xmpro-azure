@@ -61,7 +61,7 @@ module "stream_host_container" {
 | acr_url_product | The URL of the Azure Container Registry for product images | `string` | n/a | yes |
 | acr_username | The username for the Azure Container Registry | `string` | n/a | yes |
 | acr_password | The password for the Azure Container Registry | `string` | n/a | yes |
-| imageversion | The version of the container image to use | `string` | `"5.0.0-alpha"` | no |
+| imageversion | The version of the container image to use | `string` | `"4.5.3"` | no |
 | stream_host_variant | The Stream Host Docker image variant suffix. Options: '' (default, same as bookworm-slim), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21' | `string` | `""` | no |
 | ds_server_url | The URL of the Data Stream server | `string` | n/a | yes |
 | stream_host_collection_id | The collection ID for DS authentication | `string` | n/a | yes |
@@ -141,7 +141,7 @@ module "stream_host_container" {
   acr_username                  = var.acr_username
   acr_password                  = var.acr_password
   is_private_registry           = true
-  imageversion                  = "5.0.0-alpha"
+  imageversion                  = "4.5.3"
 
   ds_server_url                 = "https://ds.dev.xmpro.com"
   stream_host_collection_id     = var.stream_host_collection_id

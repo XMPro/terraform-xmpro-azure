@@ -9,7 +9,7 @@ module "xmpro_platform" {
   # source = "../../"
 
   # For specific latest stable released version:
-  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.2"
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
 
   # Core settings - customize these for your local testing
   environment = var.environment
@@ -60,6 +60,9 @@ module "xmpro_platform" {
   # Enable AI service
   enable_ai = var.enable_ai
 
-  # Evaluation mode flag
-  is_evaluation_mode = var.is_evaluation_mode
+  # AD Encryption Key
+  ad_encryption_key = var.ad_encryption_key
+
+  # AD Encryption Key
+  ad_encryption_key = var.ad_encryption_key
 } 

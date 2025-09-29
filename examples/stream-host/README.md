@@ -75,7 +75,7 @@ location = "southeastasia"
 company_name = "mycompany"
 
 # Image version
-imageversion = "4.5.2"
+imageversion = "4.5.3"
 ```
 
 ## Optional Configuration

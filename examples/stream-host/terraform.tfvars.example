@@ -13,8 +13,8 @@ company_name = "mycompany"
 # Stream Host configuration - REQUIRED
 # Get these values from your XMPro Data Stream Designer
 ds_server_url = "https://ds.mycompany.com"
-stream_host_collection_id = "your-collection-id-here"
-stream_host_collection_secret = "your-collection-secret-here"
+stream_host_collection_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"  # Example UUID format
+stream_host_collection_secret = "YWJjZGVmZ2hpams1Njc4OTBhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5eg=="  # Example base64 encoded secret
 
 # Container registry settings
 # For public XMPro images (default)
@@ -25,7 +25,7 @@ acr_url_product = "xmpro.azurecr.io"
 # acr_password = "your-password"
 
 # Image version
-imageversion = "4.5.2"
+imageversion = "4.5.3"
 
 # ====================
 # OPTIONAL SETTINGS

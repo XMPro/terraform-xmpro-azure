@@ -96,6 +96,13 @@ variable "ds_product_key" {
   sensitive   = true
 }
 
+# Security Headers Configuration
+variable "enable_security_headers" {
+  description = "Whether to enable security headers for DS application"
+  type        = bool
+  default     = true
+}
+
 # New variables for service plan
 variable "service_plan_sku" {
   description = "The SKU of the App Service Plan"
@@ -126,4 +133,23 @@ variable "tags" {
   description = "A map of tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+variable "streamhost_download_base_url" {
+  description = "Base URL for StreamHost downloads"
+  type        = string
+  default     = "https://download.app.xmpro.com/"
+}
+
+variable "enable_auto_scale" {
+  description = "Enable auto-scaling with Redis distributed caching"
+  type        = bool
+  default     = false
+}
+
+variable "redis_connection_string" {
+  description = "Redis connection string for auto-scaling"
+  type        = string
+  default     = ""
+  sensitive   = true
 }

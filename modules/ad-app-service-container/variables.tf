@@ -152,6 +152,13 @@ variable "smtp_enable_ssl" {
   default     = true
 }
 
+# Security Headers Configuration
+variable "enable_security_headers" {
+  description = "Whether to enable security headers for AD application"
+  type        = bool
+  default     = true
+}
+
 variable "ad_product_id" {
   description = "The product ID for AD"
   type        = string
@@ -163,8 +170,28 @@ variable "ad_product_key" {
   sensitive   = true
 }
 
+variable "enable_auto_scale" {
+  description = "Enable auto-scaling with Redis distributed caching"
+  type        = bool
+  default     = false
+}
+
+variable "redis_connection_string" {
+  description = "Redis connection string for auto-scaling"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
 variable "tags" {
   description = "A map of tags to apply to all resources"
   type        = map(string)
   default     = {}
+}
+
+variable "ad_encryption_key" {
+  description = "Encryption key for AD application to encrypt/decrypt server variables"
+  type        = string
+  sensitive   = true
+  default     = ""
 }

@@ -13,7 +13,6 @@ This example demonstrates deploying XMPro platform using existing SQL Server and
 ## Configuration
 
 This example sets:
-- `use_existing_database = true`
 - `existing_sql_server_fqdn` - Fully qualified domain name of your existing SQL Server
 - `is_evaluation_mode = true` - Default evaluation mode setting
 

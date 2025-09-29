@@ -80,7 +80,7 @@ module "licenses_container" {
 | ds_license | The license key for DS | `string` | n/a | yes |
 | ai_license | The license key for AI | `string` | n/a | yes |
 | company_id | The company ID for license provisioning | `number` | `2` | no |
-| imageversion | The version of the container image to use | `string` | `"5.0.0-alpha"` | no |
+| imageversion | The version of the container image to use | `string` | `"4.5.3"` | no |
 
 ## Outputs
 

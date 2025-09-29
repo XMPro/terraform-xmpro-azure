@@ -125,3 +125,4 @@ variable "github_release_version" {
   description = "GitHub release version for versioned SM zip filename (e.g., v4.5.0.80-alpha-ede1ab6d70)"
   type        = string
 }
+

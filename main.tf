@@ -166,6 +166,36 @@ module "database" {
   tags = local.common_tags
 }
 
+# Master Data Database Server (separate server)
+module "masterdata_database" {
+  count  = var.create_masterdata ? 1 : 0
+  source = "./modules/database"
+  
+  company_name                 = var.company_name
+  environment                  = var.environment
+  resource_group_name          = module.resource_group.name
+  location                     = module.resource_group.location
+  administrator_login          = var.masterdata_db_admin_username
+  administrator_login_password = var.masterdata_db_admin_password
+  db_server_name               = "sqldb-masterdata-${var.company_name}-${random_id.suffix.hex}"
+  
+  databases = {
+    "MasterData" = {
+      collation      = var.db_collation
+      max_size_gb    = var.db_max_size_gb
+      read_scale     = false
+      sku_name       = var.db_sku_name
+      zone_redundant = var.db_zone_redundant
+      create_mode    = "Default"
+    }
+  }
+  
+  db_allow_azure_services    = true
+  db_allow_all_ips           = var.db_allow_all_ips
+  create_local_firewall_rule = var.create_local_firewall_rule
+  tags                       = local.common_tags
+}
+
 # Connection strings and URLs are defined in locals.tf
 
 # AD App Service
@@ -209,9 +239,23 @@ module "ad_app_service" {
   smtp_port                 = var.smtp_port
   smtp_enable_ssl           = var.smtp_enable_ssl
 
+  # Security Headers Configuration
+  enable_security_headers = var.enable_security_headers
+
   # Product ID and Key Configuration
   ad_product_id  = local.effective_ad_product_id
   ad_product_key = local.effective_ad_product_key
+
+  # Encryption Key Configuration
+  ad_encryption_key = var.ad_encryption_key
+
+  # Redis and Auto-scaling Configuration
+  enable_auto_scale = var.enable_auto_scale
+  redis_connection_string = var.enable_auto_scale ? (
+    var.create_redis_cache
+    ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
+    : var.redis_connection_string
+  ) : ""
 
   # Create implicit dependency on ad_dbmigrate container (only when using new databases)
   addbmigrate_container_id = module.ad_dbmigrate.container_group_id
@@ -252,12 +296,26 @@ module "ds_app_service" {
   aspnetcore_environment = "dev"
   service_plan_sku       = var.ds_service_plan_sku
 
+  # Security Headers Configuration
+  enable_security_headers = var.enable_security_headers
+
   # Product ID and Key Configuration
   ds_product_id  = local.effective_ds_product_id
   ds_product_key = local.effective_ds_product_key
 
+  # Redis and Auto-scaling Configuration
+  enable_auto_scale = var.enable_auto_scale
+  redis_connection_string = var.enable_auto_scale ? (
+    var.create_redis_cache
+    ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
+    : var.redis_connection_string
+  ) : ""
+
   # Create implicit dependency on ds_dbmigrate container (only when using new databases)
   dsdbmigrate_container_id = module.ds_dbmigrate.container_group_id
+
+  # StreamHost download URL
+  streamhost_download_base_url = var.streamhost_download_base_url
 
   # Tags
   tags = local.common_tags
@@ -339,6 +397,22 @@ module "sm_key_vault" {
 
   # SM Base URL for configuration
   sm_base_url = local.sm_base_url
+
+  # SSO Configuration
+  sso_enabled             = var.sso_enabled
+  sso_azure_ad_client_id  = var.sso_azure_ad_client_id
+  sso_azure_ad_secret     = var.sso_azure_ad_secret
+  sso_business_role_claim = var.sso_business_role_claim
+  sso_azure_ad_tenant_id  = var.sso_azure_ad_tenant_id
+
+  # Auto Scale Configuration
+  enable_auto_scale = var.enable_auto_scale
+  # Use Redis connection string from created cache if available, otherwise use provided string
+  redis_connection_string = var.enable_auto_scale ? (
+    var.create_redis_cache
+    ? try(module.redis_cache[0].redis_primary_connection_string, var.redis_connection_string)
+    : var.redis_connection_string
+  ) : ""
 
   # Tags
   tags = local.common_tags
@@ -473,6 +547,25 @@ module "ai_app_service" {
   tags = local.common_tags
 }
 
+# Redis Cache Module (conditional)
+module "redis_cache" {
+  count  = var.create_redis_cache ? 1 : 0
+  source = "./modules/redis-cache"
+
+  # Basic configuration
+  prefix              = var.company_name
+  environment         = var.environment
+  location            = module.resource_group.location
+  resource_group_name = module.resource_group.name
+  unique_suffix       = random_id.suffix.hex
+
+  # Redis configuration (using defaults from module)
+  # Can be overridden with additional variables if needed
+
+  # Tags
+  tags = local.common_tags
+}
+
 # SM Preparation Container Module (creates SM.zip first)
 module "sm_prep_container" {
   source = "./modules/sm-prep-container"
@@ -495,6 +588,13 @@ module "sm_prep_container" {
 
   # Key Vault configuration (calculated name - no dependency needed)
   azure_key_vault_name = "kv-sm-${substr("${var.company_name}-${random_id.suffix.hex}", 0, 16)}"
+
+  # SSO Configuration
+  sso_enabled             = var.sso_enabled
+  sso_azure_ad_client_id  = var.sso_azure_ad_client_id
+  sso_azure_ad_secret     = var.sso_azure_ad_secret
+  sso_business_role_claim = var.sso_business_role_claim
+  sso_azure_ad_tenant_id  = var.sso_azure_ad_tenant_id
 
   # Tags
   tags = local.common_tags

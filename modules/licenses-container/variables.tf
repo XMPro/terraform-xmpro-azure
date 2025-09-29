@@ -102,7 +102,7 @@ variable "sm_database_name" {
 variable "imageversion" {
   description = "The version of the container image to use"
   type        = string
-  default     = "5.0.0-alpha"
+  default     = "4.5.3"
 }
 
 variable "smdbmigrate_container_id" {

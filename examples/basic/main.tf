@@ -6,10 +6,10 @@ module "xmpro_platform" {
   # source = "github.com/XMPro/terraform-xmpro-azure"
 
   # For local development:
-  # source = "../../"
+  source = "../../"
 
   # For specific latest stable released version:
-  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.2"
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
 
   # Core settings - customize these for your local testing
   environment = var.environment
@@ -56,6 +56,9 @@ module "xmpro_platform" {
   smtp_port                 = var.smtp_port
   smtp_enable_ssl           = var.smtp_enable_ssl
 
+  # Security Headers Configuration
+  enable_security_headers = var.enable_security_headers
+
   # Resource tagging
   tags = var.tags
 
@@ -71,4 +74,19 @@ module "xmpro_platform" {
   stream_host_cpu                   = var.stream_host_cpu
   stream_host_memory                = var.stream_host_memory
   stream_host_environment_variables = var.stream_host_environment_variables
+
+  # Redis Cache Configuration
+  create_redis_cache = var.create_redis_cache
+
+  # Auto Scale Configuration
+  enable_auto_scale       = var.enable_auto_scale
+  redis_connection_string = var.redis_connection_string
+
+  # Master Data Configuration
+  create_masterdata             = var.create_masterdata
+  masterdata_db_admin_username  = var.masterdata_db_admin_username
+  masterdata_db_admin_password  = var.masterdata_db_admin_password
+
+  # AD Encryption Key
+  ad_encryption_key = var.ad_encryption_key
 }

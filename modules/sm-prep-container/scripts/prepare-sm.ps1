@@ -147,7 +147,6 @@ function Initialize-WebConfig {
     Write-Log "Web.config ready for processing: $webConfigPath"
 }
 
-
 # Process configuration files using bundled Install.ps1 directly
 function Invoke-ConfigProcessing {
     Write-Log "Processing configuration files..."
@@ -181,28 +180,10 @@ function Invoke-ConfigProcessing {
     
     Write-Log "Configuration processing completed successfully using bundled Install.ps1"
     
-    # Fix Serilog file path to use a writable location
-    # The default %BASEDIR%/App_Data/logs path is not writable when WEBSITE_RUN_FROM_PACKAGE=1 (read-only filesystem)
-    Write-Log "Fixing Serilog file logging path in Web.config to use writable location..."
+    # Verify Web.config was processed (check for Azure Key Vault configuration)
     $webConfigPath = "$SITE_DIR/Web.config"
     $webConfigContent = Get-Content $webConfigPath -Raw
     
-    # Replace the read-only Serilog path with a writable location
-    # The default %BASEDIR%/App_Data/logs path points to C:\home\site\wwwroot which is read-only when Azure App Service uses WEBSITE_RUN_FROM_PACKAGE=1
-    # Using hardcoded D:\home path as %BASEDIR% doesn't resolve correctly in Azure App Service with WEBSITE_RUN_FROM_PACKAGE
-    $oldPath = '%BASEDIR%/App_Data/logs/sm-log-.txt'
-    $newPath = 'D:\home\LogFiles\Application\sm-log-.txt'  # Hardcoded writable path in Azure App Service
-    
-    if ($webConfigContent -match [regex]::Escape($oldPath)) {
-        Write-Log "Replacing Serilog path: $oldPath -> $newPath"
-        $webConfigContent = $webConfigContent -replace [regex]::Escape($oldPath), $newPath
-        Set-Content -Path $webConfigPath -Value $webConfigContent -NoNewline
-        Write-Log "Serilog file path hardcoded successfully"
-    } else {
-        Write-Log "Serilog file path not found or already fixed"
-    }
-    
-    # Verify Web.config was processed (check for Azure Key Vault configuration)
     if ($AZURE_KEY_VAULT_NAME -and $webConfigContent -notmatch "vaultName=`".*`"") {
         Write-Log "Warning: Azure Key Vault configuration may not have been applied correctly" "WARN"
     } else {
