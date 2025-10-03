@@ -17,7 +17,7 @@ module "resource_group" {
   # source = "../../modules/resource-group"
 
   # For specific latest stable released version:
-  source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group?ref=v4.5.3"
+  source = "github.com/XMPro/terraform-xmpro-azure//modules/resource-group?ref=v4.5.4"
 
   name     = "rg-${var.company_name}-${var.environment}-sh-${random_id.suffix.hex}"
   location = var.location
@@ -43,7 +43,7 @@ module "stream_host" {
   # source = "../../modules/stream-host-container"
 
   # For specific latest stable released version:
-  source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container?ref=v4.5.3"
+  source = "github.com/XMPro/terraform-xmpro-azure//modules/stream-host-container?ref=v4.5.4"
 
   # Core settings
   environment         = var.environment
