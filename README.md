@@ -125,34 +125,6 @@ module "xmpro_platform" {
 
 > **Note**: Remember to request licenses from XMPro for your custom company name before deployment.
 
-### Configuration with Redis Cache and Auto-Scaling
-
-```hcl
-module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
-
-  # Basic Configuration
-  company_name = "mycompany"
-  environment  = "prod"
-  location     = "eastus"
-
-  # Redis Cache Configuration
-  create_redis_cache = true    # Creates a new Azure Redis Cache instance
-
-  # Auto-Scale Configuration
-  enable_auto_scale = true
-  # When create_redis_cache = true, use the output from the created Redis:
-  # redis_connection_string = module.xmpro_platform.redis_primary_connection_string
-  # Or provide your own existing Redis connection string:
-  redis_connection_string = "myredis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False"
-
-  # Other required configuration
-  db_admin_password      = var.db_admin_password
-  company_admin_password = var.company_admin_password
-  site_admin_password    = var.site_admin_password
-}
-```
-
 ### Advanced Configuration with Existing Database
 
 ```hcl
@@ -202,51 +174,6 @@ module "xmpro_platform" {
   }
 }
 ```
-
-## 🚀 Redis Cache and Auto-Scaling
-
-This module supports Redis cache for distributed caching and auto-scaling scenarios. You have three options for Redis deployment:
-
-### Option 1: Deploy Redis with Main Infrastructure
-```hcl
-# Deploy Redis cache alongside XMPro infrastructure
-create_redis_cache = true
-enable_auto_scale  = true
-```
-**Note**: This adds 15-20 minutes to deployment time.
-
-### Option 2: Pre-deploy Redis Separately (Recommended)
-Deploy Redis once and reuse across multiple deployments:
-
-```bash
-# Step 1: Deploy standalone Redis (one-time, ~15-20 minutes)
-cd examples/redis-standalone
-terraform init
-terraform apply
-
-# Step 2: Get connection string
-export REDIS_CONN=$(terraform output -raw redis_connection_string)
-
-# Step 3: Use in main deployment (fast, ~5-10 minutes)
-cd ../basic
-terraform apply -var="redis_connection_string=$REDIS_CONN" \
-                -var="enable_auto_scale=true" \
-                -var="create_redis_cache=false"
-```
-
-### Option 3: Use Existing Redis Cache
-```hcl
-# Use your own existing Redis cache
-enable_auto_scale       = true
-create_redis_cache      = false  
-redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,ssl=True"
-```
-
-### Benefits of Standalone Redis Deployment
-- **Faster iterations**: Main deployments take 5-10 minutes instead of 20-30
-- **Data persistence**: Cache data persists between redeployments
-- **Cost-effective**: No repeated provisioning time
-- **Shared resource**: Multiple environments can share Redis
 
 ## 📋 Requirements
 
@@ -374,26 +301,6 @@ redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,
 | stream_host_memory | Memory allocation (GB) for stream host | `number` | `4` |
 | stream_host_environment_variables | Additional environment variables | `map(string)` | `{}` |
 | stream_host_variant | Stream Host Docker image variant. Options: '' (default), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21' | `string` | `""` |
-
-### Redis Cache and Auto-Scale Configuration
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| create_redis_cache | Create an Azure Redis Cache instance | `bool` | `false` |
-| enable_auto_scale | Enable auto-scaling with Redis distributed caching | `bool` | `false` |
-| redis_connection_string | Redis connection string for auto-scaling (required when enable_auto_scale=true) | `string` | `""` |
-
-**Note:** When `enable_auto_scale` is set to `true`, you must provide a `redis_connection_string`. The connection string format should be: `your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False`
-
-### Master Data Database Configuration
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| create_masterdata | Create a separate SQL Server with Master Data database | `bool` | `false` |
-| masterdata_db_admin_username | Master Data SQL Server administrator username | `string` | `"masterdata_admin"` |
-| masterdata_db_admin_password | Master Data SQL Server administrator password | `string` | `""` |
-
-**Note:** When `create_masterdata` is set to `true`, a dedicated SQL Server instance (`sqldb-masterdata-{company}-{suffix}`) is created exclusively for the Master Data database. This provides complete isolation from the XMPro platform databases with dedicated credentials. The `masterdata_db_admin_password` must be provided when enabling this feature.
 
 ### Deployment Configuration
 

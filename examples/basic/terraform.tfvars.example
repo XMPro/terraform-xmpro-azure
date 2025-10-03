@@ -34,7 +34,7 @@ environment = "dev"
 
 # Container registry settings (defaults to public XMPro registry)
 acr_url_product = "xmpro.azurecr.io"
-imageversion = "4.5.4"
+imageversion = "4.5.3"
 # is_private_registry = false  # Set to true if using private registry
 # acr_username = ""            # Only needed for private registry
 # acr_password = ""            # Only needed for private registry
@@ -91,22 +91,6 @@ enable_custom_domain = false
 # stream_host_environment_variables = {
 #   "CUSTOM_ENV_VAR" = "value"
 # }
-
-# Redis Cache Configuration (optional)
-# Enable Redis cache for distributed caching
-# create_redis_cache = true
-
-# Auto Scale Configuration (optional)
-# Enable auto-scaling with Redis distributed caching
-# enable_auto_scale = true
-# redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False"
-
-# Master Data Configuration (optional)
-# Create a separate SQL Server with Master Data database (completely isolated from XMPro databases)
-# create_masterdata = true  # Creates dedicated SQL Server for Master Data (defaults to false)
-# masterdata_db_admin_username = "masterdata_admin"  # SQL Server administrator username
-# masterdata_db_admin_password = "SecurePassword123!"  # SQL Server administrator password (required when enabled)
-# Note: Master Data uses its own SQL Server (sqldb-masterdata-{company}-{suffix}) for complete isolation
 
 # Additional optional features
 # See variables.tf for complete list of available configuration options
