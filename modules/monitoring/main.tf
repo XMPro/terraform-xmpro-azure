@@ -6,6 +6,7 @@ resource "azurerm_log_analytics_workspace" "this" {
   resource_group_name = var.resource_group_name
   sku                 = var.log_analytics_sku
   retention_in_days   = var.log_retention_days
+  daily_quota_gb      = var.log_analytics_daily_quota_gb >= 0 ? var.log_analytics_daily_quota_gb : null
   tags                = var.tags
 }
 
@@ -19,7 +20,6 @@ resource "azurerm_application_insights" "this" {
   workspace_id        = var.enable_log_analytics ? azurerm_log_analytics_workspace.this[0].id : null
   tags                = var.tags
 }
-
 
 # Locals for effective resource names and IDs
 locals {

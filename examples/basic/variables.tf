@@ -101,7 +101,7 @@ variable "is_private_registry" {
 variable "imageversion" {
   description = "The Docker image version to deploy"
   type        = string
-  default     = "4.5.3"
+  default     = "4.5.2"
 }
 
 variable "enable_custom_domain" {

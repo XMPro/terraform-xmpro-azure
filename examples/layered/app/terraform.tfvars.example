@@ -1,0 +1,76 @@
+# Application Layer Configuration
+# Copy this file to terraform.tfvars and customize the values for your environment
+#
+# IMPORTANT: Deploy infrastructure layer first and get outputs:
+# cd ../infra && terraform output
+
+# Core settings (must match infrastructure)
+company_name = "mycompany"
+name_suffix = "dev001"
+
+# Infrastructure resource names (from infrastructure outputs)
+resource_group_name = "rg-mycompany-dev001"
+storage_account_name = "stmycdev001"
+sql_server_fqdn = "sql-mycompany-dev001.database.windows.net"
+
+# Storage SAS Token (optional - leave empty to auto-generate)
+storage_sas_token = ""
+
+# App Service Plan names from infrastructure
+ad_service_plan_name = "plan-ad-mycompany-dev001"
+ds_service_plan_name = "plan-ds-mycompany-dev001"
+sm_service_plan_name = "plan-sm-mycompany-dev001"
+ai_service_plan_name = null  # AI disabled
+
+# Key Vault names from infrastructure
+ad_key_vault_name = "kv-ad-mycompany-dev001"
+ds_key_vault_name = "kv-ds-mycompany-dev001"
+sm_key_vault_name = "kv-sm-mycompany-dev001"
+
+# Container registry settings
+acr_url_product = "xmpro.azurecr.io"
+acr_username = ""  # Leave empty for public registry
+acr_password = ""  # Leave empty for public registry
+
+# Database credentials (must match infrastructure)
+db_admin_username = "xmadmin"
+db_admin_password = "P@ssw0rd1234!XM"
+
+# Application passwords
+site_admin_password = "P@ssw0rd1234!XM"
+company_admin_password = "P@ssw0rd1234!XM"
+
+# Company admin user details
+company_admin_first_name = "Admin"
+company_admin_last_name = "User"
+
+# Container image version
+imageversion = "latest"
+
+# Evaluation mode
+is_evaluation_mode = true
+
+# SMTP configuration (optional)
+enable_email_notification = false
+smtp_server = ""
+smtp_from_address = "noreply@mycompany.com"
+smtp_username = ""
+smtp_password = ""
+smtp_port = 587
+smtp_enable_ssl = true
+
+# Feature flags
+enable_ai = false
+create_stream_host = true
+
+# Enable auto-scaling with Redis distributed caching
+enable_auto_scale = false
+# redis_connection_string = ""  # Get from infrastructure: cd ../infra && terraform output -raw redis_primary_connection_string
+
+# DNS configuration
+enable_custom_domain = false
+dns_zone_name = ""
+
+# Tags
+keep_or_delete_tag = "keep"
+billing_tag = "development"

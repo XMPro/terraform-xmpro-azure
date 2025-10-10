@@ -23,8 +23,8 @@ acr_url_product = "xmpro.azurecr.io"
 acr_username = ""
 acr_password = ""
 
-# Image version - use 4.5.3 for stable release
-imageversion = "4.5.3"
+# Image version - use 4.5.2 for stable release
+imageversion = "test-4.5.0"
 
 # Existing database configuration - REQUIRED for this example
 use_existing_database = true
@@ -53,6 +53,19 @@ enable_custom_domain = false
 # custom_domain_name = "mycompany.com"
 # dns_zone_resource_group = "dns-rg"
 
-# SMTP configuration for email notifications
+# SMTP configuration for email notifications (required)
+# Note: SMTP settings are mandatory as they are stored in Key Vault for application use
+smtp_server = "smtp.office365.com"
+smtp_port = 587
+smtp_from_address = "notifications@mycompany.com"
+smtp_username = "notifications@mycompany.com"
 smtp_password = "your-smtp-password-here"
+smtp_enable_ssl = true
 
+# Note: is_evaluation_mode is not included for existing database deployments
+# because it has no effect - the licenses container is never deployed when using existing databases.
+# Licensing must be managed manually through the SM interface after deployment.
+
+# AI Services (optional)
+# Set to true to enable AI services in the deployment
+enable_ai = false

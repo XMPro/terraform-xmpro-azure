@@ -25,12 +25,56 @@ The XMPro platform consists of multiple interconnected services that provide a c
 - **Azure DNS Zone**: Custom domain management (optional)
 - **Application Insights**: Monitoring and telemetry
 - **Log Analytics**: Centralized logging
+- **Azure Monitor Alerting**: Stream Host container monitoring and alerting
 
-For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/4.5/installation/deployment/azure-terraform/#architecture).
+For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/4.5/src/installation/deployment/azure-terraform/#thats-it).
 
 > ⚠️ **Security Notice**  
 > Use Azure Key Vault, environment variables, or your CI pipeline's secret store for all passwords, access tokens, and connection strings.  
 > The credentials shown below are sample values only – never commit real secrets to version control.
+
+## 📁 Module Structure
+
+This module uses a layered architecture for better separation of concerns:
+
+```
+terraform-xmpro-azure/
+├── _infra/                    # Infrastructure orchestration module
+│   ├── main.tf               # Orchestrates infrastructure sub-modules
+│   ├── variables.tf          # Infrastructure variables
+│   ├── outputs.tf            # Infrastructure outputs
+│   └── locals.tf             # Local variables
+├── _app/                      # Application orchestration module
+│   ├── main.tf               # Orchestrates application sub-modules
+│   ├── variables.tf          # Application variables
+│   ├── outputs.tf            # Application outputs
+│   └── locals.tf             # Local variables
+├── modules/                   # Individual resource modules
+│   ├── _infra/               # Infrastructure sub-modules only (no .tf files)
+│   │   ├── resource-group/
+│   │   ├── database/
+│   │   ├── storage-account/
+│   │   ├── monitoring/
+│   │   ├── key-vault/
+│   │   └── ...
+│   └── _app/                 # Application sub-modules only (no .tf files)
+│       ├── sm-app-service/
+│       ├── ad-app-service-container/
+│       ├── ds-app-service-container/
+│       ├── sm-dbmigrate/
+│       └── ...
+├── examples/
+│   └── layered/              # Layered deployment example
+│       ├── infra/            # Infrastructure layer (references /_infra)
+│       └── app/              # Application layer (references /_app)
+└── main.tf                   # Root module (all-in-one deployment)
+```
+
+### Deployment Patterns
+
+1. **All-in-One (Default)**: Use the root module directly
+2. **Layered**: Deploy infrastructure and applications separately using `_infra` and `_app` modules
+3. **Custom**: Reference individual modules from `modules/` directory
 
 ## 🚀 Quick Start
 
@@ -48,7 +92,7 @@ This module is available directly from GitHub and can be referenced in your Terr
 **Recommended: Use a specific version for production workloads**
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
   # ... configuration
 }
 ```
@@ -64,7 +108,7 @@ module "xmpro_platform" {
 **Use SSH for private repositories or when you have SSH keys configured**
 ```hcl
 module "xmpro_platform" {
-  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v4.5.3"
+  source = "git@github.com:XMPro/terraform-xmpro-azure.git?ref=v5.0.0"
   # ... configuration
 }
 ```
@@ -73,7 +117,7 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
 
   # Basic Configuration
   company_name = "mycompany"  # Note: Requires licenses from XMPro
@@ -90,7 +134,7 @@ module "xmpro_platform" {
 
   # Container Registry (public XMPro registry - no credentials needed)
   acr_url_product = "xmpro.azurecr.io"
-  imageversion    = "4.5.3"
+  imageversion    = "5.0.0"
 
   # Optional: Custom Domain
   enable_custom_domain = false  # Conservative default
@@ -102,19 +146,19 @@ module "xmpro_platform" {
 
 ```hcl
 module "xmpro_platform" {
-  source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
 
   # Basic Configuration
-  company_name = "mycompany"    # Custom company name requires licenses
+  company_name = "mycompany"    # Your company name
   environment  = "prod"
   location     = "eastus"
-  
-  # IMPORTANT: Disable evaluation mode to use custom company name
-  is_evaluation_mode = false     # Required for custom company names
+
+  # For production deployments with your own licenses
+  is_evaluation_mode = false     # Set to true for evaluation/demo
 
   # Container Registry Configuration
   acr_url_product = "xmpro.azurecr.io"
-  imageversion    = "4.5.3"
+  imageversion    = "5.0.0"
 
   # Secure Credentials
   db_admin_password      = var.db_admin_password
@@ -123,7 +167,150 @@ module "xmpro_platform" {
 }
 ```
 
-> **Note**: Remember to request licenses from XMPro for your custom company name before deployment.
+> **Note**: When `is_evaluation_mode = false`, ensure you have product IDs and keys from XMPro.
+
+### Configuration with Redis Cache and Auto-Scaling
+
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+
+  # Basic Configuration
+  company_name = "mycompany"
+  environment  = "prod"
+  location     = "eastus"
+
+  # Redis Cache Configuration
+  create_redis_cache = true    # Creates a new Azure Redis Cache instance
+
+  # Auto-Scale Configuration
+  enable_auto_scale = true
+  # When create_redis_cache = true, use the output from the created Redis:
+  # redis_connection_string = module.xmpro_platform.redis_primary_connection_string
+  # Or provide your own existing Redis connection string:
+  redis_connection_string = "myredis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False"
+
+  # Other required configuration
+  db_admin_password      = var.db_admin_password
+  company_admin_password = var.company_admin_password
+  site_admin_password    = var.site_admin_password
+}
+```
+
+### Advanced Configuration with Existing Database
+
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+
+  # Basic Configuration
+  company_name = "enterprise"    # Your company name
+  environment  = "prod"
+  location     = "eastus"
+
+  # Existing Database Configuration
+  use_existing_database    = true
+  existing_sql_server_fqdn = "existing-server.database.windows.net"
+  db_admin_username        = "admin"
+  db_admin_password        = "ExistingPassword123!"
+  # Existing product IDs for SM, AD, DS, AI when using existing databases
+  existing_sm_product_id = ""
+  existing_ad_product_id = ""
+  existing_ds_product_id = ""
+  existing_ai_product_id = ""
+  # Existing product keys for SM, AD, DS, AI when using existing databases
+  existing_ad_product_key = ""
+  existing_ds_product_key = ""
+  existing_ai_product_key = ""
+
+
+  # For Production Workloads (no built-in licensing)
+  is_evaluation_mode = false
+
+  # Service Scaling
+  sm_service_plan_sku = "P1v3"
+  ad_service_plan_sku = "P1v3"
+  ds_service_plan_sku = "P1v3"
+  ai_service_plan_sku = "P1v3"
+
+  # Stream Host Resources
+  stream_host_cpu    = 2
+  stream_host_memory = 8
+
+  # Email Configuration
+  enable_email_notification = true
+  smtp_server               = "smtp.company.com"
+  smtp_from_address         = "noreply@company.com"
+  smtp_username             = "smtp-user"
+  smtp_password             = "smtp-password"
+  smtp_port                 = 587
+  smtp_enable_ssl           = true
+
+  # Security Configuration
+  enable_security_headers = true  # Enable security headers for AD and DS
+
+  tags = {
+    Environment = "Production"
+    Team        = "Platform"
+    CostCenter  = "IT"
+  }
+}
+```
+
+## 🚀 Redis Cache and Auto-Scaling
+
+This module supports Redis cache for distributed caching and auto-scaling scenarios. You have three options for Redis deployment:
+
+### Option 1: Deploy Redis with Main Infrastructure
+```hcl
+# Deploy Redis cache alongside XMPro infrastructure
+create_redis_cache = true
+enable_auto_scale  = true
+```
+**Note**: This adds 15-20 minutes to deployment time.
+
+### Option 2: Pre-deploy Redis Separately (Recommended)
+Deploy Redis once and reuse across multiple deployments:
+
+```bash
+# Step 1: Deploy standalone Redis (one-time, ~15-20 minutes)
+cd examples/redis-standalone
+terraform init
+terraform apply
+
+# Step 2: Get connection string
+export REDIS_CONN=$(terraform output -raw redis_connection_string)
+
+# Step 3: Use in main deployment (fast, ~5-10 minutes)
+cd ../basic
+terraform apply -var="redis_connection_string=$REDIS_CONN" \
+                -var="enable_auto_scale=true" \
+                -var="create_redis_cache=false"
+```
+
+### Option 3: Use Existing Redis Cache
+```hcl
+# Use your own existing Redis cache
+enable_auto_scale       = true
+create_redis_cache      = false  
+redis_connection_string = "your-redis.redis.cache.windows.net:6380,password=...,ssl=True"
+```
+
+### Benefits of Standalone Redis Deployment
+- **Faster iterations**: Main deployments take 5-10 minutes instead of 20-30
+- **Data persistence**: Cache data persists between redeployments
+- **Cost-effective**: No repeated provisioning time
+- **Shared resource**: Multiple environments can share Redis
+
+## 🔑 Login Credentials
+
+After deployment, use these credentials to access the XMPro platform:
+
+- **Super Admin**: `admin@xmpro.onxmpro.com` / `site_admin_password`
+- **Company Admin**: `firstname.lastname@{company_name}.onxmpro.com` / `company_admin_password`
+
+For example, if `company_name = "mycompany"` and the admin is John Doe:
+- Company Admin login: `John.Doe@mycompany.onxmpro.com`
 
 ## 📋 Requirements
 
@@ -146,14 +333,14 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| company_name | Company name for resource naming (max 18 chars) | `string` | `"evaluation"` |
+| company_name | Company name for resource naming (max 18 chars) | `string` | `""` |
 | db_admin_password | Database admin password | `string` | `"P@ssw0rd1234!"` |
 | company_admin_password | Company admin password | `string` | `"P@ssw0rd1234!"` |
 | site_admin_password | Site admin password | `string` | `"P@ssw0rd1234!"` |
 
 > **Note**: While these variables have defaults for development convenience, you should override them with secure passwords for production workloads.
 > 
-> **Important**: When `is_evaluation_mode = true`, the `company_name` is automatically set to "Evaluation" regardless of the value you provide. When using `is_evaluation_mode = false` (default) with a custom `company_name`, licenses must be requested from XMPro. The evaluation licenses are only valid for the "Evaluation" company name.
+> **Important**: When `is_evaluation_mode = true` (default), evaluation licenses are deployed automatically. When using `is_evaluation_mode = false` with a custom `company_name`, you must provide your own product IDs and keys from XMPro.
 
 ### Basic Configuration
 
@@ -168,6 +355,8 @@ module "xmpro_platform" {
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | db_admin_username | Database admin username | `string` | `"sqladmin"` |
+| use_existing_database | Use existing SQL Server and databases | `bool` | `false` |
+| existing_sql_server_fqdn | Existing SQL Server FQDN | `string` | `""` |
 | db_allow_all_ips | Allow all IPs to connect to database | `bool` | `false` |
 
 ### Container Registry
@@ -178,14 +367,14 @@ module "xmpro_platform" {
 | acr_username | ACR username (for private registries) | `string` | `""` |
 | acr_password | ACR password (for private registries) | `string` | `""` |
 | is_private_registry | Use private registry authentication | `bool` | `false` |
-| imageversion | Docker image version | `string` | `"4.5.0.82-alpha-9db64dab7e"` |
+| imageversion | Docker image version | `string` | `"latest"` |
 
 ### DNS and Domain Configuration
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | enable_custom_domain | Enable custom domain for web apps | `bool` | `false` |
-| dns_zone_name | DNS zone name | `string` | `"jfmhnda.nonprod.xmprodev.com"` |
+| dns_zone_name | DNS zone name | `string` | `""` |
 | use_existing_dns_zone | Use existing DNS zone | `bool` | `false` |
 
 ### Service Configuration
@@ -202,7 +391,7 @@ module "xmpro_platform" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| is_evaluation_mode | Deploy with built-in license provisioning | `bool` | `false` |
+| is_evaluation_mode | Deploy with built-in license provisioning | `bool` | `true` |
 
 ### Company Admin Configuration
 
@@ -220,11 +409,20 @@ module "xmpro_platform" {
 | enable_email_notification | Enable email notifications | `bool` | `false` |
 | smtp_server | SMTP server address | `string` | `"sinprd0310.outlook.com"` |
 | smtp_from_address | SMTP from address | `string` | `"Qa.Test@xmpro.com"` |
-| smtp_username | SMTP username | `string` | `"Qa.Test@xmpro.com"` |
+| smtp_username | SMTP username | `string` | `""` |
 | smtp_password | SMTP password | `string` | `"stored-in-keeper"` |
 | smtp_port | SMTP port | `number` | `587` |
 | smtp_enable_ssl | Enable SSL for SMTP | `bool` | `false` |
 
+### SSO Configuration (Azure AD)
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| sso_enabled | Enable SSO configuration for Azure AD | `bool` | `false` |
+| sso_azure_ad_client_id | Azure AD application client ID for SSO | `string` | `""` |
+| sso_azure_ad_secret | Azure AD application secret for SSO | `string` | `""` |
+| sso_business_role_claim | Azure AD claim name for business role synchronization | `string` | `""` |
+| sso_azure_ad_tenant_id | Azure AD tenant ID for SSO (optional, for guest user access) | `string` | `""` |
 
 ### Security Configuration
 
@@ -240,6 +438,42 @@ module "xmpro_platform" {
 | stream_host_memory | Memory allocation (GB) for stream host | `number` | `4` |
 | stream_host_environment_variables | Additional environment variables | `map(string)` | `{}` |
 | stream_host_variant | Stream Host Docker image variant. Options: '' (default), 'bookworm-slim', 'bookworm-slim-python3.12', 'alpine3.21' | `string` | `""` |
+
+### Redis Cache and Auto-Scale Configuration
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| create_redis_cache | Create an Azure Redis Cache instance | `bool` | `false` |
+| enable_auto_scale | Enable auto-scaling with Redis distributed caching | `bool` | `false` |
+| redis_connection_string | Redis connection string for auto-scaling (required when enable_auto_scale=true) | `string` | `""` |
+
+**Note:** When `enable_auto_scale` is set to `true`, you must provide a `redis_connection_string`. The connection string format should be: `your-redis.redis.cache.windows.net:6380,password=...,ssl=True,abortConnect=False`
+
+### Master Data Database Configuration
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| create_masterdata | Create a separate SQL Server with Master Data database | `bool` | `false` |
+| masterdata_db_admin_username | Master Data SQL Server administrator username | `string` | `"masterdata_admin"` |
+| masterdata_db_admin_password | Master Data SQL Server administrator password | `string` | `""` |
+
+**Note:** When `create_masterdata` is set to `true`, a dedicated SQL Server instance (`sqldb-masterdata-{company}-{suffix}`) is created exclusively for the Master Data database. This provides complete isolation from the XMPro platform databases with dedicated credentials. The `masterdata_db_admin_password` must be provided when enabling this feature.
+
+### Stream Host Alerting Configuration
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| enable_alerting | Enable alerting for Stream Host containers | `bool` | `false` |
+| enable_email_alerts | Enable email notifications for alerts | `bool` | `false` |
+| alert_email_addresses | List of email addresses to receive alert notifications | `list(string)` | `[]` |
+| enable_sms_alerts | Enable SMS notifications for alerts | `bool` | `false` |
+| alert_phone_numbers | List of phone numbers to receive SMS alert notifications | `list(string)` | `[]` |
+| enable_cpu_alerts | Enable CPU usage alerts for Stream Host containers | `bool` | `false` |
+| cpu_alert_threshold | CPU usage percentage threshold for alerts | `number` | `80` |
+| enable_memory_alerts | Enable memory usage alerts for Stream Host containers | `bool` | `false` |
+| memory_alert_threshold | Memory usage percentage threshold for alerts | `number` | `80` |
+| enable_container_restart_alerts | Enable container restart alerts | `bool` | `false` |
+| enable_container_stop_alerts | Enable container stop alerts | `bool` | `false` |
 
 ### Deployment Configuration
 
@@ -294,10 +528,19 @@ module "xmpro_platform" {
 | stream_host_container_id | The ID of the stream host container group |
 | company_details | Details about the company admin |
 
+### Alerting Information
+
+| Name | Description |
+|------|-------------|
+| alerting_action_group_id | The ID of the action group for Stream Host alerts (when alerting enabled) |
+| alerting_action_group_name | The name of the action group for Stream Host alerts (when alerting enabled) |
+
 ### Deployment Warnings
 
 | Name | Description |
 |------|-------------|
+| existing_database_firewall_warning | Warning about firewall rules when using existing database |
+| existing_database_migration_warning | Warning about migration compatibility |
 | evaluation_mode_status | Status of evaluation mode deployment |
 
 ## 🧩 Submodules
@@ -322,6 +565,7 @@ This module is composed of the following submodules:
 - **storage-account**: Azure Storage for deployment artifacts
 - **dns-zone**: Custom domain and DNS management
 - **monitoring**: Application Insights and Log Analytics
+- **alerting**: Azure Monitor alerting for Stream Host containers
 - **key-vault**: Azure Key Vault for secrets management
 - **sm-key-vault**: Specialized Key Vault for SM service
 
@@ -344,16 +588,16 @@ This module is composed of the following submodules:
 
 **Behavior**:
 - Creates all infrastructure including licenses container
-- Uses predefined product IDs: AD, DS, AI, and XMPro Notebook
+- Uses predefined evaluation product IDs: AD, DS, AI, and XMPro Notebook
 - Configures evaluation licenses automatically
-- **Forces company name to "Evaluation" (overrides any `company_name` variable value)**
+- Works with any company name (evaluation licenses are company-agnostic)
 
-> **⚠️ License Requirements**: To use a custom company name, you must:
+> **⚠️ Production Usage**: For production deployments:
 > 1. Set `is_evaluation_mode = false`
-> 2. Request licenses from XMPro for your specific company name
-> 3. The evaluation licenses are only valid for the "Evaluation" company name
+> 2. Provide your own product IDs and keys from XMPro
+> 3. The module will use random UUIDs for OAuth client IDs
 
-### For Production Workloads (`is_evaluation_mode = false`, default)
+### For Production Workloads (`is_evaluation_mode = false`)
 
 **Purpose**: Deployments for production workloads where customers provide their own licensing.
 
@@ -365,7 +609,7 @@ This module is composed of the following submodules:
 
 **Behavior**:
 - Creates infrastructure without licenses container
-- Uses random UUIDs for product IDs (when not specified)
+- Generates random UUIDs for OAuth client IDs automatically
 - Requires external license management
 - Customer provides their own product configuration
 
@@ -377,6 +621,122 @@ To switch from evaluation to production workloads:
 2. Provide your own product IDs via variables
 3. Set up external license management
 4. Apply the Terraform configuration
+
+## 🔐 SSO Configuration
+
+The module supports Single Sign-On (SSO) configuration with Azure Active Directory. When enabled, the SM preparation container will automatically configure SSO settings in the Web.config file.
+
+### Prerequisites
+
+1. Create an Azure AD application registration
+2. Configure redirect URIs for your SM instance
+3. Grant necessary API permissions
+4. Create a client secret
+
+### Configuration Example
+
+```hcl
+module "xmpro_platform" {
+  source = "github.com/XMPro/terraform-xmpro-azure?ref=v5.0.0"
+  
+  # ... other configuration ...
+
+  # Enable SSO with Azure AD
+  sso_enabled             = true
+  sso_azure_ad_client_id  = "12345678-1234-1234-1234-123456789012"
+  sso_azure_ad_secret     = "your-client-secret-value"
+  
+  # Optional: Role synchronization
+  sso_business_role_claim = "groups"  # Or any custom claim name
+  
+  # Optional: For multi-tenant scenarios
+  sso_azure_ad_tenant_id  = "87654321-4321-4321-4321-210987654321"
+}
+```
+
+### Azure AD Configuration Steps
+
+1. **Register Application**: In Azure Portal, navigate to Azure Active Directory → App registrations → New registration
+2. **Configure Redirect URI**: Add `https://your-sm-url/identity/signin-azuread`
+3. **Create Client Secret**: Under Certificates & secrets, create a new client secret
+4. **Set API Permissions**: Grant necessary permissions for user sign-in and profile reading
+
+### Important Notes
+
+- SSO configuration is applied during the SM preparation container execution
+- The Web.config file is automatically modified with the provided SSO settings
+- For production, store sensitive values like `sso_azure_ad_secret` in Azure Key Vault or environment variables
+- Refer to the [XMPro SSO documentation](https://documentation.xmpro.com/4.4/src/installation/complete-installation/configure-sso-optional/sso-azure-ad.html) for detailed setup instructions
+
+## 🗄️ Existing Database Support
+
+The module supports reusing existing SQL Server and databases for flexible deployment scenarios:
+
+### Configuration
+
+```hcl
+# Enable existing database mode
+use_existing_database    = true
+existing_sql_server_fqdn = "your-server.database.windows.net"
+
+# Standard database and authentication settings
+db_admin_username = "your-admin-username"
+db_admin_password = "your-admin-password"
+
+# Existing product IDs for SM, AD, DS, AI when using existing databases
+existing_sm_product_id = ""
+existing_ad_product_id = ""
+existing_ds_product_id = ""
+existing_ai_product_id = ""
+# Existing product keys for SM, AD, DS, AI when using existing databases
+existing_ad_product_key = ""
+existing_ds_product_key = ""
+existing_ai_product_key = ""
+```
+
+### SMTP Configuration (Required)
+
+⚠️ **Important**: SMTP configuration is **mandatory** for existing database deployments. These settings are stored in Azure Key Vault and used by the applications for email notifications. Omitting SMTP configuration will cause email functionality to fail.
+
+```hcl
+# SMTP configuration - ALL variables required
+smtp_server       = "smtp.office365.com"
+smtp_from_address = "notifications@company.com"
+smtp_username     = "smtp-user"
+smtp_password     = "smtp-password"
+smtp_port         = 587
+smtp_enable_ssl   = true
+```
+
+### Behavior When Using Existing Database
+
+**Skipped Resources**:
+- SQL Server and database creation
+- Database migration containers (sm-dbmigrate, ad-dbmigrate, ds-dbmigrate, sm-prep)
+- **Licenses container deployment** (regardless of `is_evaluation_mode` setting)
+
+**Created Resources**:
+- All App Services with existing database connectivity
+- Keyvault with predefined values
+- Monitoring and supporting infrastructure
+- Stream Host and other container services
+
+### Requirements for Existing Database
+
+1. **Database Names**: Must contain databases named `AD`, `DS`, `SM`, and optionally `AI`
+2. **Firewall Rules**: Must allow connections from the newly created Azure resources
+3. **Schema Compatibility**: Database schemas should be compatible with the specified `imageversion`
+4. **Authentication**: Provided credentials must have sufficient privileges
+5. **SMTP Configuration**: All SMTP variables must be provided as they are stored in Key Vault for application use
+6. **Licensing**: Must be managed manually through SM interface - `is_evaluation_mode` has no effect
+
+### Warnings and Considerations
+
+⚠️ **Evaluation Mode Note**: The `is_evaluation_mode` variable is irrelevant when using existing databases because the licenses container is never deployed. The existing-database example intentionally omits this variable to avoid confusion.
+
+- Ensure firewall rules allow connections from new App Services and Container Instances
+- Database migration containers are skipped, so schema must be pre-configured
+- Variables like `company_name`, `product_id`, `product_key`, and `url` should match existing database values
 
 ## Stream Host Variants
 
@@ -437,6 +797,7 @@ Ensure your Azure subscription has sufficient quotas for:
 **Solutions**:
 - Verify `db_admin_username` and `db_admin_password` are correct
 - Check SQL Server firewall rules allow Azure services
+- When using existing database, ensure firewall allows new resource IPs
 
 #### 3. DNS Resolution Issues
 

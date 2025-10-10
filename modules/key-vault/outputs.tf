@@ -14,8 +14,8 @@ output "vault_uri" {
 }
 
 output "secret_ids" {
-  description = "Map of secret names to their IDs"
-  value       = { for k, v in azurerm_key_vault_secret.secrets : k => v.id }
+  description = "Map of secret names to their versionless IDs for Key Vault references"
+  value       = { for k, v in azurerm_key_vault_secret.secrets : k => v.versionless_id }
 }
 
 output "secret_values" {
