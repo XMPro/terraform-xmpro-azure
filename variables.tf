@@ -7,7 +7,7 @@ variable "environment" {
     condition     = length(var.environment) <= 10
     error_message = "The environment variable must be less than 10 characters."
   }
-}
+} 
 
 variable "location" {
   description = "Azure region for resources"
