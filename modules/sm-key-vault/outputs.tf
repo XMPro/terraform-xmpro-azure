@@ -24,8 +24,8 @@ output "certificate_subject" {
 }
 
 output "certificate_secret_id" {
-  description = "The secret ID of the generated certificate for app service"
-  value       = azurerm_key_vault_certificate.cert.secret_id
+  description = "The versionless secret ID of the generated certificate for app service"
+  value       = azurerm_key_vault_certificate.cert.versionless_secret_id
 }
 
 output "certificate_pfx_blob" {

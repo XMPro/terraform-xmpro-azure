@@ -52,9 +52,18 @@ variable "administrator_login" {
 }
 
 variable "administrator_login_password" {
-  description = "The administrator login password for the SQL server"
+  description = "The administrator login password for the SQL server. Must be at least 8 characters and contain characters from three of the following categories: uppercase letters, lowercase letters, numbers, and non-alphanumeric characters."
   type        = string
   sensitive   = true
+  validation {
+    condition = (
+      can(regex("^.{8,128}$", var.administrator_login_password)) &&
+      can(regex("[A-Z]", var.administrator_login_password)) &&
+      can(regex("[a-z]", var.administrator_login_password)) &&
+      can(regex("[0-9]", var.administrator_login_password))
+    )
+    error_message = "Password must be 8-128 characters long and contain at least one uppercase letter, one lowercase letter, and one number. Consider also adding special characters for better security."
+  }
 }
 
 variable "db_minimum_tls_version" {

@@ -1,0 +1,92 @@
+# Example terraform.tfvars for Infrastructure Layer
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# ==========================================
+# REQUIRED - Infrastructure settings
+# ==========================================
+
+# Core platform settings
+company_name = "mycompany"                    # Your company name (lowercase, alphanumeric only)
+name_suffix = "dev001"                        # Unique suffix for resource naming (4-8 chars, lowercase alphanumeric)
+location = "eastus"                           # Azure region (e.g., eastus, westus2, westeurope)
+
+# Database credentials - IMPORTANT: Don't change these after deployment!
+db_admin_username = "xmadmin"                 # Database admin username
+db_admin_password = "YourStrongPassword123!"  # Database admin password
+
+# Master Data database credentials (only needed if create_masterdata = true)
+# masterdata_db_admin_username = "mdadmin"
+# masterdata_db_admin_password = "YourMDPassword123!"
+
+
+# ==========================================
+# OPTIONAL - Infrastructure tuning
+# ==========================================
+
+# App Service Plan configuration - Set SKUs independently per service
+ad_service_plan_sku = "P1v4"                  # App Designer SKU (Options: B1, B2, B3, S1, S2, S3, P0v3, P1v3, P2v3, P3v3, P0v4, P1v4, P2v4, P3v4 - v4 recommended)
+ds_service_plan_sku = "P1v4"                  # Data Stream Designer SKU
+sm_service_plan_sku = "P1v4"                  # Subscription Manager SKU
+ai_service_plan_sku = "P1v4"                  # AI Designer SKU (only used if enable_ai = true)
+app_service_plan_worker_count = 1             # Number of workers
+
+# Storage configuration
+storage_account_tier = "Standard"             # Standard or Premium
+storage_replication_type = "LRS"              # LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS
+
+# Database configuration
+# db_sku_name = "Basic"                       # Options: Basic, S0, S1, S2, S3, P1, P2, P4
+# db_max_size_gb = 2                          # Maximum database size in GB
+# db_collation = "SQL_Latin1_General_CP1_CI_AS"
+# db_zone_redundant = false
+# db_allow_all_ips = false
+# create_local_firewall_rule = true
+
+# Custom database names (optional - defaults to SM, AD, DS, AI)
+# Uncomment to use custom database names following your organization's naming conventions
+# sm_database_name = "XMPro_SubscriptionManager"
+# ad_database_name = "XMPro_AppDesigner"
+# ds_database_name = "XMPro_DataStream"
+# ai_database_name = "XMPro_AI"
+
+# Feature flags
+enable_app_insights = true                    # Enable Application Insights monitoring
+enable_log_analytics = true                  # Enable Log Analytics workspace
+create_redis_cache = false                   # Create Redis Cache instance
+enable_alerting = false                      # Enable Azure Monitor alerts
+create_masterdata = false                    # Create separate Master Data database
+enable_ai = false                            # Enable AI service infrastructure
+
+# DNS configuration (optional)
+enable_custom_domain = false
+# dns_zone_name = "mycompany.com"
+
+# ==========================================
+# OPTIONAL - Enterprise Networking
+# ==========================================
+
+# Enable production-grade networking with VNet, private endpoints, and private DNS
+# When enabled, all data tier resources (SQL, Storage, Key Vaults) use private endpoints
+prod_networking_enabled = false
+# vnet_address_space = ["10.0.0.0/16"]
+# subnet_address_prefixes = {
+#   presentation = "10.0.1.0/24"   # Subnet 1: App Services (AD, DS, SM) and Key Vaults
+#   data         = "10.0.2.0/24"   # Subnet 2: SQL databases, Redis, Storage private endpoints
+#   aci          = "10.0.3.0/24"   # Subnet 3: Stream Host (Azure Container Instances)
+#   processing   = "10.0.4.0/24"   # Subnet 4: AI services (Azure Open AI, AI Search)
+# }
+
+# ==========================================
+# OPTIONAL - Custom RBAC Roles
+# ==========================================
+
+# If your organization uses custom Azure RBAC roles instead of built-in roles,
+# specify the custom role name here. Leave commented out to use default built-in role.
+# This role is assigned to the Terraform service principal for Key Vault management.
+# keyvault_admin_role_name = "Custom-KeyVault-Administrator"
+
+# Additional tags
+# tags = {
+#   "Project" = "XMPro"
+#   "CostCenter" = "IT"
+# }

@@ -105,7 +105,7 @@ Customize compute resources for each service:
 - `ds_service_plan_sku` - Data Stream Designer compute tier (default: "B1")
 - `sm_service_plan_sku` - Subscription Manager compute tier (default: "B1")
 
-Available SKUs: B1, B2, B3, S1, S2, S3, P1v2, P2v2, P3v2, P1v3, P2v3, P3v3
+Available SKUs: B1, B2, B3, S1, S2, S3, P0v3, P1v3, P2v3, P3v3, P0v4, P1v4, P2v4, P3v4 (v4 recommended for production)
 
 ### Stream Host Configuration
 Control Stream Host container resources:

@@ -9,7 +9,7 @@ module "xmpro_platform" {
   source = "../../"
 
   # For specific latest stable released version:
-  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.3"
+  # source = "github.com/XMPro/terraform-xmpro-azure?ref=v4.5.2"
 
   # Core settings - customize these for your local testing
   environment = var.environment
@@ -83,9 +83,9 @@ module "xmpro_platform" {
   redis_connection_string = var.redis_connection_string
 
   # Master Data Configuration
-  create_masterdata             = var.create_masterdata
-  masterdata_db_admin_username  = var.masterdata_db_admin_username
-  masterdata_db_admin_password  = var.masterdata_db_admin_password
+  create_masterdata            = var.create_masterdata
+  masterdata_db_admin_username = var.masterdata_db_admin_username
+  masterdata_db_admin_password = var.masterdata_db_admin_password
 
   # AD Encryption Key
   ad_encryption_key = var.ad_encryption_key
