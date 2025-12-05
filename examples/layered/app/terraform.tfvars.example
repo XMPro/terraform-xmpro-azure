@@ -1,0 +1,285 @@
+# Application Layer Configuration
+# Copy this file to terraform.tfvars and customize the values for your environment
+#
+# IMPORTANT: Deploy infrastructure layer first and get outputs:
+# cd ../infra && terraform output
+
+# ============================================================================
+# CORE CONFIGURATION
+# ============================================================================
+
+company_name = "mycompany"
+name_suffix  = "dev001"
+
+# ============================================================================
+# INFRASTRUCTURE REFERENCES (from infrastructure outputs)
+# ============================================================================
+
+resource_group_name  = "rg-mycompany-dev001"
+storage_account_name = "stmycdev001"
+storage_sas_token    = ""  # Optional - leave empty to auto-generate. Format: "?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-12-31T23:59:59Z&st=2025-01-01T00:00:00Z&spr=https&sig=..."
+sql_server_fqdn      = "sql-mycompany-dev001.database.windows.net"
+
+# Service Plan Names
+ad_service_plan_name = "plan-ad-mycompany-dev001"
+ds_service_plan_name = "plan-ds-mycompany-dev001"
+sm_service_plan_name = "plan-sm-mycompany-dev001"
+ai_service_plan_name = null  # AI disabled
+
+# Key Vault Names
+ad_key_vault_name = "kv-ad-mycompany-dev001"
+ds_key_vault_name = "kv-ds-mycompany-dev001"
+sm_key_vault_name = "kv-sm-mycompany-dev001"
+ai_key_vault_name = ""  # AI disabled
+
+# ============================================================================
+# CREDENTIALS & SECRETS
+# ============================================================================
+#
+# SECURITY REQUIREMENTS:
+# - All passwords MUST be at least 12 characters long
+# - Use strong, unique passwords for each credential
+# - NEVER commit actual passwords to version control
+# - Store sensitive values in Azure Key Vault or use environment variables:
+#   export TF_VAR_db_admin_password="your-secure-password"
+#   export TF_VAR_company_admin_password="your-secure-password"
+#   export TF_VAR_site_admin_password="your-secure-password"
+#
+# ============================================================================
+
+# Container Registry
+acr_url_product = "xmpro.azurecr.io"
+acr_username    = ""  # Leave empty for public registry
+acr_password    = ""  # Leave empty for public registry
+
+# ============================================================================
+# DATABASE AUTHENTICATION (Azure AD / Managed Identity)
+# ============================================================================
+
+# Database Authentication Mode (must match infrastructure layer)
+# Default: false (uses SQL authentication)
+enable_sql_aad_auth = false   # Set to true to use Azure AD authentication for AD/DS apps
+
+# App Database Managed Identities (from infrastructure outputs - required when enable_sql_aad_auth = true)
+# Get from infrastructure outputs:
+#   terraform output -json | jq -r '.sm_db_managed_identity_name.value'
+#   terraform output -json | jq -r '.sm_db_aad_client_id.value'
+# Only identity name and client ID are needed (resource IDs are constructed automatically)
+# Leave commented out if enable_sql_aad_auth = false
+#
+# Example with AAD authentication enabled:
+# sm_db_managed_identity_name = "mi-mycompany-sm-db-dev001"
+# sm_db_aad_client_id         = "12345678-1234-1234-1234-123456789abc"
+# ad_db_managed_identity_name = "mi-mycompany-ad-db-dev001"
+# ad_db_aad_client_id         = "23456789-2345-2345-2345-23456789abcd"
+# ds_db_managed_identity_name = "mi-mycompany-ds-db-dev001"
+# ds_db_aad_client_id         = "34567890-3456-3456-3456-3456789abcde"
+# ai_db_managed_identity_name = "mi-mycompany-ai-db-dev001"  # Optional: only if AI is enabled
+# ai_db_aad_client_id         = "45678901-4567-4567-4567-456789abcdef"  # Optional: only if AI is enabled
+
+# Database Credentials
+# IMPORTANT: Always required for SM app (uses SQL authentication even when AAD is enabled)
+# REQUIRED when enable_sql_aad_auth = false: Used by all apps (SM, AD, DS)
+# REQUIRED when enable_sql_aad_auth = true: Used only by SM app (AD/DS use managed identities)
+# Provide via environment variable or secure tfvars file (not committed to Git)
+# Minimum 12 characters required for security compliance
+db_admin_username = "xmadmin"
+db_admin_password = "YourSecure!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
+
+# Custom Database Names (optional - defaults to SM, AD, DS, AI)
+# Must match the infrastructure layer if using custom names
+# sm_database_name = "XMPro_SubscriptionManager"
+# ad_database_name = "XMPro_AppDesigner"
+# ds_database_name = "XMPro_DataStream"
+# ai_database_name = "XMPro_AI"
+
+# Application Admin Credentials
+# REQUIRED: Provide via environment variable or secure tfvars file (not committed to Git)
+# Minimum 12 characters required for security compliance
+company_admin_password = "CompanyAdmin!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
+site_admin_password    = "SiteAdmin!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
+ad_encryption_key      = ""  # Leave empty to auto-generate
+
+# ============================================================================
+# APPLICATION CONFIGURATION
+# ============================================================================
+
+imageversion       = "4.5.3"
+is_evaluation_mode = false  # Set to true for evaluation deployments with built-in licenses
+
+# Company Admin Details
+company_admin_first_name    = "Admin"
+company_admin_last_name     = "User"
+company_admin_email_address = ""
+
+# ============================================================================
+# FEATURE FLAGS
+# ============================================================================
+
+enable_ai               = false
+create_stream_host      = true
+enable_custom_domain    = false
+dns_zone_name           = ""
+enable_auto_scale       = false
+redis_connection_string = ""  # Example: "myredis.redis.cache.windows.net:6380,password=xxxxx,ssl=True,abortConnect=False"
+enable_email_notification = false
+
+# ============================================================================
+# SMTP CONFIGURATION
+# ============================================================================
+
+smtp_server      = ""
+smtp_from_address = "noreply@mycompany.com"
+smtp_username    = ""
+smtp_password    = ""
+smtp_port        = 587
+smtp_enable_ssl  = true
+
+# ============================================================================
+# SSO CONFIGURATION
+# ============================================================================
+
+sso_enabled             = false
+sso_azure_ad_client_id  = ""
+sso_azure_ad_secret     = ""
+sso_business_role_claim = ""
+sso_azure_ad_tenant_id  = ""
+
+# ============================================================================
+# ADDITIONAL STREAM HOSTS
+# ============================================================================
+
+# Deploy multiple Stream Host containers beyond the primary one (create_stream_host)
+# Each stream host requires unique collection credentials from DS
+# DS URL is auto-populated from main deployment
+
+# Map of stream host configurations - uncomment and add as needed
+stream_hosts = {
+  # "sh01" = {
+  #   collection_id     = "your-collection-id-from-ds"     # Get from DS after creating collection
+  #   collection_secret = "your-collection-secret-from-ds" # Get from DS after creating collection
+  #   cpu               = 1                                 # CPU cores (0.25-4)
+  #   memory            = 4                                 # Memory in GB (0.5-16)
+  #   imageversion      = ""                                # Leave empty to use main imageversion
+  #   variant           = ""                                # Options: "", "bookworm-slim-python3.12", "alpine3.21"
+  #   environment_variables = {
+  #     SH_PIP_MODULES = "pandas numpy"
+  #   }
+  # }
+  # "sh02" = {
+  #   collection_id     = "another-collection-id-from-ds"
+  #   collection_secret = "another-collection-secret-from-ds"
+  #   cpu               = 0.5
+  #   memory            = 1
+  # }
+}
+
+# Optional: Override DS URL for all stream hosts (default: uses main deployment DS URL)
+# stream_host_ds_server_url = "https://ds-external.mycompany.com"
+
+# Optional: Alerting for all additional stream hosts
+# stream_host_enable_alerting           = true
+# stream_host_alert_email_addresses     = ["admin@mycompany.com", "ops@mycompany.com"]
+# stream_host_enable_cpu_alerts         = true
+# stream_host_cpu_alert_threshold       = 80
+# stream_host_enable_memory_alerts      = true
+# stream_host_memory_alert_threshold    = 85
+# stream_host_enable_restart_alerts     = true
+# stream_host_enable_stop_alerts        = true
+
+# ============================================================================
+# MONITORING (from infrastructure outputs)
+# ============================================================================
+
+log_analytics_workspace_name = "log-mycompany-dev001"
+app_insights_name            = "appinsights-mycompany-dev001"
+
+# ============================================================================
+# NETWORKING (from infrastructure outputs)
+# ============================================================================
+
+# Enable production-grade networking (must match infrastructure layer setting)
+# When true: Requires vnet_name and subnet_names from infrastructure outputs
+# When false: App Services use public endpoints only
+prod_networking_enabled = false
+
+# Override to enable public access even when prod_networking_enabled = true
+# Useful for testing private endpoints while keeping public URLs accessible
+# Default: false (respects prod_networking_enabled setting)
+# override_public_access = false
+
+# Private DNS zone name for App Services (used with private endpoints)
+# Default: "privatelink.azurewebsites.net"
+# Leave empty to skip DNS integration with private endpoints
+# private_dns_zone_sites_name = "privatelink.azurewebsites.net"
+
+# Optional: Provide these values when prod_networking_enabled = true
+# Get from infrastructure outputs:
+#   cd ../infra && terraform output vnet_name
+#   cd ../infra && terraform output subnet_names
+# vnet_name = "vnet-mycompany-dev-dev001"
+# subnet_names = {
+#   presentation = "presentation"  # Subnet 1: App Services (AD, DS, SM)
+#   data         = "data"          # Subnet 2: SQL, Redis, Storage (private endpoints, not used by app layer)
+#   aci          = "aci"           # Subnet 3: Stream Host (Azure Container Instances)
+#   processing   = "processing"    # Subnet 4: AI services (reserved for future use)
+# }
+
+# ============================================================================
+# CUSTOM RESOURCE NAMING (Optional)
+# ============================================================================
+
+# Override default resource names with custom names
+# Leave commented out to use default naming convention: {prefix}-{service}-{company_name}-{suffix}
+# When specified, custom names must meet Azure naming requirements and character limits
+
+# App Services (max 60 chars)
+# name_ad_app_service = "app-ad-custom-dev001"
+# name_ds_app_service = "app-ds-custom-dev001"
+# name_sm_app_service = "app-sm-custom-dev001"
+
+# Key Vault Managed Identities (max 128 chars)
+# name_ad_kv_identity = "mi-ad-kv-custom-dev001"
+# name_ds_kv_identity = "mi-ds-kv-custom-dev001"
+# name_sm_kv_identity = "mi-sm-kv-custom-dev001"
+
+# Stream Host Container Instance (max 63 chars)
+# name_stream_host_container = "ci-sh-custom-dev001"
+
+# AI App Service (when enable_ai = true, max 60 chars)
+# name_ai_app_service = "app-ai-custom-dev001"
+# name_ai_kv_identity = "mi-ai-kv-custom-dev001"
+
+# ============================================================================
+# SECURITY & AUTHORIZATION
+# ============================================================================
+
+# Key Vault Authorization Model
+# Choose between Azure RBAC (modern, recommended) or Access Policies (legacy)
+# Default: true (uses Azure RBAC)
+# enable_rbac_authorization = true
+
+# When enable_rbac_authorization = true (Azure RBAC):
+# - Infrastructure: Terraform principal receives "Key Vault Administrator" role
+# - Applications: Managed identities receive "Key Vault Secrets User" role
+# - SM: Also receives "Key Vault Certificates User" role for certificate management
+# - Complies with Azure best practices and enables fine-grained access control
+
+# When enable_rbac_authorization = false (Access Policies):
+# - Infrastructure: Terraform principal receives full access policy permissions
+# - Applications: Managed identities receive Get/List access policy permissions
+# - SM: Also receives Get/List certificate permissions
+# - Compatible with Key Vaults that don't support RBAC
+
+# Custom RBAC Role Names (Optional - only used when enable_rbac_authorization = true)
+# If your organization uses custom Azure RBAC roles instead of built-in roles,
+# specify the custom role names here. Leave commented out to use default built-in roles.
+# keyvault_secrets_reader_role_name      = "Custom-KeyVault-Secrets-Reader"
+# keyvault_certificates_reader_role_name = "Custom-KeyVault-Certificates-Reader"
+
+# ============================================================================
+# TAGS
+# ============================================================================
+
+keep_or_delete_tag = "keep"
+billing_tag        = "development"
