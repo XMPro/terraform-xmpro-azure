@@ -131,6 +131,25 @@ variable "tags" {
   default     = {}
 }
 
+# Existing Database Configuration
+variable "use_existing_database" {
+  description = "Whether to use an existing SQL Server and databases instead of creating new ones"
+  type        = bool
+  default     = false
+}
+
+variable "existing_sql_server_fqdn" {
+  description = "Fully qualified domain name of the existing SQL Server"
+  type        = string
+  default     = ""
+}
+
+variable "existing_sm_product_id" {
+  description = "Product ID for the existing Stream Manager"
+  type        = string
+  default     = ""
+}
+
 # Database SKU configuration
 variable "db_sku_name" {
   description = "SKU name for the database"

@@ -1,0 +1,31 @@
+# Existing Database Example - Infrastructure tfvars
+# Use this when connecting to an existing SQL Server and databases
+
+# Core Configuration
+company_name = "mycompany"
+name_suffix  = "exist01"
+location     = "australiaeast"
+
+# Existing Database Configuration (REQUIRED)
+existing_sql_server_fqdn = "your-sql-server.database.windows.net"
+existing_sm_product_id   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# Database Credentials
+db_admin_username = "sqladmin"
+db_admin_password = "YourSecure!Pass123"
+
+# Database Names (must match existing databases)
+sm_database_name = "SM"
+ad_database_name = "AD"
+ds_database_name = "DS"
+# ai_database_name = "AI"  # Uncomment if enable_ai = true
+
+# App Service Plans
+ad_service_plan_sku = "B1"
+ds_service_plan_sku = "B1"
+sm_service_plan_sku = "B1"
+# ai_service_plan_sku = "B1"  # Uncomment if enable_ai = true
+
+# Features
+enable_ai          = false
+create_redis_cache = false

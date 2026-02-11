@@ -1,0 +1,54 @@
+# Existing Database Example - Application tfvars
+# Use this when connecting to an existing SQL Server and databases
+
+# Core Configuration (must match infra layer)
+company_name = "mycompany"
+name_suffix  = "exist01"
+
+# Infrastructure References (from infra layer outputs)
+resource_group_name  = "rg-mycompany-exist01"
+storage_account_name = "stmycexist01"
+storage_sas_token    = ""  # From infra output, or leave empty to auto-generate
+
+# Existing Database Configuration (REQUIRED)
+existing_sql_server_fqdn = "your-sql-server.database.windows.net"
+existing_sm_product_id   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+existing_ad_product_id   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+existing_ds_product_id   = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+existing_ad_product_key  = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+existing_ds_product_key  = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
+# Database Credentials
+db_admin_username = "sqladmin"
+db_admin_password = "YourSecure!Pass123"
+
+# Database Names (must match existing)
+sm_database_name = "SM"
+ad_database_name = "AD"
+ds_database_name = "DS"
+
+# Service Plan Names (from infra outputs)
+ad_service_plan_name = "plan-ad-mycompany-exist01"
+ds_service_plan_name = "plan-ds-mycompany-exist01"
+sm_service_plan_name = "plan-sm-mycompany-exist01"
+
+# Key Vault Names (from infra outputs)
+ad_key_vault_name = "kv-ad-mycompany-exist01"
+ds_key_vault_name = "kv-ds-mycompany-exist01"
+sm_key_vault_name = "kv-sm-mycompany-exist01"
+
+# Container Registry
+acr_url_product = "xmpro.azurecr.io"
+acr_username    = "your-acr-username"
+acr_password    = "your-acr-password"
+
+# Application Admin
+company_admin_password = "YourAdmin!Pass123"
+site_admin_password    = "YourSite!Pass123"
+
+# Monitoring (from infra outputs)
+log_analytics_workspace_name = "log-mycompany-exist01"
+app_insights_name            = "appinsights-mycompany-exist01"
+
+# Image Version
+imageversion = "4.5.3"

@@ -16,9 +16,12 @@ module "infrastructure" {
   location     = var.location
 
   # Database configuration
-  enable_sql_aad_auth = var.enable_sql_aad_auth
-  db_admin_username   = var.db_admin_username
-  db_admin_password   = var.db_admin_password
+  enable_sql_aad_auth      = var.enable_sql_aad_auth
+  db_admin_username        = var.db_admin_username
+  db_admin_password        = var.db_admin_password
+  use_existing_database    = var.use_existing_database
+  existing_sql_server_fqdn = var.existing_sql_server_fqdn
+  existing_sm_product_id   = var.existing_sm_product_id
 
   # Custom database names
   sm_database_name = var.sm_database_name
