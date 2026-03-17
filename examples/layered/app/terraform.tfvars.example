@@ -104,7 +104,7 @@ ad_encryption_key      = ""  # Leave empty to auto-generate
 # APPLICATION CONFIGURATION
 # ============================================================================
 
-imageversion       = "4.5.3"
+imageversion       = "4.6.0"
 is_evaluation_mode = false  # Set to true for evaluation deployments with built-in licenses
 
 # Company Admin Details
@@ -134,6 +134,30 @@ smtp_username    = ""
 smtp_password    = ""
 smtp_port        = 587
 smtp_enable_ssl  = true
+
+# ============================================================================
+# SMTP OAUTH CONFIGURATION (Optional - Required for Microsoft 365 after March 2026)
+# ============================================================================
+# Enable OAuth authentication for SMTP (set to true to use OAuth instead of basic auth)
+enable_email_oauth = false
+
+# OAuth token endpoint URL (for Microsoft 365, use: https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token)
+email_oauth_token_endpoint = ""
+
+# OAuth client ID (Azure AD Application ID)
+email_oauth_token_client_id = ""
+
+# OAuth client secret (Azure AD Application Secret)
+email_oauth_token_client_secret = ""
+
+# OAuth token scope (for Microsoft 365 SMTP, use: https://outlook.office365.com/.default)
+email_oauth_token_scope = "https://outlook.office365.com/.default"
+
+# OAuth token HTTP method (default: POST)
+# email_oauth_token_method = "POST"
+
+# OAuth grant type (default: client_credentials)
+# email_oauth_token_grant_type = "client_credentials"
 
 # ============================================================================
 # SSO CONFIGURATION

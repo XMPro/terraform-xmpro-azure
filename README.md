@@ -337,6 +337,13 @@ smtp_password = ""
 smtp_port = 587
 smtp_enable_ssl = true
 
+# SMTP OAuth configuration (optional - required for Microsoft 365 after March 2026)
+enable_email_oauth = false
+email_oauth_token_endpoint = "" # e.g., https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token
+email_oauth_token_client_id = "" # Azure AD Application ID
+email_oauth_token_client_secret = "" # Azure AD Application Secret
+email_oauth_token_scope = "https://outlook.office365.com/.default"
+
 # Feature flags
 enable_ai = false
 create_stream_host = true
@@ -626,6 +633,13 @@ ai_service_plan_sku = "B1"    # Development AI instance
 | smtp_password | SMTP password | `string` | `""` |
 | smtp_port | SMTP port | `number` | `587` |
 | smtp_enable_ssl | Enable SSL for SMTP | `bool` | `true` |
+| enable_email_oauth | Enable OAuth authentication for SMTP (Microsoft 365) | `bool` | `false` |
+| email_oauth_token_endpoint | OAuth token endpoint URL | `string` | `""` |
+| email_oauth_token_client_id | OAuth client ID (Azure AD Application ID) | `string` | `""` |
+| email_oauth_token_client_secret | OAuth client secret (Azure AD Application Secret) | `string` | `""` |
+| email_oauth_token_scope | OAuth token scope | `string` | `"https://outlook.office365.com/.default"` |
+| email_oauth_token_method | OAuth token HTTP method | `string` | `"POST"` |
+| email_oauth_token_grant_type | OAuth grant type | `string` | `"client_credentials"` |
 | sm_database_name | Subscription Manager database name | `string` | `"SM"` |
 | ad_database_name | App Designer database name | `string` | `"AD"` |
 | ds_database_name | Data Stream Designer database name | `string` | `"DS"` |

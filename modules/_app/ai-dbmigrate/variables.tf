@@ -74,3 +74,19 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+# ============================================================================
+# NETWORKING CONFIGURATION
+# ============================================================================
+
+variable "prod_networking_enabled" {
+  description = "Enable production networking with VNet integration"
+  type        = bool
+  default     = false
+}
+
+variable "subnet_id" {
+  description = "Subnet ID for VNet integration (ACI subnet). Required when prod_networking_enabled = true."
+  type        = string
+  default     = null
+}

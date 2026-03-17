@@ -204,6 +204,18 @@ module "applications" {
   smtp_enable_ssl   = var.smtp_enable_ssl
 
   # ============================================================================
+  # SMTP OAUTH CONFIGURATION
+  # ============================================================================
+
+  enable_email_oauth              = var.enable_email_oauth
+  email_oauth_token_endpoint      = var.email_oauth_token_endpoint
+  email_oauth_token_client_id     = var.email_oauth_token_client_id
+  email_oauth_token_client_secret = var.email_oauth_token_client_secret
+  email_oauth_token_scope         = var.email_oauth_token_scope
+  email_oauth_token_method        = var.email_oauth_token_method
+  email_oauth_token_grant_type    = var.email_oauth_token_grant_type
+
+  # ============================================================================
   # SSO CONFIGURATION
   # ============================================================================
 

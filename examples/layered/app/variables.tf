@@ -234,7 +234,7 @@ variable "ad_encryption_key" {
 variable "imageversion" {
   description = "Version tag for container images"
   type        = string
-  default     = "4.5.3"
+  default     = "4.6.0"
 }
 
 variable "is_evaluation_mode" {
@@ -348,6 +348,53 @@ variable "smtp_enable_ssl" {
   description = "Enable SSL for SMTP"
   type        = bool
   default     = true
+}
+
+# ============================================================================
+# SMTP OAUTH CONFIGURATION
+# ============================================================================
+
+variable "enable_email_oauth" {
+  description = "Enable OAuth authentication for SMTP (required for Microsoft 365 after March 2026)"
+  type        = bool
+  default     = false
+}
+
+variable "email_oauth_token_endpoint" {
+  description = "OAuth token endpoint URL (e.g., https://login.microsoftonline.com/{tenant-id}/oauth2/v2.0/token)"
+  type        = string
+  default     = ""
+}
+
+variable "email_oauth_token_client_id" {
+  description = "OAuth client ID (Azure AD Application ID)"
+  type        = string
+  default     = ""
+}
+
+variable "email_oauth_token_client_secret" {
+  description = "OAuth client secret (Azure AD Application Secret)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "email_oauth_token_scope" {
+  description = "OAuth token scope (use 'https://outlook.office365.com/.default' for Microsoft 365 SMTP)"
+  type        = string
+  default     = "https://outlook.office365.com/.default"
+}
+
+variable "email_oauth_token_method" {
+  description = "OAuth token HTTP method"
+  type        = string
+  default     = "POST"
+}
+
+variable "email_oauth_token_grant_type" {
+  description = "OAuth grant type"
+  type        = string
+  default     = "client_credentials"
 }
 
 # ============================================================================

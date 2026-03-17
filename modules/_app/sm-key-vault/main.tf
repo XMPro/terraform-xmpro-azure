@@ -27,19 +27,26 @@ module "sm_secrets" {
       var.db_admin_username,
       var.db_admin_password
     )
-    "ServerUUID"      = var.sm_product_id
-    "DNSName"         = var.sm_base_url
-    "SMTPSERVER"      = var.smtp_server
-    "SMTPFrom"        = var.smtp_from_address
-    "SMTPUSER"        = var.smtp_username
-    "SMTPPASS"        = var.smtp_password
-    "SMTPPORT"        = tostring(var.smtp_port)
-    "SMTPENABLESSL"   = tostring(var.smtp_enable_ssl)
-    "SMTPENABLE"      = tostring(var.enable_email_notification)
-    "AutoScaleEnable" = tostring(var.enable_auto_scale)
-    "SALT"            = random_string.salt.result
-    "REDIS"           = var.enable_auto_scale && var.redis_connection_string != "" ? var.redis_connection_string : "-"
-    "CERT"            = "CN=${var.companyname}-SM-SigningCert"
+    "ServerUUID"                  = var.sm_product_id
+    "DNSName"                     = var.sm_base_url
+    "SMTPSERVER"                  = var.smtp_server
+    "SMTPFrom"                    = var.smtp_from_address
+    "SMTPUSER"                    = var.smtp_username
+    "SMTPPASS"                    = var.smtp_password
+    "SMTPPORT"                    = tostring(var.smtp_port)
+    "SMTPENABLESSL"               = tostring(var.smtp_enable_ssl)
+    "SMTPENABLE"                  = tostring(var.enable_email_notification)
+    "ENABLEEMAILOAUTH"            = tostring(var.enable_email_oauth)
+    "EMAILOAUTHTOKENENDPOINT"     = var.email_oauth_token_endpoint
+    "EMAILOAUTHTOKENCLIENTID"     = var.email_oauth_token_client_id
+    "EMAILOAUTHTOKENCLIENTSECRET" = var.email_oauth_token_client_secret
+    "EMAILOAUTHTOKENSCOPE"        = var.email_oauth_token_scope
+    "EMAILOAUTHTOKENMETHOD"       = var.email_oauth_token_method
+    "EMAILOAUTHTOKENGRANTTYPE"    = var.email_oauth_token_grant_type
+    "AutoScaleEnable"             = tostring(var.enable_auto_scale)
+    "SALT"                        = random_string.salt.result
+    "REDIS"                       = var.enable_auto_scale && var.redis_connection_string != "" ? var.redis_connection_string : "-"
+    "CERT"                        = "CN=${var.companyname}-SM-SigningCert"
     }, var.sso_enabled ? {
     "SSO-AZURE-AD-CLIENT-ID"  = var.sso_azure_ad_client_id
     "SSO-AZURE-AD-SECRET"     = var.sso_azure_ad_secret

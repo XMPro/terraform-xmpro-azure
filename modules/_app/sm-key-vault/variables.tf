@@ -93,6 +93,50 @@ variable "smtp_enable_ssl" {
   default     = true
 }
 
+# SMTP OAuth Configuration
+variable "enable_email_oauth" {
+  description = "Enable OAuth authentication for SMTP (required for Microsoft 365 after March 2026)"
+  type        = bool
+  default     = false
+}
+
+variable "email_oauth_token_endpoint" {
+  description = "OAuth token endpoint URL"
+  type        = string
+  default     = ""
+}
+
+variable "email_oauth_token_client_id" {
+  description = "OAuth client ID"
+  type        = string
+  default     = ""
+}
+
+variable "email_oauth_token_client_secret" {
+  description = "OAuth client secret"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "email_oauth_token_scope" {
+  description = "OAuth token scope"
+  type        = string
+  default     = "https://outlook.office365.com/.default"
+}
+
+variable "email_oauth_token_method" {
+  description = "OAuth token HTTP method"
+  type        = string
+  default     = "POST"
+}
+
+variable "email_oauth_token_grant_type" {
+  description = "OAuth grant type"
+  type        = string
+  default     = "client_credentials"
+}
+
 variable "sm_base_url" {
   description = "Base URL for the SM application"
   type        = string

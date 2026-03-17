@@ -58,6 +58,8 @@ resource "azurerm_container_group" "sm_zip_prep" {
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
   restart_policy      = "Never"
+  ip_address_type     = var.prod_networking_enabled ? "Private" : "Public"
+  subnet_ids          = var.prod_networking_enabled ? [var.subnet_id] : null
 
   # Image registry credentials for private ACR
   dynamic "image_registry_credential" {
@@ -130,6 +132,15 @@ resource "azurerm_container_group" "sm_zip_prep" {
       EMAIL_FROM_ADDRESS            = "$${SMTPFrom}"
       EMAIL_TEMPLATE_FOLDER         = "~/App_Data/Templates/"
       EMAIL_WEB_APPLICATION         = "true"
+
+      # Email OAuth Configuration
+      ENABLE_EMAIL_OAUTH              = var.enable_email_oauth ? "true" : "false"
+      EMAIL_OAUTH_TOKEN_ENDPOINT      = var.enable_email_oauth ? "$${EMAILOAUTHTOKENENDPOINT}" : ""
+      EMAIL_OAUTH_TOKEN_METHOD        = var.enable_email_oauth ? "$${EMAILOAUTHTOKENMETHOD}" : ""
+      EMAIL_OAUTH_TOKEN_GRANT_TYPE    = var.enable_email_oauth ? "$${EMAILOAUTHTOKENGRANTTYPE}" : ""
+      EMAIL_OAUTH_TOKEN_CLIENT_ID     = var.enable_email_oauth ? "$${EMAILOAUTHTOKENCLIENTID}" : ""
+      EMAIL_OAUTH_TOKEN_CLIENT_SECRET = var.enable_email_oauth ? "$${EMAILOAUTHTOKENCLIENTSECRET}" : ""
+      EMAIL_OAUTH_TOKEN_SCOPE         = var.enable_email_oauth ? "$${EMAILOAUTHTOKENSCOPE}" : ""
 
       # SSO Configuration (Azure AD) - Use same pattern as SMTP variables with $$
       ENABLE_SSO              = var.sso_enabled ? "true" : "false"

@@ -12,13 +12,14 @@ module "ad_secrets" {
   resource_group_name = var.resource_group_name
 
   secrets = {
-    "xmpro--xmsettings--data--connectionString" = var.db_connection_string
-    "xmpro--data--connectionString"             = var.db_connection_string
-    "xmpro--xmidentity--client--id"             = var.ad_product_id
-    "xmpro--xmidentity--client--sharedkey"      = var.ad_product_key
-    "ApplicationInsights--ConnectionString"     = var.app_insights_connection_string
-    "xmpro--xmnotification--email--password"    = var.smtp_password
-    "xmpro--appDesigner--encryptionKey"         = var.ad_encryption_key
+    "xmpro--xmsettings--data--connectionString"                               = var.db_connection_string
+    "xmpro--data--connectionString"                                           = var.db_connection_string
+    "xmpro--xmidentity--client--id"                                           = var.ad_product_id
+    "xmpro--xmidentity--client--sharedkey"                                    = var.ad_product_key
+    "ApplicationInsights--ConnectionString"                                   = var.app_insights_connection_string
+    "xmpro--xmnotification--email--password"                                  = var.smtp_password
+    "xmpro--xmnotification--email--oAuthTokenRequest--formData--clientSecret" = var.email_oauth_token_client_secret
+    "xmpro--appDesigner--encryptionKey"                                       = var.ad_encryption_key
   }
 
   tags = var.tags
@@ -63,6 +64,7 @@ locals {
     var.ad_product_key,
     var.app_insights_connection_string,
     var.smtp_password,
+    var.email_oauth_token_client_secret,
     var.ad_encryption_key
   ]))
 }
@@ -211,6 +213,16 @@ resource "azurerm_linux_web_app" "ad_app" {
     "XMPRO__XMNOTIFICATION__EMAIL__USEDEFAULTCREDENTIALS" = "false"
     "XMPRO__XMNOTIFICATION__EMAIL__WEBAPPLICATION"        = "true"
     "XMPRO__XMNOTIFICATION__EMAIL__TEMPLATEFOLDER"        = "Templates"
+
+    # SMTP OAuth Configuration
+    # Env var names must match C# property path: EmailElement.OAuthTokenRequest (HttpRequestElement)
+    # See xmpro-run/services/ad.registry/service.yaml and appsettings.json for reference
+    "XMPRO__XMNOTIFICATION__EMAIL__OAUTHTOKENREQUEST__ENDPOINT"                = "${var.email_oauth_token_endpoint}"
+    "XMPRO__XMNOTIFICATION__EMAIL__OAUTHTOKENREQUEST__METHOD"                  = "${var.email_oauth_token_method}"
+    "XMPRO__XMNOTIFICATION__EMAIL__OAUTHTOKENREQUEST__FORMDATA__grant_type"    = "${var.email_oauth_token_grant_type}"
+    "XMPRO__XMNOTIFICATION__EMAIL__OAUTHTOKENREQUEST__FORMDATA__client_id"     = "${var.email_oauth_token_client_id}"
+    "XMPRO__XMNOTIFICATION__EMAIL__OAUTHTOKENREQUEST__FORMDATA__client_secret" = "@Microsoft.KeyVault(SecretUri=${module.ad_secrets.secret_versionless_ids["xmpro--xmnotification--email--oAuthTokenRequest--formData--clientSecret"]})"
+    "XMPRO__XMNOTIFICATION__EMAIL__OAUTHTOKENREQUEST__FORMDATA__scope"         = "${var.email_oauth_token_scope}"
     },
     # Conditionally add AI health check settings only when AI is enabled
     var.ai_url != "" ? {

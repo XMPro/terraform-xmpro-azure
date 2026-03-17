@@ -105,6 +105,13 @@ variable "sso_azure_ad_tenant_id" {
   default     = ""
 }
 
+# SMTP OAuth Configuration
+variable "enable_email_oauth" {
+  description = "Enable OAuth authentication for SMTP"
+  type        = bool
+  default     = false
+}
+
 # Container registry configuration
 variable "acr_url_product" {
   description = "The URL of the Azure Container Registry for product images"
@@ -126,4 +133,20 @@ variable "is_private_registry" {
   description = "Whether to use a private container registry"
   type        = bool
   default     = true
+}
+
+# ============================================================================
+# NETWORKING CONFIGURATION
+# ============================================================================
+
+variable "prod_networking_enabled" {
+  description = "Enable production networking with VNet integration"
+  type        = bool
+  default     = false
+}
+
+variable "subnet_id" {
+  description = "Subnet ID for VNet integration (ACI subnet). Required when prod_networking_enabled = true."
+  type        = string
+  default     = null
 }

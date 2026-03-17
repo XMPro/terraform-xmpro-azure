@@ -249,6 +249,15 @@ module "ad_app_service" {
   smtp_port                 = var.smtp_port
   smtp_enable_ssl           = var.smtp_enable_ssl
 
+  # SMTP OAuth Configuration
+  enable_email_oauth              = var.enable_email_oauth
+  email_oauth_token_endpoint      = var.email_oauth_token_endpoint
+  email_oauth_token_client_id     = var.email_oauth_token_client_id
+  email_oauth_token_client_secret = var.email_oauth_token_client_secret
+  email_oauth_token_scope         = var.email_oauth_token_scope
+  email_oauth_token_method        = var.email_oauth_token_method
+  email_oauth_token_grant_type    = var.email_oauth_token_grant_type
+
   # Security Headers Configuration
   enable_security_headers = var.enable_security_headers
 
@@ -432,6 +441,10 @@ module "sm_dbmigrate" {
   # User-assigned identity for AAD SQL auth (use SM app identity)
   user_assigned_identity_id = local.sm_db_identity_resource_id
 
+  # Networking (VNet integration)
+  prod_networking_enabled = var.prod_networking_enabled
+  subnet_id               = var.prod_networking_enabled ? data.azurerm_subnet.aci[0].id : null
+
   # Tags
   tags = var.common_tags
 }
@@ -463,6 +476,10 @@ module "ad_dbmigrate" {
 
   # User-assigned identity for AAD SQL auth (use AD app identity)
   user_assigned_identity_id = local.ad_db_identity_resource_id
+
+  # Networking (VNet integration)
+  prod_networking_enabled = var.prod_networking_enabled
+  subnet_id               = var.prod_networking_enabled ? data.azurerm_subnet.aci[0].id : null
 
   # Tags
   tags = var.common_tags
@@ -497,6 +514,10 @@ module "ds_dbmigrate" {
   # User-assigned identity for AAD SQL auth (use DS app identity)
   user_assigned_identity_id = local.ds_db_identity_resource_id
 
+  # Networking (VNet integration)
+  prod_networking_enabled = var.prod_networking_enabled
+  subnet_id               = var.prod_networking_enabled ? data.azurerm_subnet.aci[0].id : null
+
   # Tags
   tags = var.common_tags
 }
@@ -523,6 +544,10 @@ module "ai_dbmigrate" {
 
   # Image version
   imageversion = var.imageversion
+
+  # Networking (VNet integration)
+  prod_networking_enabled = var.prod_networking_enabled
+  subnet_id               = var.prod_networking_enabled ? data.azurerm_subnet.aci[0].id : null
 
   # Tags
   tags = var.common_tags
@@ -674,12 +699,19 @@ module "sm_prep_container" {
   acr_password        = var.acr_password
   is_private_registry = var.is_private_registry
 
+  # SMTP OAuth Configuration
+  enable_email_oauth = var.enable_email_oauth
+
   # SSO Configuration
   sso_enabled             = var.sso_enabled
   sso_azure_ad_client_id  = var.sso_azure_ad_client_id
   sso_azure_ad_secret     = var.sso_azure_ad_secret
   sso_business_role_claim = var.sso_business_role_claim
   sso_azure_ad_tenant_id  = var.sso_azure_ad_tenant_id
+
+  # Networking (VNet integration)
+  prod_networking_enabled = var.prod_networking_enabled
+  subnet_id               = var.prod_networking_enabled ? data.azurerm_subnet.aci[0].id : null
 
   # Tags
   tags = var.common_tags
@@ -725,6 +757,10 @@ module "licenses_container" {
   # User-assigned identity for AAD SQL auth (use SM app identity)
   user_assigned_identity_id = local.sm_db_identity_resource_id
 
+  # Networking (VNet integration)
+  prod_networking_enabled = var.prod_networking_enabled
+  subnet_id               = var.prod_networking_enabled ? data.azurerm_subnet.aci[0].id : null
+
   # Tags
   tags = var.common_tags
 }
@@ -757,6 +793,15 @@ module "sm_key_vault" {
   smtp_password             = var.smtp_password
   smtp_port                 = var.smtp_port
   smtp_enable_ssl           = var.smtp_enable_ssl
+
+  # SMTP OAuth Configuration
+  enable_email_oauth              = var.enable_email_oauth
+  email_oauth_token_endpoint      = var.email_oauth_token_endpoint
+  email_oauth_token_client_id     = var.email_oauth_token_client_id
+  email_oauth_token_client_secret = var.email_oauth_token_client_secret
+  email_oauth_token_scope         = var.email_oauth_token_scope
+  email_oauth_token_method        = var.email_oauth_token_method
+  email_oauth_token_grant_type    = var.email_oauth_token_grant_type
 
   # SM Base URL for configuration
   sm_base_url = local.sm_base_url

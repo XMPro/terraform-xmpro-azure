@@ -3,9 +3,10 @@ resource "azurerm_container_group" "smdbmigrate" {
   name                = "ci-${var.company_name}-smdbmigrate-${var.name_suffix}"
   location            = var.location
   resource_group_name = var.resource_group_name
-  ip_address_type     = "Public"
+  ip_address_type     = var.prod_networking_enabled ? "Private" : "Public"
   os_type             = "Linux"
   restart_policy      = "Never" # Container will not restart automatically
+  subnet_ids          = var.prod_networking_enabled ? [var.subnet_id] : null
 
   # Only include image registry credentials for private registries
   dynamic "image_registry_credential" {
