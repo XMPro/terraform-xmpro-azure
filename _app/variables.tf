@@ -413,7 +413,7 @@ variable "is_evaluation_mode" {
 variable "sm_zip_download_url" {
   description = "Base domain for SM.zip download from storage account"
   type        = string
-  default     = "download.nonprod.xmprodev.com"
+  default     = "download.app.xmpro.com"
 }
 
 variable "streamhost_download_base_url" {
