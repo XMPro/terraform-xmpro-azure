@@ -1,0 +1,82 @@
+# 4.4 -> 4.6 Migration - Application Layer
+# Apply order: infra/ -> app/ -> migration/ (cutover)
+#
+# Query existing 4.4 SM for product IDs/keys:
+#   SELECT p.Name, LOWER(p.Id), pk.[Key]
+#   FROM Product p LEFT JOIN ProductKey pk ON pk.ProductId = p.Id
+#   WHERE p.Name IN ('XMPro','App Designer','Data Stream Designer','AI');
+
+company_name = "mycompany"
+name_suffix  = "dev001"
+
+# From infra outputs
+resource_group_name  = "rg-mycompany-dev001"
+storage_account_name = "stmycdev001"
+storage_sas_token    = ""
+sql_server_fqdn      = "sql-mycompany-dev001.database.windows.net"
+
+ad_service_plan_name = "plan-ad-mycompany-dev001"
+ds_service_plan_name = "plan-ds-mycompany-dev001"
+sm_service_plan_name = "plan-sm-mycompany-dev001"
+ai_service_plan_name = "plan-ai-mycompany-dev001"
+
+ad_key_vault_name = "kv-ad-mycompany-dev001"
+ds_key_vault_name = "kv-ds-mycompany-dev001"
+sm_key_vault_name = "kv-sm-mycompany-dev001"
+ai_key_vault_name = "kv-ai-mycompany-dev001"
+
+log_analytics_workspace_name = "log-mycompany-dev001"
+app_insights_name            = "appinsights-mycompany-dev001"
+
+# Migration
+use_existing_database    = true
+existing_sql_server_fqdn = "sql-mycompany-prod.database.windows.net"
+
+existing_sm_product_id  = "<lowercase XMPro Product Id from SM.Product>"
+existing_ad_product_id  = "<lowercase AD>"
+existing_ds_product_id  = "<lowercase DS>"
+existing_ai_product_id  = "<lowercase AI>"
+existing_ad_product_key = "<AD ProductKey>"
+existing_ds_product_key = "<DS ProductKey>"
+existing_ai_product_key = "<AI ProductKey>"
+
+# Other migration inputs (set explicitly; no auto-discovery)
+ad_encryption_key       = ""    # leave empty to auto-generate
+redis_connection_string = ""
+enable_auto_scale       = false
+
+# SMTP
+smtp_server               = ""
+smtp_from_address         = ""
+smtp_username             = ""
+# smtp_password           supplied via TF_VAR_smtp_password
+smtp_port                 = 587
+smtp_enable_ssl           = true
+enable_email_notification = false
+
+# Credentials
+acr_url_product = "xmpro.azurecr.io"
+acr_username    = ""
+acr_password    = ""
+
+db_admin_username   = "xmadmin"
+enable_sql_aad_auth = false
+# db_admin_password         supplied via TF_VAR_db_admin_password
+# company_admin_password    supplied via TF_VAR_company_admin_password
+# site_admin_password       supplied via TF_VAR_site_admin_password
+
+# Image + features
+imageversion              = "4.6.1"
+sm_zip_download_url       = "stxmprodev001.z8.web.core.windows.net"
+is_evaluation_mode        = false
+enable_rbac_authorization = true
+enable_ai                 = true
+create_stream_host        = false
+enable_custom_domain      = false
+prod_networking_enabled   = false
+
+stream_hosts = {}
+
+# Tags
+keep_or_delete_tag = "keep"
+billing_tag        = "production"

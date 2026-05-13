@@ -110,6 +110,69 @@ variable "redis_connection_string" {
   sensitive   = true
 }
 
+# Stream Connector Configuration
+variable "enable_stream_connector" {
+  description = "Whether to enable Stream Connector infrastructure (MQTT broker on Azure Container Apps)"
+  type        = bool
+  default     = false
+}
+
+variable "use_existing_mqtt_broker" {
+  description = "Use an existing external MQTT broker instead of deploying one. When true, provide existing_mqtt_broker_fqdn, existing_mqtt_user, and existing_mqtt_password."
+  type        = bool
+  default     = false
+}
+
+variable "existing_mqtt_broker_fqdn" {
+  description = "FQDN of an existing MQTT broker (only used when use_existing_mqtt_broker = true)"
+  type        = string
+  default     = ""
+}
+
+variable "existing_mqtt_user" {
+  description = "Username for existing MQTT broker (only used when use_existing_mqtt_broker = true)"
+  type        = string
+  default     = ""
+}
+
+variable "existing_mqtt_password" {
+  description = "Password for existing MQTT broker (only used when use_existing_mqtt_broker = true)"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "mqtt_user" {
+  description = "MQTT broker username. Leave empty to auto-generate. Not used when use_existing_mqtt_broker = true."
+  type        = string
+  default     = ""
+}
+
+variable "mqtt_password" {
+  description = "MQTT broker password. Leave empty to auto-generate. Not used when use_existing_mqtt_broker = true."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "mqtt_enable_tls" {
+  description = "Enable TLS encryption for the MQTT broker using a self-signed certificate from Key Vault. Broker listens on port 8883 when enabled, 1883 when disabled."
+  type        = bool
+  default     = true
+}
+
+variable "mqtt_cpu" {
+  description = "CPU cores for MQTT broker container. Not used when use_existing_mqtt_broker = true."
+  type        = number
+  default     = 0.25
+}
+
+variable "mqtt_memory" {
+  description = "Memory for MQTT broker container (e.g., '0.5Gi'). Not used when use_existing_mqtt_broker = true."
+  type        = string
+  default     = "0.5Gi"
+}
+
 # Database Configuration
 variable "enable_sql_aad_auth" {
   description = "Enable Azure AD (AAD) authentication for SQL Server. When true, SQL authentication is disabled and Azure AD is used exclusively."

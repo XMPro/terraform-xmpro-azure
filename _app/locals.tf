@@ -16,19 +16,19 @@ locals {
   # When AAD auth is enabled, use managed identity (no username/password)
   # When AAD auth is disabled, use SQL authentication (with username/password)
   ad_connection_string = var.enable_sql_aad_auth ? (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ad_database_name};Authentication=Active Directory Default;User Id=${var.ad_db_aad_client_id};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ad_database_name};Authentication=Active Directory Default;User Id=${var.ad_db_aad_client_id != null ? var.ad_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
     "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ad_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   )
 
   ds_connection_string = var.enable_sql_aad_auth ? (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ds_database_name};Authentication=Active Directory Default;User Id=${var.ds_db_aad_client_id};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ds_database_name};Authentication=Active Directory Default;User Id=${var.ds_db_aad_client_id != null ? var.ds_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
     "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ds_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   )
 
   ai_connection_string = var.enable_sql_aad_auth && var.enable_ai ? (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ai_database_name};Authentication=Active Directory Default;User Id=${var.ai_db_aad_client_id};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ai_database_name};Authentication=Active Directory Default;User Id=${var.ai_db_aad_client_id != null ? var.ai_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
     "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ai_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   )
@@ -40,7 +40,7 @@ locals {
   # SM database migration container uses AAD auth when enabled (like AD/DS migrations)
   # The migration container is .NET Core and supports AAD authentication
   sm_dbmigrate_connection_string = var.enable_sql_aad_auth ? (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.sm_database_name};Authentication=Active Directory Default;User Id=${var.sm_db_aad_client_id};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.sm_database_name};Authentication=Active Directory Default;User Id=${var.sm_db_aad_client_id != null ? var.sm_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
     "Server=tcp:${local.sql_server_fqdn};persist security info=True;user id=${var.db_admin_username};password=${var.db_admin_password};Initial Catalog=${var.sm_database_name};"
   )
@@ -65,6 +65,10 @@ locals {
   # Collection Details (from random resources)
   ds_collection_id     = random_uuid.ds_collection_id.result
   ds_collection_secret = random_string.ds_collection_secret.result
+
+  # Stream Connector Collection Details (must be provided by user when SC is enabled)
+  sc_collection_id     = var.sc_stream_host_collection_id
+  sc_collection_secret = var.sc_stream_host_collection_secret
 
   # Company Admin Details
   # Convert spaces and hyphens to dots in names for username generation
@@ -107,10 +111,16 @@ locals {
   effective_ds_product_key = var.use_existing_database ? var.existing_ds_product_key : local.evaluation_product_keys.ds
   effective_ai_product_key = var.use_existing_database ? var.existing_ai_product_key : local.evaluation_product_keys.ai
 
+  # SM product ID - use existing or generate random (matches main branch)
   effective_sm_product_id = var.use_existing_database ? var.existing_sm_product_id : random_uuid.sm_id.result
 
   # AD Encryption Key (use provided value or generate)
   effective_ad_encryption_key = var.ad_encryption_key != "" ? var.ad_encryption_key : (
     length(random_string.ad_encryption_key) > 0 ? random_string.ad_encryption_key[0].result : ""
+  )
+
+  # AI Infrastructure Key (use provided value or generate; only meaningful when AI is enabled)
+  effective_ai_infrastructure_key = var.ai_infrastructure_key != "" ? var.ai_infrastructure_key : (
+    length(random_bytes.ai_infrastructure_key) > 0 ? random_bytes.ai_infrastructure_key[0].base64 : ""
   )
 }

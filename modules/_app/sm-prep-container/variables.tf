@@ -50,9 +50,9 @@ variable "share_name" {
 
 # SM.zip download configuration
 variable "sm_zip_download_url" {
-  description = "Base domain for SM.zip download (e.g. 'download.nonprod.xmprodev.com')"
+  description = "Base domain for SM.zip download (e.g. 'download.app.xmpro.com')"
   type        = string
-  default     = "download.nonprod.xmprodev.com"
+  default     = "download.app.xmpro.com"
 }
 
 variable "release_version" {

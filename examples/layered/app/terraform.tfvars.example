@@ -99,13 +99,15 @@ db_admin_password = "YourSecure!Pass123"  # TODO: Replace with your secure passw
 company_admin_password = "CompanyAdmin!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
 site_admin_password    = "SiteAdmin!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
 ad_encryption_key      = ""  # Leave empty to auto-generate
+ai_infrastructure_key  = ""  # Leave empty to auto-generate (only used when enable_ai = true)
 
 # ============================================================================
 # APPLICATION CONFIGURATION
 # ============================================================================
 
-imageversion       = "4.6.0"
-is_evaluation_mode = false  # Set to true for evaluation deployments with built-in licenses
+imageversion        = "4.6.1"
+sm_zip_download_url = "download.app.xmpro.com"  # Base domain for SM.zip download (no scheme, no trailing slash)
+is_evaluation_mode  = false                     # Set to true for evaluation deployments with built-in licenses
 
 # Company Admin Details
 company_admin_first_name    = "Admin"
@@ -118,6 +120,7 @@ company_admin_email_address = ""
 
 enable_ai               = false
 create_stream_host      = true
+
 enable_custom_domain    = false
 dns_zone_name           = ""
 enable_auto_scale       = false
@@ -300,6 +303,27 @@ prod_networking_enabled = false
 # specify the custom role names here. Leave commented out to use default built-in roles.
 # keyvault_secrets_reader_role_name      = "Custom-KeyVault-Secrets-Reader"
 # keyvault_certificates_reader_role_name = "Custom-KeyVault-Certificates-Reader"
+
+# ============================================================================
+# STREAM CONNECTOR
+# ============================================================================
+
+# Deploy a dedicated Stream Host for Stream Connector
+# enable_stream_connector_stream_host = false
+
+# Collection credentials (REQUIRED when enable_stream_connector_stream_host = true)
+# Obtain from Data Stream Designer > Collections
+# sc_stream_host_collection_id     = "your-collection-id-from-ds"
+# sc_stream_host_collection_secret = "your-collection-secret-from-ds"
+
+# ============================================================================
+# TLS CIPHER SUITE
+# ============================================================================
+
+# Minimum TLS cipher suite for the App Services (Veracode DAST CWE-757 remediation).
+# Default is TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 — the floor that drops the 11
+# weak ciphers Veracode flags. Set to null to fall back to Azure defaults.
+# min_tls_cipher_suite = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
 
 # ============================================================================
 # TAGS

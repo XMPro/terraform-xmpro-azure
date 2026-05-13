@@ -67,3 +67,21 @@ output "platform_domain" {
   description = "The platform domain being used for the deployment"
   value       = var.enable_custom_domain ? local.dns_zone_name : "${var.company_name}-${var.name_suffix}.azurewebsites.net"
 }
+
+# Stream Connector outputs
+output "sc_stream_host_container_id" {
+  description = "The ID of the Stream Connector stream host container group"
+  value       = var.enable_stream_connector_stream_host ? module.sc_stream_host_container[0].container_group_id : ""
+}
+
+output "sc_collection_id" {
+  description = "Stream Connector DS Collection ID"
+  value       = local.sc_collection_id
+  sensitive   = true
+}
+
+output "sc_collection_secret" {
+  description = "Stream Connector DS Collection Secret"
+  value       = local.sc_collection_secret
+  sensitive   = true
+}

@@ -123,6 +123,13 @@ variable "ai_product_key" {
   default     = "950ca93b-1ad9-514b-4263-4d3f510012e2"
 }
 
+variable "ai_infrastructure_key" {
+  description = "Infrastructure encryption key used by the AI service to encrypt/decrypt secure infrastructure settings (Neo4j, Gremlin, LLM, TimeSeries). Bound to xm:InfrastructureKey:Key. Must be supplied — generate one if not provided upstream."
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 variable "tags" {
   description = "A map of tags to apply to all resources"
   type        = map(string)
@@ -146,6 +153,18 @@ variable "public_network_access_enabled" {
   description = "Enable public network access to the App Service"
   type        = bool
   default     = true
+}
+
+variable "enable_rbac_authorization" {
+  description = "Enable Azure RBAC for Key Vault authorization instead of access policies"
+  type        = bool
+  default     = true
+}
+
+variable "tenant_id" {
+  description = "The Azure tenant ID (required for access policy mode)"
+  type        = string
+  default     = ""
 }
 
 variable "ai_key_vault_name" {
@@ -176,4 +195,20 @@ variable "keyvault_secrets_reader_role_name" {
   description = "Azure RBAC role name for reading Key Vault secrets"
   type        = string
   default     = "Key Vault Secrets User"
+}
+
+# ============================================================================
+# TLS CIPHER SUITE CONFIGURATION (Veracode DAST CWE-757 remediation)
+# ============================================================================
+
+variable "min_tls_cipher_suite" {
+  description = "Minimum TLS cipher suite for the App Service. Default is TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 — the floor that drops the 11 weak ciphers Veracode DAST flags as CWE-757. Set to null to fall back to Azure defaults."
+  type        = string
+  default     = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+  nullable    = true
+
+  validation {
+    condition     = var.min_tls_cipher_suite == null || trimspace(coalesce(var.min_tls_cipher_suite, " ")) != ""
+    error_message = "min_tls_cipher_suite must be null (to skip) or a non-empty cipher suite value."
+  }
 }

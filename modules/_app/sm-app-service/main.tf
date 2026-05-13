@@ -140,3 +140,18 @@ resource "azurerm_windows_web_app" "sm_website" {
 
 # SM deployment is now handled via WEBSITE_RUN_FROM_PACKAGE app setting
 # which points directly to the SM.zip file prepared by the sm-prep-container module
+
+# Configure TLS cipher suite to remediate CWE-757 weak cipher findings in Veracode DAST
+# Uses azapi provider since azurerm does not expose minTlsCipherSuite setting
+# Value will be set once post-fix DAST rescans confirm the cipher floor needed for score >= 95
+resource "azapi_update_resource" "sm_min_tls_cipher_suite" {
+  count       = var.min_tls_cipher_suite != null ? 1 : 0
+  type        = "Microsoft.Web/sites/config@2023-12-01"
+  resource_id = "${azurerm_windows_web_app.sm_website.id}/config/web"
+
+  body = jsonencode({
+    properties = {
+      minTlsCipherSuite = var.min_tls_cipher_suite
+    }
+  })
+}

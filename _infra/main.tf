@@ -270,6 +270,20 @@ module "key_vault_ai" {
   tags                      = local.common_tags
 }
 
+module "key_vault_mqtt" {
+  count  = var.enable_stream_connector ? 1 : 0
+  source = "../modules/_infra/key-vault"
+
+  name                      = "kv-mq-${substr(var.company_name, 0, 24 - 6 - length(var.name_suffix) - 1)}-${var.name_suffix}"
+  location                  = module.resource_group.location
+  resource_group_name       = module.resource_group.name
+  tenant_id                 = data.azurerm_client_config.current.tenant_id
+  object_id                 = data.azurerm_client_config.current.object_id
+  enable_rbac_authorization = var.enable_rbac_authorization
+  keyvault_admin_role_name  = var.keyvault_admin_role_name
+  tags                      = local.common_tags
+}
+
 # Monitoring Infrastructure
 module "monitoring" {
   source = "../modules/_infra/monitoring"

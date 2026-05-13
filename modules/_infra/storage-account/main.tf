@@ -18,10 +18,6 @@ resource "azurerm_storage_account" "this" {
     ip_rules                   = []
     virtual_network_subnet_ids = []
   }
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }
 
 # Storage file shares

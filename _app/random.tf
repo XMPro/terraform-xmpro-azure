@@ -44,6 +44,21 @@ resource "random_string" "ad_encryption_key" {
   }
 }
 
+# AI Infrastructure Key (generated if not provided)
+# 32 random bytes exposed as a base64 string, matching the format documented
+# on InfrastructureKeyOptions.Key in src/Products/AI/AI.Core/Providers and the
+# default baked into xmpro-run's AI container appsettings.json.
+resource "random_bytes" "ai_infrastructure_key" {
+  count  = (var.enable_ai && var.ai_infrastructure_key == "") ? 1 : 0
+  length = 32
+
+  keepers = {
+    name_suffix  = var.name_suffix
+    company_name = var.company_name
+    service      = "ai"
+  }
+}
+
 # Product IDs (generated when not in evaluation mode)
 resource "random_uuid" "ad_product_id" {
   count = var.is_evaluation_mode ? 0 : 1

@@ -17,6 +17,7 @@ module "ai_secrets" {
     "xmpro--xmidentity--client--id"             = var.ai_product_id
     "xmpro--xmidentity--client--sharedkey"      = var.ai_product_key
     "ApplicationInsights--ConnectionString"     = var.app_insights_connection_string
+    "InfrastructureKey--Key"                    = var.ai_infrastructure_key
   }
 
   tags = var.tags
@@ -41,10 +42,25 @@ resource "azurerm_user_assigned_identity" "ai_identity" {
 }
 
 # RBAC role assignment for AI identity to read secrets from Key Vault
+# Only created when RBAC authorization is enabled
 resource "azurerm_role_assignment" "ai_identity_secrets" {
+  count                = var.enable_rbac_authorization ? 1 : 0
   scope                = data.azurerm_key_vault.ai_key_vault.id
   role_definition_name = var.keyvault_secrets_reader_role_name
   principal_id         = azurerm_user_assigned_identity.ai_identity.principal_id
+}
+
+# Access policy for AI identity to read secrets from Key Vault
+# Only created when RBAC authorization is disabled
+resource "azurerm_key_vault_access_policy" "ai_identity" {
+  count        = var.enable_rbac_authorization ? 0 : 1
+  key_vault_id = data.azurerm_key_vault.ai_key_vault.id
+  tenant_id    = var.tenant_id
+  object_id    = azurerm_user_assigned_identity.ai_identity.principal_id
+
+  secret_permissions = [
+    "Get", "List"
+  ]
 }
 
 # Reference existing Service Plan from infrastructure layer
@@ -81,11 +97,22 @@ resource "azurerm_linux_web_app" "ai_app" {
     identity_ids = [azurerm_user_assigned_identity.ai_identity.id]
   }
 
-  # Ensure Key Vault access is configured before creating the app
-  depends_on = [azurerm_role_assignment.ai_identity_secrets]
+  # Ensure Key Vault access is configured AND secrets are written before
+  # creating the app. Adding module.ai_secrets serves two purposes:
+  # 1) secrets must exist before App Service resolves @Microsoft.KeyVault refs;
+  # 2) the elapsed time of the secret writes gives RBAC role assignments room
+  #    to propagate, avoiding the App Service "AccessToKeyVaultDenied" cache.
+  depends_on = [
+    azurerm_role_assignment.ai_identity_secrets,
+    azurerm_key_vault_access_policy.ai_identity,
+    module.ai_secrets,
+  ]
 
   # Using Key Vault references for sensitive app settings
   app_settings = {
+    # Managed identity for Key Vault access
+    "AZURE_CLIENT_ID" = azurerm_user_assigned_identity.ai_identity.client_id
+
     # Standard environment settings
     "ASPNETCORE_ENVIRONMENT"              = var.aspnetcore_environment
     "ASPNETCORE_FORWARDEDHEADERS_ENABLED" = "true"
@@ -98,6 +125,7 @@ resource "azurerm_linux_web_app" "ai_app" {
     "XM__XMPRO__AI__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__AI__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
     "XM__XMPRO__AI__FEATUREFLAGS__DBMIGRATIONSENABLED"                = tostring(false)
+    "XM__XMPRO__AIDESIGNER__FEATUREFLAGS__RAGENABLED"                 = tostring(false)
 
     # URLs
     "XM__XMPRO__XMIDENTITY__SERVER__BASEURL" = var.sm_url
@@ -132,6 +160,9 @@ resource "azurerm_linux_web_app" "ai_app" {
     "XMPRO__DATA__CONNECTIONSTRING"             = "@Microsoft.KeyVault(SecretUri=${module.ai_secrets.secret_versionless_ids["xmpro--data--connectionString"]})"
     "XM__XMPRO__XMIDENTITY__CLIENT__ID"         = "@Microsoft.KeyVault(SecretUri=${module.ai_secrets.secret_versionless_ids["xmpro--xmidentity--client--id"]})"
     "XM__XMPRO__XMIDENTITY__CLIENT__SHAREDKEY"  = "@Microsoft.KeyVault(SecretUri=${module.ai_secrets.secret_versionless_ids["xmpro--xmidentity--client--sharedkey"]})"
+
+    # Infrastructure encryption key (binds to InfrastructureKey:Key after xm__ prefix is stripped)
+    "XM__INFRASTRUCTUREKEY__KEY" = "@Microsoft.KeyVault(SecretUri=${module.ai_secrets.secret_versionless_ids["InfrastructureKey--Key"]})"
   }
 
   logs {
@@ -155,5 +186,20 @@ resource "azurerm_linux_web_app" "ai_app" {
     createdby                = "devops"
     createdfor               = "XMPro AI application"
     aidbmigrate_container_id = substr(var.aidbmigrate_container_id, 0, 8) # Reference the AI DB migration container ID to establish dependency
+  })
+}
+
+# Configure TLS cipher suite to remediate CWE-757 weak cipher findings in Veracode DAST
+# Uses azapi provider since azurerm does not expose minTlsCipherSuite setting
+# Value will be set once post-fix DAST rescans confirm the cipher floor needed for score >= 95
+resource "azapi_update_resource" "ai_min_tls_cipher_suite" {
+  count       = var.min_tls_cipher_suite != null ? 1 : 0
+  type        = "Microsoft.Web/sites/config@2023-12-01"
+  resource_id = "${azurerm_linux_web_app.ai_app.id}/config/web"
+
+  body = jsonencode({
+    properties = {
+      minTlsCipherSuite = var.min_tls_cipher_suite
+    }
   })
 }

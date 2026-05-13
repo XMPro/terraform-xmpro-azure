@@ -46,8 +46,8 @@ module "subnets" {
 
     # Subnet 2 - Data: SQL databases, Redis Cache, Storage (private endpoints)
     "data" = {
-      address_prefixes                          = [cidrsubnet(var.vnet_address_space[0], 4, 1)]
-      private_endpoint_network_policies_enabled = false
+      address_prefixes                  = [cidrsubnet(var.vnet_address_space[0], 4, 1)]
+      private_endpoint_network_policies = "Disabled"
       service_endpoints = [
         "Microsoft.Sql",
         "Microsoft.Storage"
@@ -73,6 +73,21 @@ module "subnets" {
     "processing" = {
       address_prefixes  = [cidrsubnet(var.vnet_address_space[0], 4, 3)]
       service_endpoints = []
+    }
+
+    # Subnet 5 - Container Apps: MQTT broker for Stream Connector
+    "containerapp" = {
+      address_prefixes  = [cidrsubnet(var.vnet_address_space[0], 4, 4)]
+      service_endpoints = []
+      delegation = {
+        name = "container-app-delegation"
+        service_delegation = {
+          name = "Microsoft.App/environments"
+          actions = [
+            "Microsoft.Network/virtualNetworks/subnets/action"
+          ]
+        }
+      }
     }
   }
 }

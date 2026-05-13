@@ -1,0 +1,24 @@
+# 4.4 -> 4.6 Migration - URL Rewrite Layer
+# Apply AFTER infra/ and app/ once new app services are verified working.
+
+company_name        = "mycompany"
+name_suffix         = "dev001"
+resource_group_name = "rg-mycompany-dev001"
+
+# Existing 4.4 SQL (source data we're rewriting)
+existing_sql_server_fqdn = "sql-mycompany-prod.database.windows.net"
+db_admin_username        = "xmadmin"
+# db_admin_password supplied via TF_VAR_db_admin_password
+
+# Target URLs (copy from app layer outputs)
+ad_url = "https://app-ad-mycompany-dev001.azurewebsites.net"
+ds_url = "https://app-ds-mycompany-dev001.azurewebsites.net"
+ai_url = "https://app-ai-mycompany-dev001.azurewebsites.net" # empty to skip
+nb_url = ""
+
+prod_networking_enabled = false
+
+tags = {
+  Environment = "production"
+  ManagedBy   = "Terraform"
+}

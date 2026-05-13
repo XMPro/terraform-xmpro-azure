@@ -269,3 +269,36 @@ output "ai_db_aad_client_id" {
   description = "Client ID of the AI database managed identity for AAD authentication (null if AAD auth disabled, AI disabled, or using existing database)"
   value       = var.use_existing_database ? null : (var.enable_sql_aad_auth && var.enable_ai ? module.aad_identities[0].ai_app_client_id : null)
 }
+
+# Stream Connector - MQTT Broker outputs
+output "mqtt_broker_fqdn" {
+  description = "The FQDN of the MQTT broker (empty if stream connector disabled)"
+  value       = var.enable_stream_connector ? (var.use_existing_mqtt_broker ? var.existing_mqtt_broker_fqdn : module.mqtt_broker[0].mqtt_broker_fqdn) : ""
+}
+
+output "mqtt_broker_url" {
+  description = "The full MQTT broker connection URL (empty if stream connector disabled)"
+  value       = var.enable_stream_connector ? (var.use_existing_mqtt_broker ? "mqtt://${var.existing_mqtt_broker_fqdn}:1883" : module.mqtt_broker[0].mqtt_broker_url) : ""
+}
+
+output "mqtt_user" {
+  description = "MQTT broker username (empty if stream connector disabled)"
+  value       = var.enable_stream_connector ? (var.use_existing_mqtt_broker ? var.existing_mqtt_user : module.mqtt_broker[0].mqtt_user) : ""
+  sensitive   = true
+}
+
+output "mqtt_password" {
+  description = "MQTT broker password (empty if stream connector disabled)"
+  value       = var.enable_stream_connector ? (var.use_existing_mqtt_broker ? var.existing_mqtt_password : module.mqtt_broker[0].mqtt_password) : ""
+  sensitive   = true
+}
+
+output "mqtt_broker_port" {
+  description = "The MQTT broker port (8883 for TLS, 1883 for non-TLS)"
+  value       = var.enable_stream_connector && !var.use_existing_mqtt_broker ? module.mqtt_broker[0].mqtt_broker_port : 1883
+}
+
+output "mqtt_broker_tls_enabled" {
+  description = "Whether TLS is enabled on the MQTT broker"
+  value       = var.enable_stream_connector && !var.use_existing_mqtt_broker ? module.mqtt_broker[0].mqtt_broker_tls_enabled : false
+}

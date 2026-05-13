@@ -351,3 +351,19 @@ variable "db_identity_client_id" {
   type        = string
   default     = null
 }
+
+# ============================================================================
+# TLS CIPHER SUITE CONFIGURATION (Veracode DAST CWE-757 remediation)
+# ============================================================================
+
+variable "min_tls_cipher_suite" {
+  description = "Minimum TLS cipher suite for the App Service. Default is TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 — the floor that drops the 11 weak ciphers Veracode DAST flags as CWE-757. Set to null to fall back to Azure defaults."
+  type        = string
+  default     = "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+  nullable    = true
+
+  validation {
+    condition     = var.min_tls_cipher_suite == null || trimspace(coalesce(var.min_tls_cipher_suite, " ")) != ""
+    error_message = "min_tls_cipher_suite must be null (to skip) or a non-empty cipher suite value."
+  }
+}

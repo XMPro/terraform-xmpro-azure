@@ -25,6 +25,8 @@ The XMPro platform consists of multiple interconnected services that provide a c
 - **Azure DNS Zone**: Custom domain management (optional)
 - **Application Insights**: Monitoring and telemetry
 - **Log Analytics**: Centralized logging
+- **Azure Monitor Alerting**: Stream Host container monitoring and alerting
+- **MQTT Broker**: Eclipse Mosquitto on Azure Container Apps for Stream Connector (optional)
 
 For a visual representation of the architecture, see the [Azure Architecture Diagram](https://documentation.xmpro.com/4.5/src/installation/deployment/azure-terraform/#thats-it).
 
@@ -69,7 +71,8 @@ terraform-xmpro-azure/
 │   │   ├── app-service-plan/
 │   │   ├── redis-cache/
 │   │   ├── dns-zone/
-│   │   └── alerting/
+│   │   ├── alerting/
+│   │   └── mqtt-broker/          # MQTT broker for Stream Connector
 │   └── _app/                 # Application sub-modules
 │       ├── sm-app-service/
 │       ├── ad-app-service-container/
@@ -456,7 +459,118 @@ stream_host_environment_variables = {
 }
 ```
 
-### Step 4: Access Your XMPro Platform
+### Step 4: Deploy Stream Connector (Optional)
+
+The Stream Connector feature deploys a dedicated MQTT broker and Stream Host for connecting data streams between XMPro environments or external systems. This is a two-layer deployment: the infrastructure layer provisions the MQTT broker, and the application layer deploys a dedicated Stream Host pre-configured to use it.
+
+#### 4.1 Deploy MQTT Broker (Infrastructure Layer)
+
+You can deploy a new MQTT broker or use an existing one.
+
+**Option A: Deploy a new broker:**
+```hcl
+enable_stream_connector = true
+```
+
+**Option B: Use an existing broker:**
+```hcl
+enable_stream_connector = true
+use_existing_mqtt_broker   = true
+existing_mqtt_broker_fqdn  = "mqtt.example.com"
+existing_mqtt_user         = "your-mqtt-username"
+existing_mqtt_password     = "your-mqtt-password"
+```
+
+Apply and capture outputs:
+```bash
+cd examples/layered/infra
+terraform apply
+terraform output mqtt_broker_fqdn
+```
+
+#### 4.2 Deploy Stream Connector Stream Host (Application Layer)
+
+In your application `terraform.tfvars`, enable the dedicated Stream Host and provide collection credentials from Data Stream Designer:
+
+```hcl
+# Enable the dedicated Stream Connector Stream Host
+enable_stream_connector_stream_host = true
+
+# Collection credentials (REQUIRED - obtain from DS > Collections)
+sc_stream_host_collection_id     = "your-collection-id-from-ds"
+sc_stream_host_collection_secret = "your-collection-secret-from-ds"
+```
+
+Apply the application changes:
+
+```bash
+cd examples/layered/app
+terraform plan
+terraform apply
+```
+
+#### 4.3 Configuration Reference
+
+**Infrastructure Layer Variables:**
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| enable_stream_connector | Enable Stream Connector infrastructure | `bool` | `false` |
+| use_existing_mqtt_broker | Use existing broker instead of deploying one | `bool` | `false` |
+| existing_mqtt_broker_fqdn | Existing broker FQDN | `string` | `""` |
+| existing_mqtt_user | Existing broker username | `string` | `""` |
+| existing_mqtt_password | Existing broker password | `string` | `""` |
+| mqtt_user | New broker username (empty to auto-generate) | `string` | `""` |
+| mqtt_password | New broker password (empty to auto-generate) | `string` | `""` |
+| mqtt_cpu | New broker CPU cores | `number` | `0.25` |
+| mqtt_memory | New broker memory | `string` | `"0.5Gi"` |
+
+**Application Layer Variables:**
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| enable_stream_connector_stream_host | Deploy dedicated SC Stream Host | `bool` | `false` |
+| sc_stream_host_collection_id | Collection ID from DS (**required** when enabled) | `string` | `""` |
+| sc_stream_host_collection_secret | Collection secret from DS (**required** when enabled) | `string` | `""` |
+| sc_stream_host_cpu | Stream Host CPU cores | `number` | `1` |
+| sc_stream_host_memory | Stream Host memory in GB | `number` | `4` |
+| sc_stream_host_variant | Docker image variant suffix | `string` | `""` |
+
+**Infrastructure Layer Outputs:**
+
+| Name | Description |
+|------|-------------|
+| mqtt_broker_fqdn | MQTT broker FQDN |
+| mqtt_broker_url | Full MQTT connection URL (mqtt://fqdn:1883) |
+| mqtt_user | MQTT broker username (sensitive) |
+| mqtt_password | MQTT broker password (sensitive) |
+
+**Application Layer Outputs:**
+
+| Name | Description |
+|------|-------------|
+| sc_stream_host_container_id | SC Stream Host container group ID |
+| sc_collection_id | Collection ID for DS configuration |
+| sc_collection_secret | Collection secret (sensitive) |
+
+#### 4.4 Architecture
+
+```
+Infrastructure Layer                    Application Layer
+┌──────────────────────────┐           ┌──────────────────────────┐
+│  Azure Container Apps    │           │  Azure Container Instance│
+│  ┌────────────────────┐  │  MQTT     │  ┌────────────────────┐  │
+│  │  Eclipse Mosquitto  │◄├───────────├──┤  SC Stream Host   │  │
+│  │  (MQTT Broker)     │  │  :1883    │  │  (Dedicated)       │  │
+│  └────────────────────┘  │           │  └────────────────────┘  │
+└──────────────────────────┘           └──────────────────────────┘
+```
+
+- The MQTT broker runs in its own Container App Environment (or you can use an existing external broker)
+- The SC Stream Host is a dedicated container instance that communicates with the MQTT broker
+- Collection credentials are required and separate from the main Stream Host, enabling independent authentication
+
+### Step 5: Access Your XMPro Platform
 
 After deployment, use these credentials to access:
 
@@ -545,6 +659,7 @@ terraform apply                # Apply any necessary application changes
 | ad_database_name | App Designer database name | `string` | `"AD"` |
 | ds_database_name | Data Stream Designer database name | `string` | `"DS"` |
 | ai_database_name | AI Service database name | `string` | `"AI"` |
+| enable_stream_connector | Enable MQTT broker for Stream Connector | `bool` | `false` |
 
 **Note**: Each XMPro service (AD, DS, SM, AI) can be configured with its own App Service Plan SKU, allowing independent scaling based on workload requirements.
 
@@ -644,6 +759,9 @@ ai_service_plan_sku = "B1"    # Development AI instance
 | ad_database_name | App Designer database name | `string` | `"AD"` |
 | ds_database_name | Data Stream Designer database name | `string` | `"DS"` |
 | ai_database_name | AI Service database name | `string` | `"AI"` |
+| enable_stream_connector_stream_host | Deploy dedicated SC Stream Host | `bool` | `false` |
+| sc_stream_host_collection_id | SC collection ID (required when enabled) | `string` | `""` |
+| sc_stream_host_collection_secret | SC collection secret (required when enabled) | `string` | `""` |
 
 ## 🗃️ Custom Database Names
 
@@ -956,6 +1074,11 @@ trimming whitespace). Special characters (except spaces and hyphens) are not all
 | log_analytics_workspace_name | Log Analytics workspace name |
 | app_insights_name | Application Insights name |
 | app_insights_connection_string | Application Insights connection string |
+| mqtt_broker_fqdn | MQTT broker FQDN (if Stream Connector enabled) |
+| mqtt_broker_url | MQTT broker connection URL (if Stream Connector enabled) |
+| mqtt_user | MQTT broker username (sensitive) |
+| mqtt_password | MQTT broker password (sensitive) |
+| use_existing_mqtt_broker | Whether using an existing external MQTT broker |
 
 ### Application Layer Outputs
 
@@ -967,6 +1090,9 @@ trimming whitespace). Special characters (except spaces and hyphens) are not all
 | ai_app_url | AI Designer URL (if enabled) |
 | stream_host_container_id | Stream Host container ID |
 | company_details | Company admin details |
+| sc_stream_host_container_id | SC Stream Host container ID (if enabled) |
+| sc_collection_id | SC collection ID (if enabled) |
+| sc_collection_secret | SC collection secret (sensitive, if enabled) |
 
 ## 🔐 Evaluation vs Production Mode
 

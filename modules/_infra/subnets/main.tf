@@ -9,8 +9,10 @@ resource "azurerm_subnet" "subnets" {
   address_prefixes     = each.value.address_prefixes
 
   # Private endpoint configuration
-  private_endpoint_network_policies_enabled     = try(each.value.private_endpoint_network_policies_enabled, true)
-  private_link_service_network_policies_enabled = try(each.value.private_link_service_network_policies_enabled, true)
+  private_endpoint_network_policies = try(
+    each.value.private_endpoint_network_policies,
+    try(each.value.private_endpoint_network_policies_enabled, true) ? "Enabled" : "Disabled"
+  )
 
   # Service endpoints
   service_endpoints = try(each.value.service_endpoints, [])

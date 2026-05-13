@@ -227,6 +227,13 @@ variable "ad_encryption_key" {
   default     = ""
 }
 
+variable "ai_infrastructure_key" {
+  description = "Infrastructure encryption key for the AI service. If not provided and AI is enabled, will be auto-generated"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
 # ============================================================================
 # APPLICATION CONFIGURATION
 # ============================================================================
@@ -234,7 +241,13 @@ variable "ad_encryption_key" {
 variable "imageversion" {
   description = "Version tag for container images"
   type        = string
-  default     = "4.6.0"
+  default     = "4.6.1"
+}
+
+variable "sm_zip_download_url" {
+  description = "Base domain for SM.zip download. Defaults to the public XMPro production download host."
+  type        = string
+  default     = "download.app.xmpro.com"
 }
 
 variable "is_evaluation_mode" {
@@ -276,6 +289,25 @@ variable "create_stream_host" {
   description = "Create Stream Host App Service"
   type        = bool
   default     = false
+}
+
+# Stream Connector Configuration
+variable "enable_stream_connector_stream_host" {
+  description = "Deploy a dedicated Stream Host for Stream Connector"
+  type        = bool
+  default     = false
+}
+
+variable "sc_stream_host_collection_id" {
+  description = "Collection ID for SC stream host. Required when enable_stream_connector_stream_host = true."
+  type        = string
+  default     = ""
+}
+
+variable "sc_stream_host_collection_secret" {
+  description = "Collection secret for SC stream host. Required when enable_stream_connector_stream_host = true."
+  type        = string
+  default     = ""
 }
 
 variable "enable_custom_domain" {

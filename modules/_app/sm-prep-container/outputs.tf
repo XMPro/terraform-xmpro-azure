@@ -44,8 +44,13 @@ output "scripts_hash_info" {
 
 # SM.zip download URL configuration
 output "sm_zip_download_url" {
-  description = "The configured SM.zip download URL (empty means use default load balancer URL)"
-  value       = var.sm_zip_download_url != "" ? var.sm_zip_download_url : "https://download.nonprod.xmprodev.com/SM/SM-${var.release_version}.zip"
+  description = "Resolved SM.zip download URL used by the prep container"
+  value = format(
+    "https://%s/%s/SM-v%s.zip",
+    var.sm_zip_download_url != "" ? var.sm_zip_download_url : "download.app.xmpro.com",
+    var.release_version,
+    var.release_version
+  )
 }
 
 # SSO Configuration Status

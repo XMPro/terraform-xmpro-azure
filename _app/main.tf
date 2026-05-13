@@ -429,8 +429,8 @@ module "sm_dbmigrate" {
   # Image version
   imageversion = var.imageversion
 
-  # SM product ID
-  sm_product_id = random_uuid.sm_id.result
+  # SM product ID - use effective value (consistent with sm_key_vault)
+  sm_product_id = local.effective_sm_product_id
 
   # Evaluation Mode Configuration
   product_ids  = local.evaluation_product_ids
@@ -593,6 +593,9 @@ module "ai_app_service" {
   ai_product_id  = local.effective_ai_product_id
   ai_product_key = local.effective_ai_product_key
 
+  # Infrastructure Encryption Key (use provided value or generated)
+  ai_infrastructure_key = local.effective_ai_infrastructure_key
+
   # Create implicit dependency on ai_dbmigrate container
   aidbmigrate_container_id = var.enable_ai ? module.ai_dbmigrate[0].container_group_id : ""
 
@@ -607,6 +610,10 @@ module "ai_app_service" {
 
   # RBAC role names (optional - for custom roles)
   keyvault_secrets_reader_role_name = var.keyvault_secrets_reader_role_name
+
+  # Key Vault authorization mode
+  enable_rbac_authorization = var.enable_rbac_authorization
+  tenant_id                 = data.azurerm_client_config.current.tenant_id
 
   # Tags
   tags = var.common_tags
@@ -688,7 +695,7 @@ module "sm_prep_container" {
 
   # SM.zip download configuration
   sm_zip_download_url = var.sm_zip_download_url
-  release_version     = var.imageversion
+  release_version     = var.sm_zip_version != "" ? var.sm_zip_version : var.imageversion
 
   # Key Vault configuration - use the same name passed from infrastructure layer
   azure_key_vault_name = var.sm_key_vault_name
@@ -856,7 +863,7 @@ module "sm_app_service" {
   storage_sas_token    = local.storage_sas_token
 
   # GitHub release version for versioned zip file
-  github_release_version = var.imageversion
+  github_release_version = var.sm_zip_version != "" ? var.sm_zip_version : var.imageversion
 
   # Application passwords
   company_admin_password = var.company_admin_password

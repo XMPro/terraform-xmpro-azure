@@ -167,13 +167,15 @@ module "applications" {
   company_admin_password = var.company_admin_password
   site_admin_password    = var.site_admin_password
   ad_encryption_key      = var.ad_encryption_key
+  ai_infrastructure_key  = var.ai_infrastructure_key
 
   # ============================================================================
   # APPLICATION CONFIGURATION
   # ============================================================================
 
-  imageversion       = var.imageversion
-  is_evaluation_mode = var.is_evaluation_mode
+  imageversion        = var.imageversion
+  sm_zip_download_url = var.sm_zip_download_url
+  is_evaluation_mode  = var.is_evaluation_mode
 
   # Company Admin Details
   company_admin_first_name    = var.company_admin_first_name
@@ -191,6 +193,11 @@ module "applications" {
   enable_auto_scale         = var.enable_auto_scale
   redis_connection_string   = var.redis_connection_string
   enable_email_notification = var.enable_email_notification
+
+  # Stream Connector
+  enable_stream_connector_stream_host = var.enable_stream_connector_stream_host
+  sc_stream_host_collection_id        = var.sc_stream_host_collection_id
+  sc_stream_host_collection_secret    = var.sc_stream_host_collection_secret
 
   # ============================================================================
   # SMTP CONFIGURATION

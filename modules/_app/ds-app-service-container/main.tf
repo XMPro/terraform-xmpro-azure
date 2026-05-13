@@ -96,6 +96,14 @@ resource "azurerm_key_vault_access_policy" "ds_identity" {
   ]
 }
 
+# RBAC role assignment for DS identity to read secrets from Key Vault
+# COMMENTED OUT - Using Key Vault Access Policies instead of RBAC
+# resource "azurerm_role_assignment" "ds_identity_secrets" {
+#   scope                = data.azurerm_key_vault.ds_key_vault.id
+#   role_definition_name = var.keyvault_secrets_reader_role_name
+#   principal_id         = azurerm_user_assigned_identity.ds_identity.principal_id
+# }
+
 # Reference existing Service Plan from infrastructure layer
 data "azurerm_service_plan" "ds_service_plan" {
   name                = var.ds_service_plan_name
@@ -135,10 +143,15 @@ resource "azurerm_linux_web_app" "ds_app" {
     identity_ids = local.identity_ids
   }
 
-  # Ensure Key Vault access is configured before creating the app
+  # Ensure Key Vault access is configured AND secrets are written before
+  # creating the app. Adding module.ds_secrets serves two purposes:
+  # 1) secrets must exist before App Service resolves @Microsoft.KeyVault refs;
+  # 2) the elapsed time of the secret writes gives RBAC role assignments room
+  #    to propagate, avoiding the App Service "AccessToKeyVaultDenied" cache.
   depends_on = [
     azurerm_role_assignment.ds_identity_secrets,
-    azurerm_key_vault_access_policy.ds_identity
+    azurerm_key_vault_access_policy.ds_identity,
+    module.ds_secrets,
   ]
 
   # Using Key Vault references for sensitive app settings
@@ -230,4 +243,19 @@ resource "azurerm_linux_web_app" "ds_app" {
       terraform_data.ds_secrets_tracker
     ]
   }
+}
+
+# Configure TLS cipher suite to remediate CWE-757 weak cipher findings in Veracode DAST
+# Uses azapi provider since azurerm does not expose minTlsCipherSuite setting
+# Value will be set once post-fix DAST rescans confirm the cipher floor needed for score >= 95
+resource "azapi_update_resource" "ds_min_tls_cipher_suite" {
+  count       = var.min_tls_cipher_suite != null ? 1 : 0
+  type        = "Microsoft.Web/sites/config@2023-12-01"
+  resource_id = "${azurerm_linux_web_app.ds_app.id}/config/web"
+
+  body = jsonencode({
+    properties = {
+      minTlsCipherSuite = var.min_tls_cipher_suite
+    }
+  })
 }

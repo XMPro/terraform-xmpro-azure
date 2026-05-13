@@ -262,6 +262,12 @@ variable "imageversion" {
   default     = "4.5.3"
 }
 
+variable "sm_zip_version" {
+  description = "Override version for SM zip download. Defaults to imageversion if empty."
+  type        = string
+  default     = ""
+}
+
 # License API configuration
 variable "license_api_url" {
   description = "URL for the license API endpoint"
@@ -454,8 +460,61 @@ variable "sso_azure_ad_tenant_id" {
   default     = ""
 }
 
+# Stream Connector Configuration
+variable "enable_stream_connector_stream_host" {
+  description = "Whether to create a dedicated Stream Host container for Stream Connector"
+  type        = bool
+  default     = false
+}
+
+variable "sc_stream_host_collection_id" {
+  description = "Collection ID for the Stream Connector stream host. Required when enable_stream_connector_stream_host = true. Obtain from Data Stream Designer > Collections."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "sc_stream_host_collection_secret" {
+  description = "Collection secret for the Stream Connector stream host. Required when enable_stream_connector_stream_host = true. Obtain from Data Stream Designer > Collections."
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "sc_stream_host_cpu" {
+  description = "CPU allocation for the Stream Connector stream host container"
+  type        = number
+  default     = 1
+}
+
+variable "sc_stream_host_memory" {
+  description = "Memory allocation (in GB) for the Stream Connector stream host container"
+  type        = number
+  default     = 4
+}
+
+variable "sc_stream_host_variant" {
+  description = "The Stream Connector Stream Host Docker image variant suffix"
+  type        = string
+  default     = ""
+}
+
+variable "sc_stream_host_environment_variables" {
+  description = "Additional environment variables for the Stream Connector stream host"
+  type        = map(string)
+  default     = {}
+}
+
+
 variable "ad_encryption_key" {
   description = "Encryption key for AD application server variables. If not provided, a 32-character alphanumeric string will be automatically generated"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "ai_infrastructure_key" {
+  description = "Infrastructure encryption key for the AI service (binds to InfrastructureKey:Key). Encrypts secure infrastructure settings (Neo4j, Gremlin, LLM, TimeSeries). If not provided, a 32-character alphanumeric string will be automatically generated when AI is enabled."
   type        = string
   sensitive   = true
   default     = ""
