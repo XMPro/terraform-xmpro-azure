@@ -25,45 +25,46 @@ data "azurerm_log_analytics_workspace" "this" {
 }
 
 # Data sources for networking resources (when enabled)
+# Uses network_resource_group_name to support separate networking RG
 data "azurerm_virtual_network" "this" {
   count               = var.prod_networking_enabled ? 1 : 0
   name                = var.vnet_name
-  resource_group_name = var.resource_group_name
+  resource_group_name = local.network_resource_group_name
 }
 
 data "azurerm_subnet" "presentation" {
   count                = var.prod_networking_enabled && try(var.subnet_names.presentation, "") != "" ? 1 : 0
   name                 = var.subnet_names.presentation
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = local.network_resource_group_name
 }
 
 data "azurerm_subnet" "data" {
   count                = var.prod_networking_enabled && try(var.subnet_names.data, "") != "" ? 1 : 0
   name                 = var.subnet_names.data
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = local.network_resource_group_name
 }
 
 data "azurerm_subnet" "aci" {
   count                = var.prod_networking_enabled && try(var.subnet_names.aci, "") != "" ? 1 : 0
   name                 = var.subnet_names.aci
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = local.network_resource_group_name
 }
 
 data "azurerm_subnet" "processing" {
   count                = var.prod_networking_enabled && try(var.subnet_names.processing, "") != "" ? 1 : 0
   name                 = var.subnet_names.processing
   virtual_network_name = var.vnet_name
-  resource_group_name  = var.resource_group_name
+  resource_group_name  = local.network_resource_group_name
 }
 
 # Private DNS zone for App Services (when private endpoints enabled)
 data "azurerm_private_dns_zone" "sites" {
   count               = var.prod_networking_enabled && var.private_dns_zone_sites_name != "" ? 1 : 0
   name                = var.private_dns_zone_sites_name
-  resource_group_name = var.resource_group_name
+  resource_group_name = local.network_resource_group_name
 }
 
 # Generate SAS token if not provided from infrastructure
@@ -424,7 +425,6 @@ module "sm_dbmigrate" {
   ad_url = local.ad_base_url
   ds_url = local.ds_base_url
   ai_url = local.ai_base_url
-  nb_url = local.nb_base_url
 
   # Image version
   imageversion = var.imageversion
@@ -433,8 +433,8 @@ module "sm_dbmigrate" {
   sm_product_id = local.effective_sm_product_id
 
   # Evaluation Mode Configuration
-  product_ids  = local.evaluation_product_ids
-  product_keys = local.evaluation_product_keys
+  product_ids  = local.effective_product_ids
+  product_keys = local.effective_product_keys
 
   is_evaluation_mode = var.is_evaluation_mode
 

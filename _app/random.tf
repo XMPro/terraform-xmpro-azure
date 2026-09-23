@@ -91,16 +91,6 @@ resource "random_uuid" "ds_product_id" {
   }
 }
 
-resource "random_uuid" "nb_product_id" {
-  count = var.is_evaluation_mode ? 0 : 1
-
-  keepers = {
-    name_suffix  = var.name_suffix
-    company_name = var.company_name
-    service      = "nb"
-  }
-}
-
 # Product Keys (generated when not in evaluation mode)
 resource "random_uuid" "ad_product_key" {
   count = var.is_evaluation_mode ? 0 : 1
@@ -132,17 +122,6 @@ resource "random_uuid" "ds_product_key" {
     name_suffix  = var.name_suffix
     company_name = var.company_name
     service      = "ds"
-    type         = "key"
-  }
-}
-
-resource "random_uuid" "nb_product_key" {
-  count = var.is_evaluation_mode ? 0 : 1
-
-  keepers = {
-    name_suffix  = var.name_suffix
-    company_name = var.company_name
-    service      = "nb"
     type         = "key"
   }
 }

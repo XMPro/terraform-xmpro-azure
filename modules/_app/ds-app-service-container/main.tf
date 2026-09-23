@@ -81,6 +81,7 @@ resource "azurerm_role_assignment" "ds_identity_secrets" {
   scope                = data.azurerm_key_vault.ds_key_vault.id
   role_definition_name = var.keyvault_secrets_reader_role_name
   principal_id         = local.kv_principal_id
+  principal_type       = "ServicePrincipal"
 }
 
 # Access policy for KV identity to read secrets from Key Vault
@@ -172,11 +173,9 @@ resource "azurerm_linux_web_app" "ds_app" {
 
     # Roles and paths
     "XM__XMPRO__XMSETTINGS__ADMINROLE" = "Administrator"
-    "XM__XMPRO__HEALTHCHECKS__CSSPATH" = "/app/ClientApp/dist/en-US/assets/content/styles/healthui.css"
 
     # Feature flags
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLEAPPLICATIONINSIGHTSTELEMETRY" = tostring(true)
-    "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
     "XM__XMPRO__DATASTREAMDESIGNER__STREAMHOSTDOWNLOADBASEURL"                        = var.streamhost_download_base_url
     "XM__XMPRO__DATASTREAMDESIGNER__FEATUREFLAGS__ENABLESECURITYHEADERS"              = tostring(var.enable_security_headers)
@@ -193,12 +192,6 @@ resource "azurerm_linux_web_app" "ds_app" {
     "XM__XMPRO__HEALTHCHECKS__URLS__1__NAME"    = "Data Stream Designer API"
     "XM__XMPRO__HEALTHCHECKS__URLS__1__TAGS__0" = "api"
 
-    # HealthChecksUI Configuration
-    "HEALTHCHECKSUI__HEALTHCHECKS__0__NAME" = "Application Designer"
-    "HEALTHCHECKSUI__HEALTHCHECKS__0__URI"  = "${var.ad_url}/health"
-    "HEALTHCHECKSUI__HEALTHCHECKS__1__NAME" = "Data Stream Designer"
-    "HEALTHCHECKSUI__HEALTHCHECKS__1__URI"  = "${var.ds_url}/health"
-
     # Key Vault references for sensitive values
     "APPLICATIONINSIGHTS__CONNECTIONSTRING"     = "@Microsoft.KeyVault(SecretUri=${module.ds_secrets.secret_versionless_ids["ApplicationInsights--ConnectionString"]})"
     "XMPRO__XMSETTINGS__DATA__CONNECTIONSTRING" = "@Microsoft.KeyVault(SecretUri=${module.ds_secrets.secret_versionless_ids["xmpro--xmsettings--data--connectionString"]})"
@@ -214,8 +207,6 @@ resource "azurerm_linux_web_app" "ds_app" {
       "XM__XMPRO__HEALTHCHECKS__URLS__2__URL"     = "${var.ai_url}/health/ping"
       "XM__XMPRO__HEALTHCHECKS__URLS__2__NAME"    = "XMPro AI API"
       "XM__XMPRO__HEALTHCHECKS__URLS__2__TAGS__0" = "api"
-      "HEALTHCHECKSUI__HEALTHCHECKS__2__NAME"     = "XMPro AI"
-      "HEALTHCHECKSUI__HEALTHCHECKS__2__URI"      = "${var.ai_url}/health"
     } : {}
   )
 

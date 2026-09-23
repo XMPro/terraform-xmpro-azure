@@ -104,9 +104,15 @@ variable "redis_primary_connection_string" {
 
 # Database Configuration
 variable "enable_sql_aad_auth" {
-  description = "Enable Azure AD (AAD) authentication for AD and DS app services. SM always uses SQL authentication regardless of this setting (requires code changes - see Work Item #21949). Migration containers always use AAD auth."
+  description = "Enable Azure AD (AAD) authentication for AD and DS app services. SM always uses SQL authentication regardless of this setting (requires code changes). Migration containers always use AAD auth."
   type        = bool
   default     = false
+}
+
+variable "trust_server_certificate" {
+  description = "Whether to skip TLS certificate validation for SQL auth connection strings. Set to true when ACI containers cannot validate Azure SQL's certificate chain (e.g., private networking environments)."
+  type        = bool
+  default     = true
 }
 
 variable "db_admin_username" {
@@ -175,6 +181,19 @@ variable "existing_ds_product_key" {
 
 variable "existing_ai_product_key" {
   description = "Existing AI product key"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "existing_xmpro_notebook_product_id" {
+  description = "Existing XMPro Notebook product ID"
+  type        = string
+  default     = ""
+}
+
+variable "existing_xmpro_notebook_product_key" {
+  description = "Existing XMPro Notebook product key"
   type        = string
   default     = ""
   sensitive   = true
@@ -666,6 +685,12 @@ variable "ai_service_plan_name" {
   default     = ""
 }
 
+variable "network_resource_group_name" {
+  description = "Resource group name where networking resources (VNet, subnets, DNS zones) are located. Defaults to resource_group_name when not specified."
+  type        = string
+  default     = ""
+}
+
 # Networking variables (from infrastructure layer)
 variable "prod_networking_enabled" {
   description = "Whether production networking is enabled (from infrastructure layer)"
@@ -842,4 +867,26 @@ variable "ai_db_aad_client_id" {
   description = "Client ID of the AI database managed identity for AAD authentication (from infrastructure layer, null if AAD auth disabled or AI disabled)"
   type        = string
   default     = null
+}
+
+# ============================================================================
+# OBSERVABILITY DIAGNOSTIC SETTINGS
+# ============================================================================
+
+variable "enable_otel" {
+  description = "Master switch for observability/OTel monitoring integration. When true, diagnostic settings are created on all App Services and ACI containers to ship logs to Event Hub for the OTel Collector -> Loki -> Grafana pipeline. Requires observability_eventhub_rule_id."
+  type        = bool
+  default     = false
+}
+
+variable "observability_eventhub_rule_id" {
+  description = "Event Hub authorization rule ID for observability diagnostic settings. Required when enable_otel is true."
+  type        = string
+  default     = ""
+}
+
+variable "observability_eventhub_name" {
+  description = "Event Hub name for observability diagnostic settings"
+  type        = string
+  default     = "app-logs"
 }

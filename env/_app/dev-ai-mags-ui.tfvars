@@ -18,7 +18,7 @@ name_suffix  = "aimag"
 
 resource_group_name  = "rg-xmpro-dev-ai-mag-6f645a63"
 storage_account_name = "stxmp6f645a63"
-storage_sas_token    = ""  # Leave empty to auto-generate
+storage_sas_token    = "" # Leave empty to auto-generate
 
 sql_server_fqdn = "sqldb-xmpro-dev-ai-mag-6f645a63.database.windows.net"
 
@@ -41,8 +41,8 @@ ai_key_vault_name = "kv-ai-xmpro-6f645a63"
 
 # Container Registry
 acr_url_product = "xmprononprod.azurecr.io"
-acr_username    = ""  # Public registry
-acr_password    = ""  # Public registry
+acr_username    = "" # Public registry
+acr_password    = "" # Public registry
 
 # Database Credentials
 db_admin_username = "xmadmin"
@@ -51,7 +51,7 @@ db_admin_username = "xmadmin"
 # Application Admin Credentials
 # company_admin_password = ""  # Provided via TF_VAR_company_admin_password
 # site_admin_password = ""  # Provided via TF_VAR_site_admin_password
-ad_encryption_key = ""  # Auto-generate
+ad_encryption_key = "" # Auto-generate
 
 # ============================================================================
 # APPLICATION CONFIGURATION
@@ -75,7 +75,7 @@ company_admin_email_address = ""
 # FEATURE FLAGS
 # ============================================================================
 
-enable_rbac_authorization = false  # Key Vaults use access policies, not RBAC
+enable_rbac_authorization = false # Key Vaults use access policies, not RBAC
 enable_ai                 = true
 create_stream_host        = true
 enable_custom_domain      = true

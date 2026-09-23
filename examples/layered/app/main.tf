@@ -102,11 +102,12 @@ module "applications" {
   # INFRASTRUCTURE REFERENCES
   # ============================================================================
 
-  resource_group_name     = var.resource_group_name
-  resource_group_location = data.azurerm_resource_group.this.location
-  storage_account_name    = var.storage_account_name
-  storage_sas_token       = var.storage_sas_token # Will be auto-generated if empty
-  sql_server_fqdn         = var.sql_server_fqdn
+  resource_group_name      = var.resource_group_name
+  resource_group_location  = data.azurerm_resource_group.this.location
+  storage_account_name     = var.storage_account_name
+  storage_sas_token        = var.storage_sas_token # Will be auto-generated if empty
+  sql_server_fqdn          = var.sql_server_fqdn
+  trust_server_certificate = var.trust_server_certificate
 
   # Service Plan Names
   ad_service_plan_name = var.ad_service_plan_name
@@ -241,10 +242,16 @@ module "applications" {
   log_analytics_primary_shared_key = length(data.azurerm_log_analytics_workspace.this) > 0 ? data.azurerm_log_analytics_workspace.this[0].primary_shared_key : ""
   app_insights_name                = var.app_insights_name
 
+  # Observability diagnostic settings (Event Hub)
+  enable_otel                    = var.enable_otel
+  observability_eventhub_rule_id = var.observability_eventhub_rule_id
+  observability_eventhub_name    = var.observability_eventhub_name
+
   # ============================================================================
   # NETWORKING
   # ============================================================================
 
+  network_resource_group_name = var.network_resource_group_name
   prod_networking_enabled     = var.prod_networking_enabled
   override_public_access      = var.override_public_access
   private_dns_zone_sites_name = var.private_dns_zone_sites_name

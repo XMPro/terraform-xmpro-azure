@@ -54,7 +54,6 @@ module "sm_app_service" {
   ad_url = "https://app-ad-dev-abc123.azurewebsites.net"
   ds_url = "https://app-ds-dev-abc123.azurewebsites.net"
   ai_url = "https://app-ai-dev-abc123.azurewebsites.net"
-  nb_url = "https://app-nb-dev-abc123.azurewebsites.net"
   sm_url = "https://app-sm-dev-abc123.azurewebsites.net"
 
   # Optional naming overrides
@@ -70,27 +69,27 @@ module "sm_app_service" {
 
 ## Input Variables
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| app_name | Application name (ad, ds, sm, ai, nb) | `string` | `"sm"` | no |
-| company_name | The company name used for all resources | `string` | n/a | yes |
-| environment | The environment name | `string` | n/a | yes |
-| resource_group_name | Resource group name | `string` | n/a | yes |
-| location | Azure location | `string` | n/a | yes |
-| name_suffix | Random suffix for resource names | `string` | n/a | yes |
-| app_service_name_override | Optional app service name override | `string` | `""` | no |
-| app_service_plan_name_override | Optional app service plan name override | `string` | `""` | no |
-| service_plan_sku | App Service plan SKU | `string` | `"B1"` | no |
+| Name                           | Description                             | Type     | Default | Required |
+|--------------------------------|-----------------------------------------|----------|---------|:--------:|
+| app_name                       | Application name (ad, ds, sm, ai)       | `string` | `"sm"`  | no       |
+| company_name                   | The company name used for all resources | `string` | n/a     | yes      |
+| environment                    | The environment name                    | `string` | n/a     | yes      |
+| resource_group_name            | Resource group name                     | `string` | n/a     | yes      |
+| location                       | Azure location                          | `string` | n/a     | yes      |
+| name_suffix                    | Random suffix for resource names        | `string` | n/a     | yes      |
+| app_service_name_override      | Optional app service name override      | `string` | `""`    | no       |
+| app_service_plan_name_override | Optional app service plan name override | `string` | `""`    | no       |
+| service_plan_sku               | App Service plan SKU                    | `string` | `"B1"`  | no       |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| app_name | The name of the SM app service |
-| app_url | The URL of the SM app service |
-| app_service_name_standard | The standardized app service name used |
+| Name                           | Description                                 |
+|--------------------------------|---------------------------------------------|
+| app_name                       | The name of the SM app service              |
+| app_url                        | The URL of the SM app service               |
+| app_service_name_standard      | The standardized app service name used      |
 | app_service_plan_name_standard | The standardized app service plan name used |
-| naming_info | Information about naming convention applied |
+| naming_info                    | Information about naming convention applied |
 
 ## Naming Convention Details
 
@@ -109,11 +108,11 @@ If the generated names exceed limits, they are automatically truncated:
 
 ### Examples
 
-| Scenario | App Name | Environment | Suffix | Result |
-|----------|----------|-------------|---------|---------|
-| Standard | sm | dev | abc123 | `app-sm-dev-abc123` |
-| Long Environment | ad | development | xyz789 | `app-ad-development-xyz789` |
-| Truncated | testapp | verylongenvironmentname | verylongsuffix | `app-testapp-verylongenvironmentname-verylongsuffix` (truncated to 60 chars) |
+| Scenario         | App Name | Environment             | Suffix         | Result                                                                       |
+|------------------|----------|-------------------------|----------------|------------------------------------------------------------------------------|
+| Standard         | sm       | dev                     | abc123         | `app-sm-dev-abc123`                                                          |
+| Long Environment | ad       | development             | xyz789         | `app-ad-development-xyz789`                                                  |
+| Truncated        | testapp  | verylongenvironmentname | verylongsuffix | `app-testapp-verylongenvironmentname-verylongsuffix` (truncated to 60 chars) |
 
 ## Dependencies
 

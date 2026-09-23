@@ -264,3 +264,27 @@ variable "mqtt_enable_tls" {
   type        = bool
   default     = true
 }
+
+variable "use_existing_database" {
+  description = "Skip creating a new SQL server in the infra layer when true. The sql_server_fqdn output then surfaces existing_sql_server_fqdn for the app layer's terraform.tfvars."
+  type        = bool
+  default     = false
+}
+
+variable "existing_sql_server_fqdn" {
+  description = "FQDN of an existing SQL Server to surface as the infra layer's sql_server_fqdn output when use_existing_database = true. Ignored otherwise."
+  type        = string
+  default     = ""
+}
+
+variable "additional_dns_cname_records" {
+  description = "Extra CNAME records to create in the custom DNS zone. Map key = record name (relative to dns_zone_name), value = target FQDN. Only applied when enable_custom_domain = true."
+  type        = map(string)
+  default     = {}
+}
+
+variable "additional_dns_ns_records" {
+  description = "NS record sets to create in the custom DNS zone for subdomain delegation. Map key = record name (relative to dns_zone_name), value = list of nameservers. Only applied when enable_custom_domain = true."
+  type        = map(list(string))
+  default     = {}
+}

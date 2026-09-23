@@ -1,0 +1,114 @@
+# Example terraform.tfvars for Stream Host deployment
+# Copy this file to terraform.tfvars and customize the values for your environment
+
+# ====================
+# REQUIRED SETTINGS
+# ====================
+
+# Core settings - customize these for your deployment
+environment = "dev"
+location    = "southeastasia"
+company_name = "mycompany"
+
+# Stream Host configuration - REQUIRED
+# Get these values from your XMPro Data Stream Designer
+ds_server_url = "https://ds.mycompany.com"
+stream_host_collection_id = "a1b2c3d4-e5f6-7890-abcd-ef1234567890"  # Example UUID format
+stream_host_collection_secret = "YWJjZGVmZ2hpams1Njc4OTBhYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5eg=="  # Example base64 encoded secret
+
+# Container registry settings
+# For public XMPro images (default)
+acr_url_product = "xmpro.azurecr.io"
+# For private registry, uncomment and configure:
+# is_private_registry = true
+# acr_username = "REPLACE_acr_username"
+# acr_password = "REPLACE_acr_password"
+
+# Image version
+imageversion = "5.0.1"
+
+# ====================
+# OPTIONAL SETTINGS
+# ====================
+
+# Stream Host variant (optional - defaults to bookworm-slim)
+# Options: "" (default), "bookworm-slim", "bookworm-slim-python3.12", "alpine3.21"
+# Note: SH_PIP_MODULES and PIP_REQUIREMENTS_PATH only work with bookworm-slim-python3.12
+# stream_host_variant = "bookworm-slim-python3.12"
+
+# Resource Group Configuration (choose one approach):
+# Option 1: Create new resource group (default behavior if both are commented out)
+# Option 2: Use existing resource group (uncomment both lines below)
+# use_existing_resource_group = true      # Set to true to use existing resource group
+# existing_resource_group_name = "rg-existing-name"  # Required when use_existing_resource_group = true
+
+# Resource allocation (optional - these are defaults)
+stream_host_cpu = 1
+stream_host_memory = 4
+
+# Monitoring and Alerting Configuration (optional)
+# app_insights_connection_string = "InstrumentationKey=your-key-here"
+# log_analytics_workspace_id = "REPLACE_log_analytics_workspace_id"
+# log_analytics_primary_shared_key = "REPLACE_log_analytics_primary_shared_key"
+
+# Monitoring infrastructure (optional)
+# enable_monitoring = true  # Creates Application Insights + Log Analytics
+# log_analytics_quota = 1   # Daily data ingestion quota in GB (default: 1)
+
+# External monitoring configuration (when enable_monitoring = false)
+# existing_app_insights_connection_string = "InstrumentationKey=your-key;IngestionEndpoint=https://..."
+# existing_log_analytics_workspace_id = "/subscriptions/xxx/resourceGroups/xxx/providers/Microsoft.OperationalInsights/workspaces/xxx"  
+# existing_log_analytics_primary_shared_key = "REPLACE_existing_log_analytics_primary_shared_key"
+
+# Alerting configuration (optional) - pick one option, both set enable_alerting once
+# Option 1: alert on the monitoring created above (recommended for new deployments)
+#   uncomment enable_monitoring in the Monitoring block above, then:
+# enable_alerting = true
+
+# Option 2: alert on existing monitoring infrastructure (leave enable_monitoring unset)
+# enable_alerting = true
+# external_app_insights_id = "/subscriptions/your-sub/resourceGroups/your-rg/providers/Microsoft.Insights/components/your-appinsights"
+# enable_email_alerts = true
+# alert_email_addresses = ["admin@company.com", "ops@company.com"]
+# enable_sms_alerts = false
+# alert_phone_numbers = []
+# alert_phone_country_code = "1"
+# enable_webhook_alerts = false
+# alert_webhook_urls = []
+
+# Stream Host Container Alerts (optional)
+# enable_cpu_alerts = true
+# cpu_alert_threshold = 80  # CPU usage percentage threshold
+# cpu_alert_severity = 2  # Severity: 0=critical, 1=error, 2=warning, 3=info, 4=verbose
+# enable_memory_alerts = true
+# memory_alert_threshold = 80  # Memory usage percentage threshold
+# memory_alert_severity = 2
+# enable_container_restart_alerts = true
+# enable_container_stop_alerts = true
+
+# Alert timing (optional - using defaults)
+# alert_window_size = "PT5M"  # 5 minute window
+# alert_evaluation_frequency = "PT1M"  # Evaluate every minute
+
+# Additional environment variables (optional)
+# All variants support custom environment variables and ADDITIONAL_INSTALLS
+# environment_variables = {
+#   "CUSTOM_SETTING" = "value"
+#   # System packages (works on all variants - APT for Debian, APK for Alpine):
+#   # "ADDITIONAL_INSTALLS" = "git curl wget"
+#   # Python packages (only work with bookworm-slim-python3.12 variant):
+#   # "SH_PIP_MODULES" = "scikit-learn pandas numpy"
+#   # "PIP_REQUIREMENTS_PATH" = "/app/requirements.txt"
+# }
+
+# Volume mounts (optional)
+# volumes = [
+#   {
+#     name       = "config-volume"
+#     mount_path = "/app/config"
+#     read_only  = true
+#     secret = {
+#       "config.json" = "REPLACE_config_json_base64"
+#     }
+#   }
+# ]

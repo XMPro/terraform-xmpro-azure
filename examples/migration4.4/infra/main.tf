@@ -66,6 +66,48 @@ module "infrastructure" {
   existing_mqtt_password    = var.existing_mqtt_password
   mqtt_enable_tls           = var.mqtt_enable_tls
 
+  # Existing-database mode: skip new SQL server provisioning; the app layer
+  # will point at the existing server. The _infra module's outputs handle
+  # the use_existing_database=true case (sql_server_fqdn returns var.existing_sql_server_fqdn).
+  use_existing_database    = var.use_existing_database
+  existing_sql_server_fqdn = var.existing_sql_server_fqdn
+
+  tags = merge(var.tags, {
+    Layer = "Infrastructure"
+  })
+}
+
+# Extra CNAME records in the custom DNS zone (e.g. legacy XMTwin helper hosts
+# like mlflow / mqtt / neo4j that aren't modelled by the rest of the module).
+# Only created when enable_custom_domain = true so we don't try to write into
+# a non-existent zone.
+resource "azurerm_dns_cname_record" "additional" {
+  for_each = var.enable_custom_domain ? var.additional_dns_cname_records : {}
+
+  name = each.key
+  # Reference the module's dns_zone_name output (not var.dns_zone_name) so
+  # terraform waits for the zone to exist before writing CNAMEs into it.
+  zone_name           = module.infrastructure.dns_zone_name
+  resource_group_name = module.infrastructure.resource_group_name
+  ttl                 = 3600
+  record              = each.value
+
+  tags = merge(var.tags, {
+    Layer = "Infrastructure"
+  })
+}
+
+# NS record sets for subdomain delegation in the custom DNS zone (e.g. delegating
+# otel.twin.xmpro.com to its own Azure DNS zone's nameservers).
+resource "azurerm_dns_ns_record" "additional" {
+  for_each = var.enable_custom_domain ? var.additional_dns_ns_records : {}
+
+  name                = each.key
+  zone_name           = module.infrastructure.dns_zone_name
+  resource_group_name = module.infrastructure.resource_group_name
+  ttl                 = 3600
+  records             = each.value
+
   tags = merge(var.tags, {
     Layer = "Infrastructure"
   })

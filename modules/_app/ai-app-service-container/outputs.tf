@@ -46,4 +46,5 @@ output "app_service_default_hostname" {
 output "app_service_custom_domain_verification_id" {
   description = "The custom domain verification ID for the AI app service"
   value       = azurerm_linux_web_app.ai_app.custom_domain_verification_id
+  sensitive   = true
 }

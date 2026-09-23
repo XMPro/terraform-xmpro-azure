@@ -1,6 +1,10 @@
 # Application Layer Local Variables
 
 locals {
+  # Network resource group - defaults to main resource group if not specified
+  network_resource_group_name = coalesce(var.network_resource_group_name, var.resource_group_name)
+
+
   # Construct ARM resource IDs from managed identity names
   # Format: /subscriptions/{subscription}/resourceGroups/{rg}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/{name}
   # Uses data.azurerm_client_config.current.subscription_id to get subscription ID automatically
@@ -15,22 +19,23 @@ locals {
   # Connection strings - conditional based on authentication mode
   # When AAD auth is enabled, use managed identity (no username/password)
   # When AAD auth is disabled, use SQL authentication (with username/password)
+  # trust_server_certificate controls TLS cert validation for SQL auth strings
   ad_connection_string = var.enable_sql_aad_auth ? (
     "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ad_database_name};Authentication=Active Directory Default;User Id=${var.ad_db_aad_client_id != null ? var.ad_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ad_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ad_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=${var.trust_server_certificate};Connection Timeout=30;"
   )
 
   ds_connection_string = var.enable_sql_aad_auth ? (
     "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ds_database_name};Authentication=Active Directory Default;User Id=${var.ds_db_aad_client_id != null ? var.ds_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ds_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ds_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=${var.trust_server_certificate};Connection Timeout=30;"
   )
 
   ai_connection_string = var.enable_sql_aad_auth && var.enable_ai ? (
     "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ai_database_name};Authentication=Active Directory Default;User Id=${var.ai_db_aad_client_id != null ? var.ai_db_aad_client_id : ""};Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
     ) : (
-    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ai_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    "Server=tcp:${local.sql_server_fqdn},1433;Initial Catalog=${var.ai_database_name};Persist Security Info=False;User ID=${var.db_admin_username};Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=${var.trust_server_certificate};Connection Timeout=30;"
   )
 
   # SM app service always uses SQL authentication (even when enable_sql_aad_auth = true)
@@ -59,7 +64,6 @@ locals {
   ad_base_url = var.enable_custom_domain ? "https://ad.${local.dns_zone_name}/" : "https://${lower(local.ad_app_service_name)}.azurewebsites.net"
   ds_base_url = var.enable_custom_domain ? "https://ds.${local.dns_zone_name}/" : "https://${lower(local.ds_app_service_name)}.azurewebsites.net"
   ai_base_url = var.enable_ai ? (var.enable_custom_domain ? "https://ai.${local.dns_zone_name}/" : "https://${lower(local.ai_app_service_name)}.azurewebsites.net") : ""
-  nb_base_url = var.enable_custom_domain ? "https://nb.${local.dns_zone_name}/" : "https://nb.example.com"
   sm_base_url = var.enable_custom_domain ? "https://sm.${local.dns_zone_name}/" : "https://${lower(local.sm_app_service_name)}.azurewebsites.net"
 
   # Collection Details (from random resources)
@@ -82,24 +86,20 @@ locals {
     ad = "fe011f90-5bb6-80ad-b0a2-56300bf3b65d"
     ai = var.enable_ai ? "b7be889b-01d3-4bd2-95c6-511017472ec8" : ""
     ds = "71435803-967a-e9ac-574c-face863f7ec0"
-    nb = "3765f34c-ff4e-3cff-e24e-58ac5771d8c5"
     } : {
     ad = length(random_uuid.ad_product_id) > 0 ? random_uuid.ad_product_id[0].result : ""
     ai = var.enable_ai && length(random_uuid.ai_product_id) > 0 ? random_uuid.ai_product_id[0].result : ""
     ds = length(random_uuid.ds_product_id) > 0 ? random_uuid.ds_product_id[0].result : ""
-    nb = length(random_uuid.nb_product_id) > 0 ? random_uuid.nb_product_id[0].result : ""
   }
 
   evaluation_product_keys = var.is_evaluation_mode ? {
     ad = "f27eeb2d-c557-281c-9d4c-fe44cfb74a97"
     ai = var.enable_ai ? "950ca93b-1ad9-514b-4263-4d3f510012e2" : ""
     ds = "f744911d-e8a6-f8fb-9665-61b185845d6a"
-    nb = "383526ff-8d3f-5941-4bc8-482ed83152be"
     } : {
     ad = length(random_uuid.ad_product_key) > 0 ? random_uuid.ad_product_key[0].result : ""
     ai = var.enable_ai && length(random_uuid.ai_product_key) > 0 ? random_uuid.ai_product_key[0].result : ""
     ds = length(random_uuid.ds_product_key) > 0 ? random_uuid.ds_product_key[0].result : ""
-    nb = length(random_uuid.nb_product_key) > 0 ? random_uuid.nb_product_key[0].result : ""
   }
 
   # Product ID selection based on evaluation mode and existing database configuration
@@ -113,6 +113,24 @@ locals {
 
   # SM product ID - use existing or generate random (matches main branch)
   effective_sm_product_id = var.use_existing_database ? var.existing_sm_product_id : random_uuid.sm_id.result
+
+  # Maps consumed by sm-dbmigrate. When use_existing_database is true these must
+  # be the existing SM DB's Product / ProductKey rows, otherwise the migration
+  # container inserts ProductRights referencing GUIDs that don't exist and SM
+  # script0005 fails with FK_ProductRights_Product.
+  effective_product_ids = var.use_existing_database ? {
+    ad = lower(var.existing_ad_product_id)
+    ai = var.enable_ai ? lower(var.existing_ai_product_id) : ""
+    ds = lower(var.existing_ds_product_id)
+    nb = lower(var.existing_xmpro_notebook_product_id)
+  } : local.evaluation_product_ids
+
+  effective_product_keys = var.use_existing_database ? {
+    ad = var.existing_ad_product_key
+    ai = var.enable_ai ? var.existing_ai_product_key : ""
+    ds = var.existing_ds_product_key
+    nb = var.existing_xmpro_notebook_product_key
+  } : local.evaluation_product_keys
 
   # AD Encryption Key (use provided value or generate)
   effective_ad_encryption_key = var.ad_encryption_key != "" ? var.ad_encryption_key : (

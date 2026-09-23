@@ -1,5 +1,12 @@
 # Linux PowerShell Container Instance for SM Zip Preparation
 # Replaces SM MSDeploy with a containerized approach for generating deployment packages
+#
+# KNOWN LIMITATION: Azure File Share mounting fails when both the ACI and the Storage
+# Account are configured with private networking. The following configurations work:
+#   - Private ACI + Public Storage Account
+#   - Both resources public
+# When deploying in a private networking environment, ensure the Storage Account allows
+# public access or configure a private endpoint accessible from the ACI subnet.
 
 # Calculate file hashes and deployment triggers for change detection
 locals {

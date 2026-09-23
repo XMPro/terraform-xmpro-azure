@@ -45,6 +45,12 @@ variable "sql_server_fqdn" {
   sensitive   = true
 }
 
+variable "trust_server_certificate" {
+  description = "Whether to skip TLS certificate validation in the SQL connection strings. Set to true when the SQL server certificate chain cannot be validated (e.g. private endpoints resolving the public FQDN to a private IP)."
+  type        = bool
+  default     = true
+}
+
 # Service Plan Names
 variable "ad_service_plan_name" {
   description = "Name of the AD App Service Plan created by infrastructure layer"
@@ -241,7 +247,7 @@ variable "ai_infrastructure_key" {
 variable "imageversion" {
   description = "Version tag for container images"
   type        = string
-  default     = "4.6.1"
+  default     = "5.0.1"
 }
 
 variable "sm_zip_download_url" {
@@ -488,9 +494,33 @@ variable "app_insights_name" {
   }
 }
 
+variable "enable_otel" {
+  description = "Master switch for observability/OTel monitoring integration. When true, diagnostic settings are created on all App Services and ACI containers to ship logs to Event Hub for the OTel Collector -> Loki -> Grafana pipeline. Requires observability_eventhub_rule_id."
+  type        = bool
+  default     = false
+}
+
+variable "observability_eventhub_rule_id" {
+  description = "Event Hub authorization rule ID for observability diagnostic settings. Required when enable_otel is true."
+  type        = string
+  default     = ""
+}
+
+variable "observability_eventhub_name" {
+  description = "Event Hub name for observability diagnostic settings"
+  type        = string
+  default     = "app-logs"
+}
+
 # ============================================================================
 # NETWORKING
 # ============================================================================
+
+variable "network_resource_group_name" {
+  description = "Resource group name where networking resources (VNet, subnets, DNS zones) are located. Defaults to resource_group_name when not specified."
+  type        = string
+  default     = ""
+}
 
 variable "prod_networking_enabled" {
   description = "Enable production-like networking (VNet integration and private endpoints)"

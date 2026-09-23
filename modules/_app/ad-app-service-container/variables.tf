@@ -353,6 +353,22 @@ variable "db_identity_client_id" {
 }
 
 # ============================================================================
+# CONNECTOR HANDLER POOL
+# ============================================================================
+
+variable "ad_connector_pool_global_cap" {
+  description = "Maximum number of pooled ConnectorHandler entries retained per AD instance — bounds memory growth under multi-tenant load. Maps to xmpro:appDesigner:connectorPool:globalCap. Default 128 matches the appsettings.json default."
+  type        = number
+  default     = 128
+  nullable    = false
+
+  validation {
+    condition     = var.ad_connector_pool_global_cap > 0 && floor(var.ad_connector_pool_global_cap) == var.ad_connector_pool_global_cap
+    error_message = "ad_connector_pool_global_cap must be a positive integer."
+  }
+}
+
+# ============================================================================
 # TLS CIPHER SUITE CONFIGURATION (Veracode DAST CWE-757 remediation)
 # ============================================================================
 

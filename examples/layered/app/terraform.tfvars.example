@@ -19,6 +19,7 @@ resource_group_name  = "rg-mycompany-dev001"
 storage_account_name = "stmycdev001"
 storage_sas_token    = ""  # Optional - leave empty to auto-generate. Format: "?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2025-12-31T23:59:59Z&st=2025-01-01T00:00:00Z&spr=https&sig=..."
 sql_server_fqdn      = "sql-mycompany-dev001.database.windows.net"
+# trust_server_certificate = true  # set false to enforce SQL TLS certificate validation
 
 # Service Plan Names
 ad_service_plan_name = "plan-ad-mycompany-dev001"
@@ -40,10 +41,10 @@ ai_key_vault_name = ""  # AI disabled
 # - All passwords MUST be at least 12 characters long
 # - Use strong, unique passwords for each credential
 # - NEVER commit actual passwords to version control
-# - Store sensitive values in Azure Key Vault or use environment variables:
-#   export TF_VAR_db_admin_password="your-secure-password"
-#   export TF_VAR_company_admin_password="your-secure-password"
-#   export TF_VAR_site_admin_password="your-secure-password"
+# - Set each password directly in terraform.tfvars (gitignored, never committed):
+#     db_admin_password      = "REPLACE_db_admin_password"
+#     company_admin_password = "REPLACE_company_admin_password"
+#     site_admin_password    = "REPLACE_site_admin_password"
 #
 # ============================================================================
 
@@ -81,10 +82,10 @@ enable_sql_aad_auth = false   # Set to true to use Azure AD authentication for A
 # IMPORTANT: Always required for SM app (uses SQL authentication even when AAD is enabled)
 # REQUIRED when enable_sql_aad_auth = false: Used by all apps (SM, AD, DS)
 # REQUIRED when enable_sql_aad_auth = true: Used only by SM app (AD/DS use managed identities)
-# Provide via environment variable or secure tfvars file (not committed to Git)
+# Set directly in terraform.tfvars (gitignored, never committed)
 # Minimum 12 characters required for security compliance
 db_admin_username = "xmadmin"
-db_admin_password = "YourSecure!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
+db_admin_password = "REPLACE_db_admin_password"  # min 12 chars, use special characters
 
 # Custom Database Names (optional - defaults to SM, AD, DS, AI)
 # Must match the infrastructure layer if using custom names
@@ -94,10 +95,10 @@ db_admin_password = "YourSecure!Pass123"  # TODO: Replace with your secure passw
 # ai_database_name = "XMPro_AI"
 
 # Application Admin Credentials
-# REQUIRED: Provide via environment variable or secure tfvars file (not committed to Git)
+# REQUIRED: Set directly in terraform.tfvars (gitignored, never committed)
 # Minimum 12 characters required for security compliance
-company_admin_password = "CompanyAdmin!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
-site_admin_password    = "SiteAdmin!Pass123"  # TODO: Replace with your secure password (min 12 chars, use special characters)
+company_admin_password = "REPLACE_company_admin_password"  # min 12 chars, use special characters
+site_admin_password    = "REPLACE_site_admin_password"  # min 12 chars, use special characters
 ad_encryption_key      = ""  # Leave empty to auto-generate
 ai_infrastructure_key  = ""  # Leave empty to auto-generate (only used when enable_ai = true)
 
@@ -105,14 +106,14 @@ ai_infrastructure_key  = ""  # Leave empty to auto-generate (only used when enab
 # APPLICATION CONFIGURATION
 # ============================================================================
 
-imageversion        = "4.6.1"
+imageversion        = "5.0.1"
 sm_zip_download_url = "download.app.xmpro.com"  # Base domain for SM.zip download (no scheme, no trailing slash)
 is_evaluation_mode  = false                     # Set to true for evaluation deployments with built-in licenses
 
 # Company Admin Details
 company_admin_first_name    = "Admin"
 company_admin_last_name     = "User"
-company_admin_email_address = ""
+company_admin_email_address = "REPLACE_company_admin_email_address"
 
 # ============================================================================
 # FEATURE FLAGS
@@ -183,8 +184,8 @@ sso_azure_ad_tenant_id  = ""
 # Map of stream host configurations - uncomment and add as needed
 stream_hosts = {
   # "sh01" = {
-  #   collection_id     = "your-collection-id-from-ds"     # Get from DS after creating collection
-  #   collection_secret = "your-collection-secret-from-ds" # Get from DS after creating collection
+  #   collection_id     = "REPLACE_collection_id"     # Get from DS after creating collection
+  #   collection_secret = "REPLACE_collection_secret" # Get from DS after creating collection
   #   cpu               = 1                                 # CPU cores (0.25-4)
   #   memory            = 4                                 # Memory in GB (0.5-16)
   #   imageversion      = ""                                # Leave empty to use main imageversion
@@ -194,8 +195,8 @@ stream_hosts = {
   #   }
   # }
   # "sh02" = {
-  #   collection_id     = "another-collection-id-from-ds"
-  #   collection_secret = "another-collection-secret-from-ds"
+  #   collection_id     = "REPLACE_collection_id"
+  #   collection_secret = "REPLACE_collection_secret"
   #   cpu               = 0.5
   #   memory            = 1
   # }
@@ -313,8 +314,8 @@ prod_networking_enabled = false
 
 # Collection credentials (REQUIRED when enable_stream_connector_stream_host = true)
 # Obtain from Data Stream Designer > Collections
-# sc_stream_host_collection_id     = "your-collection-id-from-ds"
-# sc_stream_host_collection_secret = "your-collection-secret-from-ds"
+# sc_stream_host_collection_id     = "REPLACE_sc_stream_host_collection_id"
+# sc_stream_host_collection_secret = "REPLACE_sc_stream_host_collection_secret"
 
 # ============================================================================
 # TLS CIPHER SUITE

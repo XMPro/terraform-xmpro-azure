@@ -66,6 +66,7 @@ resource "azurerm_role_assignment" "sm_identity_secrets" {
   scope                = data.azurerm_key_vault.sm_key_vault.id
   role_definition_name = var.keyvault_secrets_reader_role_name
   principal_id         = local.kv_principal_id
+  principal_type       = "ServicePrincipal"
 }
 
 # RBAC role assignment for KV identity to read certificates from Key Vault
@@ -75,6 +76,7 @@ resource "azurerm_role_assignment" "sm_identity_certificates" {
   scope                = data.azurerm_key_vault.sm_key_vault.id
   role_definition_name = var.keyvault_certificates_reader_role_name
   principal_id         = local.kv_principal_id
+  principal_type       = "ServicePrincipal"
 }
 
 # Access policy for KV identity to read secrets and certificates from Key Vault
@@ -116,7 +118,7 @@ resource "azurerm_windows_web_app" "sm_website" {
   site_config {
     websockets_enabled     = true
     use_32_bit_worker      = false
-    http2_enabled          = true
+    http2_enabled          = false # SM uses classic SignalR 2.x; its SSE/long-polling transports break over HTTP/2
     minimum_tls_version    = "1.2"
     vnet_route_all_enabled = var.vnet_route_all_enabled
   }

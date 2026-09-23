@@ -20,7 +20,7 @@ module "sm_secrets" {
 
   secrets = merge({
     # SM always uses SQL authentication (not AAD) because SM uses .NET Framework
-    # which doesn't support AAD managed identity authentication (see Work Item #21949)
+    # which doesn't support AAD managed identity authentication
     "SQLSERVER" = format("Data Source=tcp:%s,1433;Initial Catalog=%s;User ID=%s;Password=%s;",
       var.sql_server_fqdn,
       var.sm_database_name,

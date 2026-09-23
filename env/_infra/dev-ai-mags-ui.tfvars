@@ -20,11 +20,11 @@ db_admin_username = "xmadmin"
 # ==========================================
 
 # App Service Plan configuration - Development SKUs
-ad_service_plan_sku            = "B1" # Provided via TF_VAR_ad_service_plan_sku
-ds_service_plan_sku            = "B1" # Provided via TF_VAR_ds_service_plan_sku
-sm_service_plan_sku            = "B2" # Provided via TF_VAR_sm_service_plan_sku
-ai_service_plan_sku            = "B1" # Provided via TF_VAR_ai_service_plan_sku
-app_service_plan_worker_count  = 1
+ad_service_plan_sku           = "B1" # Provided via TF_VAR_ad_service_plan_sku
+ds_service_plan_sku           = "B1" # Provided via TF_VAR_ds_service_plan_sku
+sm_service_plan_sku           = "B2" # Provided via TF_VAR_sm_service_plan_sku
+ai_service_plan_sku           = "B1" # Provided via TF_VAR_ai_service_plan_sku
+app_service_plan_worker_count = 1
 
 # Storage configuration
 storage_account_tier     = "Standard"

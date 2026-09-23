@@ -103,11 +103,6 @@ variable "ai_url" {
   type        = string
 }
 
-variable "nb_url" {
-  description = "The URL for the NB application"
-  type        = string
-}
-
 variable "imageversion" {
   description = "The version of the container image to use"
   type        = string
@@ -148,7 +143,6 @@ variable "product_ids" {
     ad = "fe011f90-5bb6-80ad-b0a2-56300bf3b65d"
     ai = "e0b6a43a-bdd3-13ba-ffba-4c889461a1f3"
     ds = "71435803-967a-e9ac-574c-face863f7ec0"
-    nb = "3765f34c-ff4e-3cff-e24e-58ac5771d8c5"
   }
 }
 
@@ -159,7 +153,6 @@ variable "product_keys" {
     ad = "f27eeb2d-c557-281c-9d4c-fe44cfb74a97"
     ai = "950ca93b-1ad9-514b-4263-4d3f510012e2"
     ds = "f744911d-e8a6-f8fb-9665-61b185845d6a"
-    nb = "383526ff-8d3f-5941-4bc8-482ed83152be"
   }
 }
 

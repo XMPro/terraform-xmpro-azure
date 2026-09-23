@@ -16,15 +16,14 @@ location = "eastus"                           # Azure region (e.g., eastus, west
 # - Use strong passwords with special characters (e.g., !@#$%^&*)
 # - Use unique passwords for each credential
 # - NEVER commit actual passwords to version control
-# - Store sensitive values in Azure Key Vault or use environment variables:
-#   export TF_VAR_db_admin_password="YourSecure!Pass123"
+# - Set each password directly in terraform.tfvars (gitignored, never committed)
 # IMPORTANT: Don't change these credentials after deployment!
 db_admin_username = "xmadmin"                 # Database admin username
-db_admin_password = "YourSecure!Pass123"      # TODO: Replace with your secure password (min 12 chars, use special characters)
+db_admin_password = "REPLACE_db_admin_password"      # min 12 chars, use special characters
 
 # Master Data database credentials (only needed if create_masterdata = true)
 # masterdata_db_admin_username = "mdadmin"
-# masterdata_db_admin_password = "YourMD!Secure123"  # TODO: Replace with your secure password (min 12 chars)
+# masterdata_db_admin_password = "REPLACE_masterdata_db_admin_password"  # min 12 chars
 
 
 # ==========================================

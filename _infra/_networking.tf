@@ -370,6 +370,11 @@ module "private_endpoints" {
 }
 
 # Outputs for use by other modules
+output "network_resource_group_name" {
+  description = "The resource group name where networking resources are located"
+  value       = module.resource_group.name
+}
+
 output "vnet_id" {
   description = "The ID of the Virtual Network"
   value       = var.prod_networking_enabled ? module.virtual_network[0].id : null

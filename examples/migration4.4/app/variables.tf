@@ -241,7 +241,7 @@ variable "ai_infrastructure_key" {
 variable "imageversion" {
   description = "Version tag for container images"
   type        = string
-  default     = "4.6.1"
+  default     = "5.0.1"
 }
 
 variable "sm_zip_download_url" {
@@ -367,7 +367,7 @@ variable "smtp_username" {
 }
 
 variable "smtp_password" {
-  description = "SMTP password. Defaults to empty string when null. Supply via TF_VAR_smtp_password env var for security."
+  description = "SMTP password. Defaults to empty string when null. Set directly in terraform.tfvars, which is gitignored."
   type        = string
   default     = null
   sensitive   = true

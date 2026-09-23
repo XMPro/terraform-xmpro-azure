@@ -48,6 +48,7 @@ resource "azurerm_role_assignment" "ai_identity_secrets" {
   scope                = data.azurerm_key_vault.ai_key_vault.id
   role_definition_name = var.keyvault_secrets_reader_role_name
   principal_id         = azurerm_user_assigned_identity.ai_identity.principal_id
+  principal_type       = "ServicePrincipal"
 }
 
 # Access policy for AI identity to read secrets from Key Vault
@@ -97,15 +98,10 @@ resource "azurerm_linux_web_app" "ai_app" {
     identity_ids = [azurerm_user_assigned_identity.ai_identity.id]
   }
 
-  # Ensure Key Vault access is configured AND secrets are written before
-  # creating the app. Adding module.ai_secrets serves two purposes:
-  # 1) secrets must exist before App Service resolves @Microsoft.KeyVault refs;
-  # 2) the elapsed time of the secret writes gives RBAC role assignments room
-  #    to propagate, avoiding the App Service "AccessToKeyVaultDenied" cache.
+  # Ensure Key Vault access is configured before creating the app
   depends_on = [
     azurerm_role_assignment.ai_identity_secrets,
-    azurerm_key_vault_access_policy.ai_identity,
-    module.ai_secrets,
+    azurerm_key_vault_access_policy.ai_identity
   ]
 
   # Using Key Vault references for sensitive app settings
@@ -122,18 +118,14 @@ resource "azurerm_linux_web_app" "ai_app" {
 
     # Feature flags
     "XM__XMPRO__AI__FEATUREFLAGS__ENABLEAPPLICATIONINSIGHTSTELEMETRY" = tostring(true)
-    "XM__XMPRO__AI__FEATUREFLAGS__ENABLEHEALTHCHECKS"                 = tostring(true)
     "XM__XMPRO__AI__FEATUREFLAGS__ENABLELOGGING"                      = tostring(true)
     "XM__XMPRO__AI__FEATUREFLAGS__DBMIGRATIONSENABLED"                = tostring(false)
-    "XM__XMPRO__AIDESIGNER__FEATUREFLAGS__RAGENABLED"                 = tostring(false)
+    "XM__XMPRO__AI__FEATUREFLAGS__ENABLERAG"                          = tostring(false)
 
     # URLs
     "XM__XMPRO__XMIDENTITY__SERVER__BASEURL" = var.sm_url
     "XM__XMPRO__XMIDENTITY__CLIENT__BASEURL" = var.ai_url
     "XM__XMPRO__AI__SERVER__BASEURL"         = var.ai_url
-
-    # Health checks CSS path
-    "XM__XMPRO__HEALTHCHECKS__CSSPATH" = "ClientApp/src/assets/content/styles/healthui.css"
 
     # Health Check URLs Configuration
     "XM__XMPRO__HEALTHCHECKS__URLS__0__URL"     = "${var.sm_url}/health/ping"
@@ -145,14 +137,6 @@ resource "azurerm_linux_web_app" "ai_app" {
     "XM__XMPRO__HEALTHCHECKS__URLS__2__URL"     = "${var.ad_url}/health/ping"
     "XM__XMPRO__HEALTHCHECKS__URLS__2__NAME"    = "Application Designer API"
     "XM__XMPRO__HEALTHCHECKS__URLS__2__TAGS__0" = "api"
-
-    # HealthChecksUI Configuration
-    "HEALTHCHECKSUI__HEALTHCHECKS__0__NAME" = "Application Designer"
-    "HEALTHCHECKSUI__HEALTHCHECKS__0__URI"  = "${var.ad_url}/health"
-    "HEALTHCHECKSUI__HEALTHCHECKS__1__NAME" = "Data Stream Designer"
-    "HEALTHCHECKSUI__HEALTHCHECKS__1__URI"  = "${var.ds_url}/health"
-    "HEALTHCHECKSUI__HEALTHCHECKS__2__NAME" = "XMPro AI"
-    "HEALTHCHECKSUI__HEALTHCHECKS__2__URI"  = "${var.ai_url}/health"
 
     # Key Vault references for sensitive values
     "APPLICATIONINSIGHTS__CONNECTIONSTRING"     = "@Microsoft.KeyVault(SecretUri=${module.ai_secrets.secret_versionless_ids["ApplicationInsights--ConnectionString"]})"

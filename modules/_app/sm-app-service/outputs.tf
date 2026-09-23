@@ -28,6 +28,7 @@ output "service_plan_name" {
 output "zip_package_url" {
   description = "The URL of the SM zip package used for deployment"
   value       = "https://${var.storage_account_name}.file.core.windows.net/${var.files_location}/SM.zip${var.storage_sas_token}"
+  sensitive   = true
 }
 
 output "app_service_default_hostname" {
@@ -38,6 +39,7 @@ output "app_service_default_hostname" {
 output "app_service_custom_domain_verification_id" {
   description = "The custom domain verification ID for the SM app service"
   value       = azurerm_windows_web_app.sm_website.custom_domain_verification_id
+  sensitive   = true
 }
 
 # Storage-related outputs

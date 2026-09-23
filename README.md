@@ -119,23 +119,16 @@ This pattern is [officially recommended by HashiCorp](https://developer.hashicor
 - Azure subscription with appropriate permissions
 - Docker registry access (Azure Container Registry recommended)
 
-### Module Source
+### Usage
 
-This module is available directly from GitHub:
+Don't write your own module blocks against `_infra` / `_app` — start from the ready-made example for each module:
 
-```hcl
-# Infrastructure layer
-module "infrastructure" {
-  source = "github.com/XMPro/terraform-xmpro-azure-ykgw//_infra?ref=main"
-  # ... configuration
-}
+| Module                          | Example                                              |
+|---------------------------------|------------------------------------------------------|
+| `_infra` (infrastructure layer) | [`examples/layered/infra/`](examples/layered/infra/) |
+| `_app` (application layer)      | [`examples/layered/app/`](examples/layered/app/)     |
 
-# Application layer
-module "applications" {
-  source = "github.com/XMPro/terraform-xmpro-azure-ykgw//_app?ref=main"
-  # ... configuration
-}
-```
+Each example wires up its module with working provider configuration and a `terraform.tfvars.example` — copy the example, fill in your values, and `terraform apply`. The [Deployment Guide](#-deployment-guide) below walks through both layers in order.
 
 ## 📖 Deployment Guide
 
@@ -513,57 +506,57 @@ terraform apply
 
 **Infrastructure Layer Variables:**
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| enable_stream_connector | Enable Stream Connector infrastructure | `bool` | `false` |
-| use_existing_mqtt_broker | Use existing broker instead of deploying one | `bool` | `false` |
-| existing_mqtt_broker_fqdn | Existing broker FQDN | `string` | `""` |
-| existing_mqtt_user | Existing broker username | `string` | `""` |
-| existing_mqtt_password | Existing broker password | `string` | `""` |
-| mqtt_user | New broker username (empty to auto-generate) | `string` | `""` |
-| mqtt_password | New broker password (empty to auto-generate) | `string` | `""` |
-| mqtt_cpu | New broker CPU cores | `number` | `0.25` |
-| mqtt_memory | New broker memory | `string` | `"0.5Gi"` |
+| Name                      | Description                                  | Type     | Default   |
+|---------------------------|----------------------------------------------|----------|-----------|
+| enable_stream_connector   | Enable Stream Connector infrastructure       | `bool`   | `false`   |
+| use_existing_mqtt_broker  | Use existing broker instead of deploying one | `bool`   | `false`   |
+| existing_mqtt_broker_fqdn | Existing broker FQDN                         | `string` | `""`      |
+| existing_mqtt_user        | Existing broker username                     | `string` | `""`      |
+| existing_mqtt_password    | Existing broker password                     | `string` | `""`      |
+| mqtt_user                 | New broker username (empty to auto-generate) | `string` | `""`      |
+| mqtt_password             | New broker password (empty to auto-generate) | `string` | `""`      |
+| mqtt_cpu                  | New broker CPU cores                         | `number` | `0.25`    |
+| mqtt_memory               | New broker memory                            | `string` | `"0.5Gi"` |
 
 **Application Layer Variables:**
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| enable_stream_connector_stream_host | Deploy dedicated SC Stream Host | `bool` | `false` |
-| sc_stream_host_collection_id | Collection ID from DS (**required** when enabled) | `string` | `""` |
-| sc_stream_host_collection_secret | Collection secret from DS (**required** when enabled) | `string` | `""` |
-| sc_stream_host_cpu | Stream Host CPU cores | `number` | `1` |
-| sc_stream_host_memory | Stream Host memory in GB | `number` | `4` |
-| sc_stream_host_variant | Docker image variant suffix | `string` | `""` |
+| Name                                | Description                                           | Type     | Default |
+|-------------------------------------|-------------------------------------------------------|----------|---------|
+| enable_stream_connector_stream_host | Deploy dedicated SC Stream Host                       | `bool`   | `false` |
+| sc_stream_host_collection_id        | Collection ID from DS (**required** when enabled)     | `string` | `""`    |
+| sc_stream_host_collection_secret    | Collection secret from DS (**required** when enabled) | `string` | `""`    |
+| sc_stream_host_cpu                  | Stream Host CPU cores                                 | `number` | `1`     |
+| sc_stream_host_memory               | Stream Host memory in GB                              | `number` | `4`     |
+| sc_stream_host_variant              | Docker image variant suffix                           | `string` | `""`    |
 
 **Infrastructure Layer Outputs:**
 
-| Name | Description |
-|------|-------------|
-| mqtt_broker_fqdn | MQTT broker FQDN |
-| mqtt_broker_url | Full MQTT connection URL (mqtt://fqdn:1883) |
-| mqtt_user | MQTT broker username (sensitive) |
-| mqtt_password | MQTT broker password (sensitive) |
+| Name             | Description                                 |
+|------------------|---------------------------------------------|
+| mqtt_broker_fqdn | MQTT broker FQDN                            |
+| mqtt_broker_url  | Full MQTT connection URL (mqtt://fqdn:1883) |
+| mqtt_user        | MQTT broker username (sensitive)            |
+| mqtt_password    | MQTT broker password (sensitive)            |
 
 **Application Layer Outputs:**
 
-| Name | Description |
-|------|-------------|
-| sc_stream_host_container_id | SC Stream Host container group ID |
-| sc_collection_id | Collection ID for DS configuration |
-| sc_collection_secret | Collection secret (sensitive) |
+| Name                        | Description                        |
+|-----------------------------|------------------------------------|
+| sc_stream_host_container_id | SC Stream Host container group ID  |
+| sc_collection_id            | Collection ID for DS configuration |
+| sc_collection_secret        | Collection secret (sensitive)      |
 
 #### 4.4 Architecture
 
 ```
 Infrastructure Layer                    Application Layer
-┌──────────────────────────┐           ┌──────────────────────────┐
-│  Azure Container Apps    │           │  Azure Container Instance│
-│  ┌────────────────────┐  │  MQTT     │  ┌────────────────────┐  │
-│  │  Eclipse Mosquitto  │◄├───────────├──┤  SC Stream Host   │  │
-│  │  (MQTT Broker)     │  │  :1883    │  │  (Dedicated)       │  │
-│  └────────────────────┘  │           │  └────────────────────┘  │
-└──────────────────────────┘           └──────────────────────────┘
+┌──────────────────────────┐           ┌───────────────────────────────────────┐
+│  Azure Container Apps    │           │  Azure Container Instance             │
+│  ┌────────────────────┐  │           │  ┌────────────────────┐               │
+│  │  Eclipse Mosquitto │  │◄─────────►│  │  SC Stream Host    │               │
+│  │  (MQTT Broker)     │  │           │  │  (Dedicated)       │               │
+│  └────────────────────┘  │           │  └────────────────────┘               │
+└──────────────────────────┘           └───────────────────────────────────────┘
 ```
 
 - The MQTT broker runs in its own Container App Environment (or you can use an existing external broker)
@@ -628,59 +621,59 @@ terraform apply                # Apply any necessary application changes
 
 ### Required Variables
 
-| Name | Description | Type | Example |
-|------|-------------|------|---------|
-| company_name | Company name for resource naming | `string` | `"mycompany"` |
-| name_suffix | Unique suffix for resource naming | `string` | `"dev001"` |
-| location | Azure region for resources | `string` | `"eastus"` |
-| db_admin_username | Database admin username | `string` | `"xmadmin"` |
-| db_admin_password | Database admin password | `string` | `"P@ssw0rd1234!"` |
+| Name              | Description                       | Type     | Example           |
+|-------------------|-----------------------------------|----------|-------------------|
+| company_name      | Company name for resource naming  | `string` | `"mycompany"`     |
+| name_suffix       | Unique suffix for resource naming | `string` | `"dev001"`        |
+| location          | Azure region for resources        | `string` | `"eastus"`        |
+| db_admin_username | Database admin username           | `string` | `"xmadmin"`       |
+| db_admin_password | Database admin password           | `string` | `"P@ssw0rd1234!"` |
 
 ### Optional Variables
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| ad_service_plan_sku | AD App Service plan SKU | `string` | `"B1"` |
-| ds_service_plan_sku | DS App Service plan SKU | `string` | `"B1"` |
-| sm_service_plan_sku | SM App Service plan SKU | `string` | `"B1"` |
-| ai_service_plan_sku | AI App Service plan SKU | `string` | `"B1"` |
-| app_service_plan_worker_count | Number of workers for all plans | `number` | `1` |
-| storage_account_tier | Storage account tier | `string` | `"Standard"` |
-| storage_replication_type | Storage replication type | `string` | `"LRS"` |
-| enable_app_insights | Enable Application Insights | `bool` | `true` |
-| enable_log_analytics | Enable Log Analytics | `bool` | `true` |
-| create_redis_cache | Create Redis Cache | `bool` | `false` |
-| enable_alerting | Enable Azure Monitor alerts | `bool` | `false` |
-| enable_ai | Enable AI service infrastructure | `bool` | `false` |
-| enable_custom_domain | Enable custom domain | `bool` | `false` |
-| dns_zone_name | DNS zone name | `string` | `""` |
-| create_masterdata | Create Master Data database | `bool` | `false` |
-| sm_database_name | Subscription Manager database name | `string` | `"SM"` |
-| ad_database_name | App Designer database name | `string` | `"AD"` |
-| ds_database_name | Data Stream Designer database name | `string` | `"DS"` |
-| ai_database_name | AI Service database name | `string` | `"AI"` |
-| enable_stream_connector | Enable MQTT broker for Stream Connector | `bool` | `false` |
+| Name                          | Description                             | Type     | Default      |
+|-------------------------------|-----------------------------------------|----------|--------------|
+| ad_service_plan_sku           | AD App Service plan SKU                 | `string` | `"B1"`       |
+| ds_service_plan_sku           | DS App Service plan SKU                 | `string` | `"B1"`       |
+| sm_service_plan_sku           | SM App Service plan SKU                 | `string` | `"B1"`       |
+| ai_service_plan_sku           | AI App Service plan SKU                 | `string` | `"B1"`       |
+| app_service_plan_worker_count | Number of workers for all plans         | `number` | `1`          |
+| storage_account_tier          | Storage account tier                    | `string` | `"Standard"` |
+| storage_replication_type      | Storage replication type                | `string` | `"LRS"`      |
+| enable_app_insights           | Enable Application Insights             | `bool`   | `true`       |
+| enable_log_analytics          | Enable Log Analytics                    | `bool`   | `true`       |
+| create_redis_cache            | Create Redis Cache                      | `bool`   | `false`      |
+| enable_alerting               | Enable Azure Monitor alerts             | `bool`   | `false`      |
+| enable_ai                     | Enable AI service infrastructure        | `bool`   | `false`      |
+| enable_custom_domain          | Enable custom domain                    | `bool`   | `false`      |
+| dns_zone_name                 | DNS zone name                           | `string` | `""`         |
+| create_masterdata             | Create Master Data database             | `bool`   | `false`      |
+| sm_database_name              | Subscription Manager database name      | `string` | `"SM"`       |
+| ad_database_name              | App Designer database name              | `string` | `"AD"`       |
+| ds_database_name              | Data Stream Designer database name      | `string` | `"DS"`       |
+| ai_database_name              | AI Service database name                | `string` | `"AI"`       |
+| enable_stream_connector       | Enable MQTT broker for Stream Connector | `bool`   | `false`      |
 
 **Note**: Each XMPro service (AD, DS, SM, AI) can be configured with its own App Service Plan SKU, allowing independent scaling based on workload requirements.
 
 #### App Service Plan SKU Options
 
-| SKU | vCPU | RAM | Use Case |
-|-----|------|-----|----------|
-| **B1** | 1 | 1.75 GB | Development/Testing |
-| **B2** | 2 | 3.5 GB | Small workloads |
-| **B3** | 4 | 7 GB | Medium workloads |
-| **S1** | 1 | 1.75 GB | Production (staging slots) |
-| **S2** | 2 | 3.5 GB | Production (staging slots) |
-| **S3** | 4 | 7 GB | Production (staging slots) |
-| **P0v3** | 1 | 4 GB | Production (entry level) |
-| **P1v3** | 2 | 8 GB | Production (high memory) |
-| **P2v3** | 4 | 16 GB | Production (large workloads) |
-| **P3v3** | 8 | 32 GB | Production (extra large) |
-| **P0v4** | 1 | 4 GB | Production v4 (entry level, recommended) |
-| **P1v4** | 2 | 8 GB | Production v4 (high memory, recommended) |
-| **P2v4** | 4 | 16 GB | Production v4 (large workloads, recommended) |
-| **P3v4** | 8 | 32 GB | Production v4 (extra large, recommended) |
+| SKU      | vCPU | RAM     | Use Case                                     |
+|----------|------|---------|----------------------------------------------|
+| **B1**   | 1    | 1.75 GB | Development/Testing                          |
+| **B2**   | 2    | 3.5 GB  | Small workloads                              |
+| **B3**   | 4    | 7 GB    | Medium workloads                             |
+| **S1**   | 1    | 1.75 GB | Production (staging slots)                   |
+| **S2**   | 2    | 3.5 GB  | Production (staging slots)                   |
+| **S3**   | 4    | 7 GB    | Production (staging slots)                   |
+| **P0v3** | 1    | 4 GB    | Production (entry level)                     |
+| **P1v3** | 2    | 8 GB    | Production (high memory)                     |
+| **P2v3** | 4    | 16 GB   | Production (large workloads)                 |
+| **P3v3** | 8    | 32 GB   | Production (extra large)                     |
+| **P0v4** | 1    | 4 GB    | Production v4 (entry level, recommended)     |
+| **P1v4** | 2    | 8 GB    | Production v4 (high memory, recommended)     |
+| **P2v4** | 4    | 16 GB   | Production v4 (large workloads, recommended) |
+| **P3v4** | 8    | 32 GB   | Production v4 (extra large, recommended)     |
 
 **Scaling Strategy Examples**:
 ```hcl
@@ -707,61 +700,61 @@ ai_service_plan_sku = "B1"    # Development AI instance
 
 ### Required Variables
 
-| Name | Description | Type | Example |
-|------|-------------|------|---------|
-| company_name | Company name (must match infra) | `string` | `"mycompany"` |
-| name_suffix | Suffix (must match infra) | `string` | `"dev001"` |
-| resource_group_name | Resource group from infra | `string` | `"rg-mycompany-dev001"` |
-| storage_account_name | Storage account from infra | `string` | `"stmycdev001"` |
-| sql_server_fqdn | SQL Server FQDN from infra | `string` | `"sql-mycompany-dev001.database.windows.net"` |
-| ad_service_plan_name | AD App Service plan name | `string` | `"plan-ad-mycompany-dev001"` |
-| ds_service_plan_name | DS App Service plan name | `string` | `"plan-ds-mycompany-dev001"` |
-| sm_service_plan_name | SM App Service plan name | `string` | `"plan-sm-mycompany-dev001"` |
-| ad_key_vault_name | AD Key Vault name | `string` | `"kv-ad-mycompany-dev001"` |
-| ds_key_vault_name | DS Key Vault name | `string` | `"kv-ds-mycompany-dev001"` |
-| sm_key_vault_name | SM Key Vault name | `string` | `"kv-sm-mycompany-dev001"` |
-| db_admin_username | Database username (must match infra) | `string` | `"xmadmin"` |
-| db_admin_password | Database password (must match infra) | `string` | `"P@ssw0rd1234!"` |
-| site_admin_password | Site admin password | `string` | `"P@ssw0rd1234!"` |
-| company_admin_password | Company admin password | `string` | `"P@ssw0rd1234!"` |
-| log_analytics_workspace_name | Log Analytics workspace name from infra | `string` | `"log-mycompany-dev001"` |
-| app_insights_name | Application Insights name from infra | `string` | `"appinsights-mycompany-dev001"` |
+| Name                         | Description                             | Type     | Example                                       |
+|------------------------------|-----------------------------------------|----------|-----------------------------------------------|
+| company_name                 | Company name (must match infra)         | `string` | `"mycompany"`                                 |
+| name_suffix                  | Suffix (must match infra)               | `string` | `"dev001"`                                    |
+| resource_group_name          | Resource group from infra               | `string` | `"rg-mycompany-dev001"`                       |
+| storage_account_name         | Storage account from infra              | `string` | `"stmycdev001"`                               |
+| sql_server_fqdn              | SQL Server FQDN from infra              | `string` | `"sql-mycompany-dev001.database.windows.net"` |
+| ad_service_plan_name         | AD App Service plan name                | `string` | `"plan-ad-mycompany-dev001"`                  |
+| ds_service_plan_name         | DS App Service plan name                | `string` | `"plan-ds-mycompany-dev001"`                  |
+| sm_service_plan_name         | SM App Service plan name                | `string` | `"plan-sm-mycompany-dev001"`                  |
+| ad_key_vault_name            | AD Key Vault name                       | `string` | `"kv-ad-mycompany-dev001"`                    |
+| ds_key_vault_name            | DS Key Vault name                       | `string` | `"kv-ds-mycompany-dev001"`                    |
+| sm_key_vault_name            | SM Key Vault name                       | `string` | `"kv-sm-mycompany-dev001"`                    |
+| db_admin_username            | Database username (must match infra)    | `string` | `"xmadmin"`                                   |
+| db_admin_password            | Database password (must match infra)    | `string` | `"P@ssw0rd1234!"`                             |
+| site_admin_password          | Site admin password                     | `string` | `"P@ssw0rd1234!"`                             |
+| company_admin_password       | Company admin password                  | `string` | `"P@ssw0rd1234!"`                             |
+| log_analytics_workspace_name | Log Analytics workspace name from infra | `string` | `"log-mycompany-dev001"`                      |
+| app_insights_name            | Application Insights name from infra    | `string` | `"appinsights-mycompany-dev001"`              |
 
 ### Optional Variables
 
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| acr_url_product | Container registry URL | `string` | `"xmpro.azurecr.io"` |
-| acr_username | Registry username | `string` | `""` |
-| acr_password | Registry password | `string` | `""` |
-| imageversion | Container image version | `string` | `"4.5.3"` |
-| is_evaluation_mode | Deploy with evaluation licenses | `bool` | `false` |
-| company_admin_first_name | Admin first name (alphanumeric, spaces, hyphens allowed, 1-50 chars) | `string` | `"John"` |
-| company_admin_last_name | Admin last name (alphanumeric, spaces, hyphens allowed, 1-50 chars) | `string` | `"Doe"` |
-| company_admin_email_address | Admin email | `string` | `""` |
-| enable_ai | Enable AI service (must match infra) | `bool` | `false` |
-| create_stream_host | Create Stream Host instance | `bool` | `true` |
-| enable_custom_domain | Enable custom domain (must match infra) | `bool` | `false` |
-| smtp_server | SMTP server address | `string` | `""` |
-| smtp_from_address | SMTP from address | `string` | `""` |
-| smtp_username | SMTP username | `string` | `""` |
-| smtp_password | SMTP password | `string` | `""` |
-| smtp_port | SMTP port | `number` | `587` |
-| smtp_enable_ssl | Enable SSL for SMTP | `bool` | `true` |
-| enable_email_oauth | Enable OAuth authentication for SMTP (Microsoft 365) | `bool` | `false` |
-| email_oauth_token_endpoint | OAuth token endpoint URL | `string` | `""` |
-| email_oauth_token_client_id | OAuth client ID (Azure AD Application ID) | `string` | `""` |
-| email_oauth_token_client_secret | OAuth client secret (Azure AD Application Secret) | `string` | `""` |
-| email_oauth_token_scope | OAuth token scope | `string` | `"https://outlook.office365.com/.default"` |
-| email_oauth_token_method | OAuth token HTTP method | `string` | `"POST"` |
-| email_oauth_token_grant_type | OAuth grant type | `string` | `"client_credentials"` |
-| sm_database_name | Subscription Manager database name | `string` | `"SM"` |
-| ad_database_name | App Designer database name | `string` | `"AD"` |
-| ds_database_name | Data Stream Designer database name | `string` | `"DS"` |
-| ai_database_name | AI Service database name | `string` | `"AI"` |
-| enable_stream_connector_stream_host | Deploy dedicated SC Stream Host | `bool` | `false` |
-| sc_stream_host_collection_id | SC collection ID (required when enabled) | `string` | `""` |
-| sc_stream_host_collection_secret | SC collection secret (required when enabled) | `string` | `""` |
+| Name                                | Description                                                          | Type     | Default                                    |
+|-------------------------------------|----------------------------------------------------------------------|----------|--------------------------------------------|
+| acr_url_product                     | Container registry URL                                               | `string` | `"xmpro.azurecr.io"`                       |
+| acr_username                        | Registry username                                                    | `string` | `""`                                       |
+| acr_password                        | Registry password                                                    | `string` | `""`                                       |
+| imageversion                        | Container image version                                              | `string` | `"4.5.3"`                                  |
+| is_evaluation_mode                  | Deploy with evaluation licenses                                      | `bool`   | `false`                                    |
+| company_admin_first_name            | Admin first name (alphanumeric, spaces, hyphens allowed, 1-50 chars) | `string` | `"John"`                                   |
+| company_admin_last_name             | Admin last name (alphanumeric, spaces, hyphens allowed, 1-50 chars)  | `string` | `"Doe"`                                    |
+| company_admin_email_address         | Admin email                                                          | `string` | `""`                                       |
+| enable_ai                           | Enable AI service (must match infra)                                 | `bool`   | `false`                                    |
+| create_stream_host                  | Create Stream Host instance                                          | `bool`   | `true`                                     |
+| enable_custom_domain                | Enable custom domain (must match infra)                              | `bool`   | `false`                                    |
+| smtp_server                         | SMTP server address                                                  | `string` | `""`                                       |
+| smtp_from_address                   | SMTP from address                                                    | `string` | `""`                                       |
+| smtp_username                       | SMTP username                                                        | `string` | `""`                                       |
+| smtp_password                       | SMTP password                                                        | `string` | `""`                                       |
+| smtp_port                           | SMTP port                                                            | `number` | `587`                                      |
+| smtp_enable_ssl                     | Enable SSL for SMTP                                                  | `bool`   | `true`                                     |
+| enable_email_oauth                  | Enable OAuth authentication for SMTP (Microsoft 365)                 | `bool`   | `false`                                    |
+| email_oauth_token_endpoint          | OAuth token endpoint URL                                             | `string` | `""`                                       |
+| email_oauth_token_client_id         | OAuth client ID (Azure AD Application ID)                            | `string` | `""`                                       |
+| email_oauth_token_client_secret     | OAuth client secret (Azure AD Application Secret)                    | `string` | `""`                                       |
+| email_oauth_token_scope             | OAuth token scope                                                    | `string` | `"https://outlook.office365.com/.default"` |
+| email_oauth_token_method            | OAuth token HTTP method                                              | `string` | `"POST"`                                   |
+| email_oauth_token_grant_type        | OAuth grant type                                                     | `string` | `"client_credentials"`                     |
+| sm_database_name                    | Subscription Manager database name                                   | `string` | `"SM"`                                     |
+| ad_database_name                    | App Designer database name                                           | `string` | `"AD"`                                     |
+| ds_database_name                    | Data Stream Designer database name                                   | `string` | `"DS"`                                     |
+| ai_database_name                    | AI Service database name                                             | `string` | `"AI"`                                     |
+| enable_stream_connector_stream_host | Deploy dedicated SC Stream Host                                      | `bool`   | `false`                                    |
+| sc_stream_host_collection_id        | SC collection ID (required when enabled)                             | `string` | `""`                                       |
+| sc_stream_host_collection_secret    | SC collection secret (required when enabled)                         | `string` | `""`                                       |
 
 ## 🗃️ Custom Database Names
 
@@ -1058,41 +1051,41 @@ trimming whitespace). Special characters (except spaces and hyphens) are not all
 
 ### Infrastructure Layer Outputs
 
-| Name | Description |
-|------|-------------|
-| resource_group_name | Resource group name |
-| location | Azure region |
-| name_suffix | Resource naming suffix |
-| storage_account_name | Storage account name |
-| sql_server_fqdn | SQL Server FQDN |
-| ad_service_plan_name | AD App Service plan name |
-| ds_service_plan_name | DS App Service plan name |
-| sm_service_plan_name | SM App Service plan name |
-| ad_key_vault_name | AD Key Vault name |
-| ds_key_vault_name | DS Key Vault name |
-| sm_key_vault_name | SM Key Vault name |
-| log_analytics_workspace_name | Log Analytics workspace name |
-| app_insights_name | Application Insights name |
-| app_insights_connection_string | Application Insights connection string |
-| mqtt_broker_fqdn | MQTT broker FQDN (if Stream Connector enabled) |
-| mqtt_broker_url | MQTT broker connection URL (if Stream Connector enabled) |
-| mqtt_user | MQTT broker username (sensitive) |
-| mqtt_password | MQTT broker password (sensitive) |
-| use_existing_mqtt_broker | Whether using an existing external MQTT broker |
+| Name                           | Description                                              |
+|--------------------------------|----------------------------------------------------------|
+| resource_group_name            | Resource group name                                      |
+| location                       | Azure region                                             |
+| name_suffix                    | Resource naming suffix                                   |
+| storage_account_name           | Storage account name                                     |
+| sql_server_fqdn                | SQL Server FQDN                                          |
+| ad_service_plan_name           | AD App Service plan name                                 |
+| ds_service_plan_name           | DS App Service plan name                                 |
+| sm_service_plan_name           | SM App Service plan name                                 |
+| ad_key_vault_name              | AD Key Vault name                                        |
+| ds_key_vault_name              | DS Key Vault name                                        |
+| sm_key_vault_name              | SM Key Vault name                                        |
+| log_analytics_workspace_name   | Log Analytics workspace name                             |
+| app_insights_name              | Application Insights name                                |
+| app_insights_connection_string | Application Insights connection string                   |
+| mqtt_broker_fqdn               | MQTT broker FQDN (if Stream Connector enabled)           |
+| mqtt_broker_url                | MQTT broker connection URL (if Stream Connector enabled) |
+| mqtt_user                      | MQTT broker username (sensitive)                         |
+| mqtt_password                  | MQTT broker password (sensitive)                         |
+| use_existing_mqtt_broker       | Whether using an existing external MQTT broker           |
 
 ### Application Layer Outputs
 
-| Name | Description |
-|------|-------------|
-| sm_app_url | Subscription Manager URL |
-| ad_app_url | App Designer URL |
-| ds_app_url | Data Stream Designer URL |
-| ai_app_url | AI Designer URL (if enabled) |
-| stream_host_container_id | Stream Host container ID |
-| company_details | Company admin details |
-| sc_stream_host_container_id | SC Stream Host container ID (if enabled) |
-| sc_collection_id | SC collection ID (if enabled) |
-| sc_collection_secret | SC collection secret (sensitive, if enabled) |
+| Name                        | Description                                  |
+|-----------------------------|----------------------------------------------|
+| sm_app_url                  | Subscription Manager URL                     |
+| ad_app_url                  | App Designer URL                             |
+| ds_app_url                  | Data Stream Designer URL                     |
+| ai_app_url                  | AI Designer URL (if enabled)                 |
+| stream_host_container_id    | Stream Host container ID                     |
+| company_details             | Company admin details                        |
+| sc_stream_host_container_id | SC Stream Host container ID (if enabled)     |
+| sc_collection_id            | SC collection ID (if enabled)                |
+| sc_collection_secret        | SC collection secret (sensitive, if enabled) |
 
 ## 🔐 Evaluation vs Production Mode
 
@@ -1161,9 +1154,9 @@ data "azurerm_key_vault_secret" "db_password" {
   key_vault_id = var.secrets_key_vault_id
 }
 
-# Use in module
+# Use in the application-layer module block (as in examples/layered/app)
 module "applications" {
-  source = "github.com/XMPro/terraform-xmpro-azure-ykgw//_app?ref=main"
+  source = "../../../_app"
 
   db_admin_password = data.azurerm_key_vault_secret.db_password.value
   # ... other configuration

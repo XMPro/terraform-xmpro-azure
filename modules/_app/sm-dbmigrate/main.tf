@@ -41,16 +41,13 @@ resource "azurerm_container_group" "smdbmigrate" {
       "AD_BASEURL_CLIENT"             = var.ad_url
       "AI_BASEURL_CLIENT"             = var.ai_url
       "DS_BASEURL_CLIENT"             = var.ds_url
-      "XMPRO_NOTEBOOK_BASEURL_CLIENT" = var.nb_url
       "AD_PRODUCT_ID"                 = var.product_ids.ad
       "AI_PRODUCT_ID"                 = var.product_ids.ai
       "DS_PRODUCT_ID"                 = var.product_ids.ds
       "SM_PRODUCT_ID"                 = var.sm_product_id
-      "XMPRO_NOTEBOOK_PRODUCT_ID"     = var.product_ids.nb
       "AD_PRODUCT_KEY"                = var.product_keys.ad
       "AI_PRODUCT_KEY"                = var.product_keys.ai
       "DS_PRODUCT_KEY"                = var.product_keys.ds
-      "XMPRO_NOTEBOOK_PRODUCT_KEY"    = var.product_keys.nb
       "AI_PRODUCT_ENABLE"             = "true"
       "SM_LOG_LEVEL"                  = "Information"
       "SM_TRUST_ALL_SSL_CERTIFICATES" = "true"

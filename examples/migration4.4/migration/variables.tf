@@ -22,7 +22,7 @@ variable "db_admin_username" {
 }
 
 variable "db_admin_password" {
-  description = "Supply via TF_VAR_db_admin_password."
+  description = "Database admin password. Set directly in terraform.tfvars, which is gitignored."
   type        = string
   sensitive   = true
 }

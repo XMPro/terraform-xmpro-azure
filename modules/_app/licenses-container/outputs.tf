@@ -8,6 +8,11 @@ output "container_fqdn" {
   value       = azurerm_container_group.licenses.fqdn
 }
 
+output "container_group_id" {
+  description = "The ID of the licenses container group"
+  value       = azurerm_container_group.licenses.id
+}
+
 output "ad_product_id" {
   description = "The AD product ID"
   value       = var.ad_product_id

@@ -1,5 +1,5 @@
 # release-4.6.1 MAGS - Infrastructure Layer Configuration
-# WI 24059 - Deployed via OIDC to XMPro Main DevTest Plan subscription
+# Deployed via OIDC to XMPro Main DevTest Plan subscription
 # Pipeline: deploy/_templates/deploy-rel461mags.yml
 
 # ==========================================
